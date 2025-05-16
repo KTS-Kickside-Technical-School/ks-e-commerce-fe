@@ -1,1 +1,3 @@
-# ks-e-commerce-fe
+# Fixo
+
+We are here to serve people.
