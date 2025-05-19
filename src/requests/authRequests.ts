@@ -1,6 +1,9 @@
 import { axiosInstance } from "../utils/axios.ts";
 import {
     CreateUserTypes,
+    iResetPasswordTypes,
+    iUserForgotPasswordTypes,
+    iValidateResetTokenTypes,
     UserLoginTypes
 } from "../types/user.ts";
 export const handleError = (error: any) => {
@@ -36,9 +39,39 @@ const userLogin = async (data: UserLoginTypes) => {
     }
 }
 
+const userForgetPassword = async (data: iUserForgotPasswordTypes) => {
+    try {
+        const response = await axiosInstance.post("/api/auth/forgot-password", data);
+        return response.data
+    } catch (error) {
+        return handleError(error);
+    }
+}
+
+const validateResetToken = async (data: iValidateResetTokenTypes) => {
+    try {
+        const response = await axiosInstance.post("/api/auth/validate-reset-token", data)
+        return response.data
+    } catch (error) {
+        return handleError(error)
+    }
+}
+
+const resetPassword = async (data: iResetPasswordTypes) => {
+    try {
+        const response = await axiosInstance.post("/api/auth/reset-password", data)
+        return response.data
+
+    } catch (error) {
+        return handleError(error)
+    }
+}
 const authRequests = {
     userCreateAccount,
-    userLogin
+    userLogin,
+    userForgetPassword,
+    validateResetToken,
+    resetPassword
 }
 
 export default authRequests
