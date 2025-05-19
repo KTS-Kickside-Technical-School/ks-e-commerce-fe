@@ -130,7 +130,12 @@ const UserLogin = () => {
                   </p>
                 )}
               </div>
-
+              <p>
+                Forgot your password? &nbsp;
+                <Link to="/forgot-password" className="text-primary-500">
+                  Click here
+                </Link>
+              </p>
               <button
                 type="submit"
                 className="w-full flex justify-center items-center bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"

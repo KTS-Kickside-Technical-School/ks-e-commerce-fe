@@ -19,6 +19,8 @@ import CustomerProfile from './pages/customers/profile/CustomerProfile';
 import MyOrders from './pages/customers/orders/MyOrders';
 import SellerViewOrders from './pages/seller/orders/SellerViewOrders';
 import OrderDetailsPage from './pages/seller/orders/OrderDetailsPage';
+import ForgotPassword from './pages/customers/auth/ForgotPassword';
+import ResetPassword from './pages/customers/auth/ResetPassword';
 
 const AppRouter = () => {
   return (
@@ -28,6 +30,8 @@ const AppRouter = () => {
 
       <Route path="/create-account" element={<UserCreateAccount />} />
       <Route path="/login" element={<UserLogin />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
