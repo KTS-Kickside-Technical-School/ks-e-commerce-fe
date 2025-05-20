@@ -117,7 +117,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
     const { formData, images, loading, errors }: any = this.state;
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[200]">
         <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-4xl">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">New Product</h2>
           <form

@@ -8,11 +8,16 @@ export default {
     extend: {
       animation: {
         'slide-up': 'slide-up 0.3s ease-out',
+        'soft-bounce': 'soft-bounce 1s infinite',
       },
       keyframes: {
         'slide-up': {
           '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        'soft-bounce': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
       },
       colors: {
