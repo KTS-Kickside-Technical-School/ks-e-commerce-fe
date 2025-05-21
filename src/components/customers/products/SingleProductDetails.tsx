@@ -3,10 +3,6 @@ import {
   FaRegHeart,
   FaHeart,
   FaShoppingBag,
-  FaClock,
-  FaTag,
-  FaWhatsapp,
-  FaRegCommentDots,
   FaChevronLeft,
   FaChevronRight,
   FaShoppingCart,
@@ -333,7 +329,7 @@ export default function ProductDetails() {
                     className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 ${
                       isCartLoading
                         ? 'border-gray-300 text-gray-400 cursor-not-allowed'
-                        : 'border-primary-500 text-primary-600 hover:bg-primary-50'
+                        : 'border-primary-500 text-primary-500 hover:bg-primary-50'
                     }`}
                   >
                     {isCartLoading ? (
@@ -367,7 +363,6 @@ export default function ProductDetails() {
                   phoneNumber={whatsappNumber}
                   message={whatsappMessage}
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
-                  icon={<FaWhatsapp className="w-5 h-5" />}
                   buttonText="Chat on WhatsApp"
                 />
               </div>
@@ -391,7 +386,6 @@ export default function ProductDetails() {
           phoneNumber={whatsappNumber}
           message={whatsappMessage}
           className="animate-soft-bounce hover:animate-none shadow-xl"
-          icon={<FaWhatsapp className="w-6 h-6" />}
         />
       </div>
       <Footer />

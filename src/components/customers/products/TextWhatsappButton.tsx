@@ -1,12 +1,9 @@
-import React from 'react';
-import { IconType } from 'react-icons';
 import { FaWhatsapp } from 'react-icons/fa';
 
 interface TextWhatsappButtonProps {
   phoneNumber: string;
   message: string;
   className?: string;
-  icon?: React.ReactElement<IconType>;
   buttonText?: string;
 }
 
@@ -14,7 +11,6 @@ const TextWhatsappButton = ({
   phoneNumber,
   message,
   className = '',
-  icon = <FaWhatsapp />,
   buttonText = 'Message on WhatsApp',
 }: TextWhatsappButtonProps) => {
   const encodedMessage = encodeURIComponent(message);
@@ -38,9 +34,7 @@ const TextWhatsappButton = ({
         ${className}
       `}
     >
-      {React.cloneElement(icon, {
-        className: 'w-6 h-6 md:w-5 md:h-5 shrink-0',
-      })}
+      <FaWhatsapp className="w-6 h-6 md:w-5 md:h-5 shrink-0" />
       <span className="hidden md:inline text-sm font-medium">{buttonText}</span>
     </a>
   );
