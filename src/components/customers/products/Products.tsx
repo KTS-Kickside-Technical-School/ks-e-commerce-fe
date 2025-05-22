@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Product from './Product';
-import { useEffect, useState } from 'react';
+import ProductSkeletonLoader from './ProductSkeletonLoader';
 import { userViewProducts } from '../../../requests/productsRequests';
 import { iProduct } from '../../../types/store';
 
@@ -10,65 +11,73 @@ interface ProductsProps {
     text: string;
     location: string;
   };
+  limit?: number; // Optional limit on how many products to display
 }
 
-const Products = ({ title, link }: ProductsProps) => {
+const Products = ({ title, link, limit }: ProductsProps) => {
   const [products, setProducts] = useState<iProduct[]>([]);
-  const [isFetchingData, setIsFetchingData] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setIsFetchingData(true);
       try {
         const response = await userViewProducts();
         if (response.status === 200) {
           setProducts(response.data.products);
-          return;
+        } else {
+          console.error('Error:', response.message);
         }
-        throw new Error(response.message);
       } catch (error: any) {
-        console.error('Error fetching products:', error.message);
+        console.error('Failed to fetch products:', error.message);
       } finally {
-        setIsFetchingData(false);
+        setIsLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
+  const displayedProducts = limit ? products.slice(0, limit) : products;
+
   return (
-    <div className="bg-gray-50 py-8">
+    <section className="bg-gray-50 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-          <h1 className="text-3xl font-bold text-gray-900 text-primary-500">
-            {title}
-          </h1>
+          <h2 className="text-3xl font-bold text-primary-500">{title}</h2>
           <Link
             to={link.location}
-            className="text-primary-500 text-lg font-semibold hover:text-primary-600 transition-colors duration-200"
+            className="text-primary-500 text-lg font-semibold hover:text-primary-600 transition-colors"
           >
             {link.text} →
           </Link>
         </div>
 
+        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product: iProduct) => (
-            <Product
-              key={product._id}
-              product={product}
-              isFetchingData={isFetchingData}
-              isOnWishlist={false}
-              isInCart={false}
-            />
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <ProductSkeletonLoader key={index} />
+              ))
+            : displayedProducts.map((product) => (
+                <Product
+                  key={product._id}
+                  product={product}
+                  isFetchingData={false}
+                  isOnWishlist={false}
+                  isInCart={false}
+                />
+              ))}
         </div>
 
-        {products.length === 0 && !isFetchingData && (
-          <div className="text-center py-12 text-gray-500">
-            No products found
+        {/* Empty State */}
+        {!isLoading && displayedProducts.length === 0 && (
+          <div className="text-center py-16 text-gray-500 text-lg font-medium">
+            No products found.
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 
