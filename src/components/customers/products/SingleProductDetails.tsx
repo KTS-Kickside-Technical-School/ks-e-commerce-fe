@@ -3,12 +3,16 @@ import {
   FaRegHeart,
   FaHeart,
   FaShoppingBag,
-  FaClock,
-  FaTag,
+  FaChevronLeft,
+  FaChevronRight,
+  FaShoppingCart,
 } from 'react-icons/fa';
 import Header from '../Header';
 import Footer from '../Footer';
-import { customerViewSingleProduct } from '../../../requests/productsRequests';
+import {
+  customerViewSingleProduct,
+  whatsappNumber,
+} from '../../../requests/productsRequests';
 import { useNavigate, useParams } from 'react-router-dom';
 import { safeToFixed } from '../../../helpers/round';
 import { iProduct } from '../../../types/store';
@@ -17,6 +21,7 @@ import { toast, Toaster } from 'sonner';
 import LoginPromptModal from '../LoginPromptModal';
 import { ImSpinner } from 'react-icons/im';
 import BuyNowModal from './BuyNowModal';
+import TextWhatsappButton from './TextWhatsappButton';
 const defaultProduct: iProduct = {
   productName: '',
   description: '',
@@ -38,9 +43,11 @@ export default function ProductDetails() {
   const [error, setError] = useState('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isLoginPromptOpen, setIsPromptModalOpen] = useState(false);
-  const navigate = useNavigate();
   const [showBuyModal, setShowBuyModal] = useState(false);
 
+  const whatsappMessage = `Hi! I'm interested in ${product.productName} (${window.location.href})`;
+
+  const navigate = useNavigate();
   const discountedPrice = useMemo(() => {
     return product.price * (1 - (product.discount || 0) / 100);
   }, [product.price, product.discount]);
@@ -178,80 +185,73 @@ export default function ProductDetails() {
     <>
       <Toaster richColors position="top-center" />
       <Header />
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8 px-4 lg:px-0">
-          {product.productName}
-        </h1>
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {/* Product Header */}
+        <div className="px-4 lg:px-0">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            {product.productName}
+          </h1>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <span>SKU: {product._id.slice(-6)}</span>
+            <span className="text-gray-300">•</span>
+            <span>{product.category}</span>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="relative group">
-              <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                <img
-                  src={
-                    product.images?.[activeImage] ?? '/default-placeholder.jpg'
-                  }
-                  alt={product.productName}
-                />
-              </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+          {/* Image Gallery Section */}
+          <div className="space-y-6">
+            <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden group">
+              <img
+                src={
+                  product.images?.[activeImage] ?? '/default-placeholder.jpg'
+                }
+                alt={product.productName}
+                className="w-full h-full object-contain transition-opacity duration-500"
+              />
 
+              {/* Navigation Arrows */}
               <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() =>
                     handleImageChange(
-                      activeImage > 0
-                        ? activeImage - 1
-                        : product.images.length - 1
+                      (activeImage - 1 + product.images.length) %
+                        product.images.length
                     )
                   }
-                  className="bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
+                  className="bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-transform duration-200 hover:scale-110"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
+                  <FaChevronLeft className="w-6 h-6 text-gray-700" />
                 </button>
                 <button
                   onClick={() =>
                     handleImageChange((activeImage + 1) % product.images.length)
                   }
-                  className="bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
+                  className="bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-transform duration-200 hover:scale-110"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <FaChevronRight className="w-6 h-6 text-gray-700" />
                 </button>
               </div>
+
+              {/* Discount Badge */}
+              {product.discount > 0 && (
+                <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
+                  {product.discount}% OFF
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-4 mt-4 overflow-x-auto pb-2">
+            {/* Image Thumbnails */}
+            <div className="grid grid-cols-4 gap-3">
               {product.images.map((img, index) => (
                 <button
                   key={img}
                   onClick={() => handleImageChange(index)}
-                  className={`shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                     activeImage === index
-                      ? 'border-primary-500 scale-105'
-                      : 'border-transparent hover:border-gray-300'
+                      ? 'border-primary-500 scale-105 shadow-md'
+                      : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   <img
@@ -265,143 +265,128 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <div className="space-y-6 lg:sticky lg:top-8 lg:h-fit z-[30] bg-white">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-4">
-                {(product.discount || 0) > 0 && (
-                  <div className="relative group">
-                    <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg hover:shadow-xl transition-shadow duration-300 animate-pulse">
-                      {product.discount}% OFF
-                      <div className="absolute -top-2 -right-2 bg-white text-red-500 rounded-full w-6 h-6 flex items-center justify-center text-xs font-black shadow-md">
-                        !
-                      </div>
+          {/* Product Info Sidebar */}
+          <div className="lg:sticky lg:top-20 lg:h-[calc(100vh-160px)] lg:overflow-y-auto lg:pb-8 space-y-8">
+            {/* Pricing Section */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <div className="space-y-4">
+                <div className="flex items-baseline gap-4">
+                  <span className="text-3xl font-bold text-primary-600">
+                    {safeToFixed(discountedPrice)} RWF
+                  </span>
+                  {product.discount > 0 && (
+                    <span className="text-gray-500 line-through">
+                      {safeToFixed(product.price)} RWF
                     </span>
-                  </div>
-                )}
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-baseline gap-3">
-                  <div className="relative group transform transition-transform duration-200 hover:scale-105">
-                    <div className="absolute -inset-1 bg-primary-100 rounded-lg blur opacity-70 group-hover:opacity-90 transition-opacity"></div>
-                    <span
-                      className={`relative text-3xl font-extrabold ${
-                        product.discount ? 'text-primary-600' : 'text-gray-900'
-                      }`}
-                    >
-                      <span className="text-sm font-medium text-gray-500 mr-2">
-                        Now:
-                      </span>
-                      {safeToFixed(discountedPrice)}RWF
-                      <FaShoppingBag className="inline-block ml-2 text-primary-500 w-5 h-5" />
-                    </span>
-                  </div>
-
-                  {(product.discount || 0) > 0 && (
-                    <div className="relative inline-block">
-                      <div className="flex items-center text-gray-500">
-                        <span className="text-sm font-medium mr-1">Was:</span>
-                        <span className="line-through mr-1">
-                          {safeToFixed(product?.price)}RWF
-                        </span>
-                        <FaTag className="text-red-400 w-3 h-3" />
-                      </div>
-
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md z-10">
-                        <div className="absolute -bottom-1 left-1/2 w-2 h-2 bg-red-500 transform -translate-x-1/2 rotate-45">
-                          You save:{' '}
-                          {safeToFixed(
-                            product.price * (product.discount / 100)
-                          )}
-                          RWF
-                        </div>
-                      </div>
-                    </div>
                   )}
+                </div>
+
+                <div className="flex items-center gap-2 text-sm">
+                  <span
+                    className={`px-2 py-1 rounded-full ${
+                      product.stock > 0
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    {product.stock > 0
+                      ? `${product.stock} in stock`
+                      : 'Out of stock'}
+                  </span>
                 </div>
               </div>
 
-              {(product.discount || 0) > 0 && (
-                <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
-                  <FaClock className="w-4 h-4" />
-                  <span>Limited time offer! Ends soon</span>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <button
-                className={`w-full bg-primary-500 text-white py-3 rounded-lg font-medium transition-colors ${
-                  showBuyModal
-                    ? 'opacity-75 cursor-not-allowed'
-                    : 'hover:bg-primary-600'
-                }`}
-                onClick={() => {
-                  if (!sessionStorage.getItem('profile')) {
-                    setIsPromptModalOpen(true);
-                    return;
-                  }
-                  setShowBuyModal(true);
-                }}
-                disabled={showBuyModal}
-              >
-                {showBuyModal ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <ImSpinner className="animate-spin" />
-                    Processing...
-                  </span>
-                ) : (
-                  'Buy Now'
-                )}
-              </button>
-
-              <div className="flex gap-4">
+              <div className="space-y-4 mt-6">
                 <button
-                  className={`flex-1 flex items-center justify-center gap-2 border-2 border-primary-500 py-3 rounded-lg font-medium transition-colors ${
-                    isCartLoading
-                      ? 'text-primary-400 border-primary-300 cursor-not-allowed'
-                      : 'text-primary-500 hover:bg-primary-50'
+                  onClick={() => {
+                    if (!sessionStorage.getItem('profile')) {
+                      setIsPromptModalOpen(true);
+                      return;
+                    }
+                    setShowBuyModal(true);
+                  }}
+                  disabled={showBuyModal}
+                  className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold transition-all ${
+                    showBuyModal
+                      ? 'bg-primary-100 text-primary-500 cursor-not-allowed'
+                      : 'bg-primary-500 hover:bg-primary-600 text-white'
                   }`}
-                  onClick={() => handleAddProductToCart()}
-                  disabled={isCartLoading}
                 >
-                  {isCartLoading ? (
+                  {showBuyModal ? (
                     <ImSpinner className="animate-spin" />
                   ) : (
                     <>
                       <FaShoppingBag className="w-5 h-5" />
-                      <span>Add to Cart</span>
+                      Buy Now
                     </>
                   )}
                 </button>
 
-                <button
-                  onClick={() => setIsWishlisted(!isWishlisted)}
-                  className={`w-12 flex items-center justify-center border-2 rounded-lg transition-colors ${
-                    isWishlisted
-                      ? 'border-secondary-500 text-secondary-500'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-500'
-                  }`}
-                >
-                  {isWishlisted ? (
-                    <FaHeart className="w-5 h-5 text-secondary-500" />
-                  ) : (
-                    <FaRegHeart className="w-5 h-5" />
-                  )}
-                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleAddProductToCart()}
+                    disabled={isCartLoading}
+                    className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 ${
+                      isCartLoading
+                        ? 'border-gray-300 text-gray-400 cursor-not-allowed'
+                        : 'border-primary-500 text-primary-500 hover:bg-primary-50'
+                    }`}
+                  >
+                    {isCartLoading ? (
+                      <ImSpinner className="animate-spin" />
+                    ) : (
+                      <>
+                        <FaShoppingCart className="w-5 h-5" />
+                        <span>Add to Cart</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIsWishlisted(!isWishlisted)}
+                    className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 ${
+                      isWishlisted
+                        ? 'border-red-500 text-red-600 bg-red-50'
+                        : 'border-gray-300 text-gray-600 hover:border-gray-400'
+                    }`}
+                  >
+                    {isWishlisted ? (
+                      <FaHeart className="w-5 h-5 text-red-600" />
+                    ) : (
+                      <FaRegHeart className="w-5 h-5" />
+                    )}
+                    <span>Wishlist</span>
+                  </button>
+                </div>
+
+                <TextWhatsappButton
+                  phoneNumber={whatsappNumber}
+                  message={whatsappMessage}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
+                  buttonText="Chat on WhatsApp"
+                />
               </div>
             </div>
-          </div>
 
-          <div className="lg:col-span-3 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="p-6 bg-gray-50 rounded-xl lg:col-span-2">
-              <h2 className="text-2xl font-bold mb-4">Product Details</h2>
+            {/* Product Details */}
+            <div className="p-6 bg-white rounded-xl border border-gray-100">
+              <h2 className="text-xl font-bold mb-4">Product Details</h2>
               <div
-                className="prose max-w-none"
+                className="prose text-gray-600"
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </div>
-            <div className="space-y-6 lg:sticky lg:top-8 lg:h-fit"></div>
           </div>
         </div>
+      </div>
+
+      {/* Floating WhatsApp Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <TextWhatsappButton
+          phoneNumber={whatsappNumber}
+          message={whatsappMessage}
+          className="animate-soft-bounce hover:animate-none shadow-xl"
+        />
       </div>
       <Footer />
       {isLoginPromptOpen && (

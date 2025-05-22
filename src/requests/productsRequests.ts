@@ -1,5 +1,6 @@
 import { axiosInstance } from "../utils/axios";
 import { handleError } from "./authRequests";
+export const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
 
 export const createProduct = async (productData: any) => {
     try {
