@@ -1,54 +1,54 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { FaTag } from 'react-icons/fa';
 
 interface ProductPriceProps {
   price: number;
   discount?: number;
+  className?: string;
 }
 
-const ProductPrice: React.FC<ProductPriceProps> = ({ price, discount = 0 }) => {
+const ProductPrice: React.FC<ProductPriceProps> = ({
+  price,
+  discount = 0,
+  className,
+}) => {
   const hasDiscount = discount > 0;
-  const discountedPrice = Math.round(price - (price / 100) * discount);
+  const discountedPrice = Math.round(price - (price * discount) / 100);
+  const formatRWF = (amount: number) =>
+    new Intl.NumberFormat('rw-RW', {
+      style: 'currency',
+      currency: 'RWF',
+      minimumFractionDigits: 0,
+    }).format(amount);
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={hasDiscount ? 'discount' : 'no-discount'}
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 8 }}
-        transition={{ duration: 0.4 }}
-        className="flex flex-wrap items-center gap-3 sm:gap-4"
-      >
-        {hasDiscount ? (
-          <>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-sm text-red-500 font-semibold animate-bounce w-full sm:w-auto"
-            >
-              <span className="text-xs sm:text-sm bg-red-600 text-white px-2 py-0.5 rounded-full font-medium animate-pulse">
-                -{discount}% OFF
-              </span>
-            </motion.span>
-            <del
-              aria-label={`Original price: ${price} RWF`}
-              className="text-red-400 text-base sm:text-lg"
-            >
-              {price} RWF
-            </del>
-            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
-              {discountedPrice} RWF
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className={`flex items-center gap-3 ${className}`}
+    >
+      {hasDiscount ? (
+        <motion.div
+          initial={{ rotate: -5 }}
+          animate={{ rotate: 0 }}
+          className="flex items-baseline gap-2 bg-gradient-to-r from-red-600 to-pink-500 px-4 py-2 rounded-full text-white"
+        >
+          <FaTag />
+          <div className="flex flex-col items-end">
+            <span className="text-sm font-bold">
+              {formatRWF(discountedPrice)}
             </span>
-          </>
-        ) : (
-          <span className="text-lg sm:text-xl font-semibold text-red-400 text-base">
-            {price} RWF
-          </span>
-        )}
-      </motion.div>
-    </AnimatePresence>
+            <del className="text-xs opacity-70">{formatRWF(price)}</del>
+          </div>
+        </motion.div>
+      ) : (
+        <span className="text-primary-500 font-semibold text-lg">
+          {formatRWF(price)}
+        </span>
+      )}
+    </motion.div>
   );
 };
 
 export default ProductPrice;
+  
