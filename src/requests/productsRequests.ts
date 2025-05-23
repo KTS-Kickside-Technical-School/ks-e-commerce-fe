@@ -1,3 +1,4 @@
+import { iProduct } from "../types/store";
 import { axiosInstance } from "../utils/axios";
 import { handleError } from "./authRequests";
 export const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
@@ -36,6 +37,16 @@ export const customerViewSingleProduct = async (slug: any) => {
         const response = await axiosInstance.get(`/api/product/customer-get-product-details/${slug}`);
         return response.data
     } catch (error: any) {
+        return handleError(error);
+    }
+}
+
+export const editProduct = async (id: any, productData: iProduct) => {
+    try {
+        console.log("DAAA", productData)
+        const response = await axiosInstance.put(`/api/product/update-product/${id}`, productData);
+        return response.data;
+    } catch (error) {
         return handleError(error);
     }
 }

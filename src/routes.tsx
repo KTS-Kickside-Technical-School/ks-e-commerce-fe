@@ -12,7 +12,7 @@ import ShopDetails from './components/admin/ShopDetails';
 import AdminViewProducts from './components/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
 import AdminNotFound from './components/admin/AdminNotFound';
-import SellerProductsList from './components/seller/SellerProductsList';
+import SellerProductsList from './pages/seller/products/SellerProductsList';
 import SingleProductDetails from './components/customers/products/SingleProductDetails';
 import CartCheckout from './components/customers/cart/MyCart';
 import CustomerProfile from './pages/customers/profile/CustomerProfile';

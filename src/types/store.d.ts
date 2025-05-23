@@ -28,6 +28,7 @@ export interface iProduct {
   slug: string;
   description: string;
   category: string;
+  status?: string;
 }
 
 export interface Address {
