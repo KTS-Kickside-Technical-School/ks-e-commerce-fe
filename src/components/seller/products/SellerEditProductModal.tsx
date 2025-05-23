@@ -1,24 +1,27 @@
 import React from 'react';
 import { FaTimes, FaUpload } from 'react-icons/fa';
-import RichTextEditor from '../RichTextEditor';
-import { createProduct } from '../../requests/productsRequests';
+import RichTextEditor from '../../RichTextEditor';
+import { editProduct } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
-import uploadToCloudinary from '../../helpers/cloudinary';
+import uploadToCloudinary from '../../../helpers/cloudinary';
 
 interface Props {
+  product: any;
   onClose: () => void;
 }
-class SellerNewProductModal extends React.Component<Props, any> {
+class SellerEditProductModal extends React.Component<Props, any> {
   constructor(props: Props) {
     super(props);
     this.state = {
       formData: {
-        productName: '',
-        description: '',
-        price: '',
-        category: '',
+        productName: props.product.productName,
+        description: props.product.description,
+        price: props.product.price,
+        category: props.product.category,
+        discount: props.product.discount,
+        status: props.product.status || 'inactive',
       },
-      images: [],
+      images: props.product.images,
       loading: false,
       errors: {},
     };
@@ -83,6 +86,9 @@ class SellerNewProductModal extends React.Component<Props, any> {
     if (this.state.images.length === 0 || !this.state.images) {
       errors.images = 'Please upload at least one image';
     }
+    if (formData.discount < 0 || formData.discount > 100) {
+      errors.discount = 'Discount must be between 0% and 100%';
+    }
 
     this.setState({ errors });
     return Object.keys(errors).length === 0;
@@ -95,17 +101,17 @@ class SellerNewProductModal extends React.Component<Props, any> {
 
     this.setState({ loading: true });
     try {
-      const response = await createProduct({
+      const response = await editProduct(this.props.product._id, {
         ...this.state.formData,
         images: this.state.images,
         category: this.state.formData.category,
       });
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         toast.error(response.message);
         return;
       }
-      toast.success('Product created successfully');
-      await this.props.onClose();
+      toast.success('Product updated successfully');
+      this.props.onClose();
     } catch (error: any) {
       toast.error('Unknown error occured', error.message);
     } finally {
@@ -188,6 +194,30 @@ class SellerNewProductModal extends React.Component<Props, any> {
                   <p className="text-red-500 text-sm mt-1">{errors.price}</p>
                 )}
               </div>
+              <div className="flex items-center justify-between mt-4">
+                <span className="text-sm font-medium text-gray-700">
+                  Product Status
+                </span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={formData.status === 'active'}
+                    onChange={(e) =>
+                      this.setState((prevState: any) => ({
+                        formData: {
+                          ...prevState.formData,
+                          status: e.target.checked ? 'active' : 'inactive',
+                        },
+                      }))
+                    }
+                  />
+                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                  <span className="ml-3 text-sm text-gray-600">
+                    {formData.status === 'active' ? 'Active' : 'Inactive'}
+                  </span>
+                </label>
+              </div>
             </div>
 
             <div className="flex-1 space-y-6">
@@ -247,6 +277,29 @@ class SellerNewProductModal extends React.Component<Props, any> {
               </div>
               <div>
                 <label
+                  htmlFor="discount"
+                  className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                >
+                  Discount (%)
+                </label>
+                <input
+                  type="number"
+                  id="discount"
+                  name="discount"
+                  value={formData.discount}
+                  onChange={this.handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  placeholder="Enter discount percentage"
+                  min={0}
+                  max={100}
+                />
+                {errors.discount && (
+                  <p className="text-red-500 text-sm mt-1">{errors.discount}</p>
+                )}
+              </div>
+
+              <div>
+                <label
                   htmlFor="productName"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
@@ -290,4 +343,4 @@ class SellerNewProductModal extends React.Component<Props, any> {
   }
 }
 
-export default SellerNewProductModal;
+export default SellerEditProductModal;

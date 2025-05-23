@@ -15,7 +15,7 @@ import {
 import SkeletonTable from '../../../components/SkeletonTable';
 import { FaTruck } from 'react-icons/fa6';
 import { sellerViewOrders } from '../../../requests/ordersRequests';
-import SellerNewProductModal from '../../../components/seller/SellerNewProductModal';
+import SellerNewProductModal from '../../../components/seller/products/SellerNewProductModal';
 import { safeToFixed } from '../../../helpers/round';
 import { FiPackage, FiXCircle } from 'react-icons/fi';
 import SingleProductOrderProcesses from './SingleProductOrderProcesses';

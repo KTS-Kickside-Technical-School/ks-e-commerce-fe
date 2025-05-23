@@ -1,17 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import SkeletonTable from '../SkeletonTable';
-import {
-  FaEllipsisV,
-  FaPlus,
-  FaChevronLeft,
-  FaChevronRight,
-} from 'react-icons/fa';
-import { iProduct } from '../../types/store';
-import { Link } from 'react-router-dom';
-import { FaShop } from 'react-icons/fa6';
-import SellerNewProductModal from './SellerNewProductModal';
-import { sellerViewProducts } from '../../requests/productsRequests';
+import SkeletonTable from '../../../components/SkeletonTable';
+import { FaPlus, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
+import { iProduct } from '../../../types/store';
+import SellerNewProductModal from '../../../components/seller/products/SellerNewProductModal';
+import { sellerViewProducts } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
+import SellerEditProductModal from '../../../components/seller/products/SellerEditProductModal';
 
 const SellerProductsList = () => {
   const [loading, setLoading] = useState(true);
@@ -19,7 +13,8 @@ const SellerProductsList = () => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [error, setError] = useState('');
   const [imageIndex, setImageIndex] = useState<{ [key: string]: number }>({});
-
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<iProduct | null>(null);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -61,9 +56,7 @@ const SellerProductsList = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold text-gray-700">
-          Products Management
-        </h2>
+        <h2 className="text-2xl font-semibold text-gray-700">Products List</h2>
         <button
           title="Add New Product"
           onClick={() => setIsProductModalOpen(true)}
@@ -88,6 +81,7 @@ const SellerProductsList = () => {
                 <th className="p-3 text-left">Price</th>
                 <th className="p-3 text-left">Stock</th>
                 <th className="p-3 text-left">Discount</th>
+                <th className="p-3 text-left">Status</th>
                 <th className="p-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -128,18 +122,45 @@ const SellerProductsList = () => {
                   <td className="p-3 font-medium">{product.productName}</td>
                   <td className="p-3 text-gray-600">{product.price} RWF</td>
                   <td className="p-3 text-gray-600">{product.stock}</td>
-                  <td className="p-3 text-gray-600">
-                    {Number(product.discount || 0)}%
+                  <td className="p-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        product.discount === 0 ||
+                        product.discount === null ||
+                        product.discount === undefined
+                          ? 'bg-gray-100 text-gray-500'
+                          : product.discount > 0 && product.discount <= 10
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : product.discount > 10 && product.discount <= 30
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'bg-green-100 text-green-700'
+                      }`}
+                    >
+                      {Number(product.discount || 0)}%
+                    </span>
+                  </td>
+
+                  <td className="p-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        product.status === 'active'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {product.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
                   </td>
                   <td className="p-3 flex justify-center space-x-3">
-                    <Link
-                      to={`/admin/shop-details?dataId=${product._id}`}
-                      className="p-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white flex items-center transition duration-200"
+                    <button
+                      onClick={() => {
+                        setProductToEdit({ ...product });
+                        setIsEditModalOpen(true);
+                        setIsEditModalOpen(true);
+                      }}
+                      className="p-2 rounded-md bg-green-500 hover:bg-green-600 text-white flex items-center transition duration-200"
                     >
-                      <FaShop className="mr-1" />
-                    </Link>
-                    <button className="p-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white flex items-center transition duration-200">
-                      <FaEllipsisV />
+                      <FaEdit />
                     </button>
                   </td>
                 </tr>
@@ -154,6 +175,15 @@ const SellerProductsList = () => {
       </div>
       {isProductModalOpen && (
         <SellerNewProductModal onClose={() => setIsProductModalOpen(false)} />
+      )}
+      {isEditModalOpen && (
+        <SellerEditProductModal
+          onClose={async () => {
+            await fetchProducts();
+            setIsEditModalOpen(false);
+          }}
+          product={productToEdit}
+        />
       )}
     </div>
   );
