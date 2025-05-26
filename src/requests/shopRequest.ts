@@ -39,3 +39,12 @@ export const adminGetShopBySellerId = async (sellerId: string) => {
         return handleError(error)
     }
 }
+
+export const sellerUpdateShop = async (data: any) => {
+    try {
+        const response = await axiosInstance.put("/api/shop/seller-update-shop", data);
+        return response.data;
+    } catch (error) {
+        return handleError(error);
+    }
+}

@@ -21,6 +21,9 @@ import SellerViewOrders from './pages/seller/orders/SellerViewOrders';
 import OrderDetailsPage from './pages/seller/orders/OrderDetailsPage';
 import ForgotPassword from './pages/customers/auth/ForgotPassword';
 import ResetPassword from './pages/customers/auth/ResetPassword';
+import Profile from './pages/dashboard/account/Profile';
+import SellerNotFound from './components/seller/SellerNotFound';
+import MyShop from './pages/seller/shop/MyShop';
 
 const AppRouter = () => {
   return (
@@ -47,6 +50,9 @@ const AppRouter = () => {
             path="single-order-details/:orderId"
             element={<OrderDetailsPage />}
           />
+          <Route path="profile" element={<Profile />} />
+          <Route path="my-shop" element={<MyShop />} />
+          <Route path="*" element={<SellerNotFound />} />
         </Route>
       </Route>
 
