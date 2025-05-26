@@ -2,18 +2,15 @@ import { useState } from 'react';
 import {
   FaCheckCircle,
   FaEdit,
-  FaMapMarkerAlt,
-  FaPlus,
   FaShoppingBag,
   FaSignOutAlt,
-  FaTrash,
   FaUser,
 } from 'react-icons/fa';
 import { updateProfile } from '../../../requests/userRequests';
 import { toast, Toaster } from 'sonner';
-import { Address, iUserProfile } from '../../../types/store';
+import { iUserProfile } from '../../../types/store';
 import { getProfile } from '../../../utils/axios';
-import { FiChevronDown, FiExternalLink } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import ConfirmationModal from '../../customers/common/ConfirmationModal';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -27,10 +24,8 @@ const Profile = () => {
       return { addresses: [] };
     }
   });
-  const [newAddress, setNewAddress] = useState<Partial<Address>>({});
   const [editMode, setEditMode] = useState(false);
   const [tempProfile, setTempProfile] = useState<iUserProfile>({ ...profile });
-  const [editAddressIndex, setEditAddressIndex] = useState<number>(-1);
   const navigate = useNavigate();
 
   const handleProfileSave = async () => {
@@ -49,83 +44,6 @@ const Profile = () => {
     }
   };
 
-  const countries = [
-    {
-      code: 'CN',
-      name: 'China',
-      provinces: ['Beijing', 'Shanghai', 'Guangdong'],
-    },
-    {
-      code: 'US',
-      name: 'United States',
-      provinces: ['California', 'New York'],
-    },
-  ];
-
-  const handleAddressSave = async () => {
-    try {
-      const isEditMode = editMode;
-      const currentProfile = isEditMode ? tempProfile : profile;
-      const updatedAddresses = [...(currentProfile.addresses || [])];
-      const addressToSave: Address = {
-        _id: newAddress._id || '',
-        country: newAddress.country || '',
-        region: newAddress.region || '',
-        city: newAddress.city || '',
-        street: newAddress.street || '',
-        postalCode: newAddress.postalCode || '',
-        isPrimary: newAddress.isPrimary || false,
-      };
-
-      if (editAddressIndex >= 0) {
-        updatedAddresses[editAddressIndex] = addressToSave;
-      } else {
-        updatedAddresses.push(addressToSave);
-      }
-      if (!addressToSave.country || !addressToSave.region) {
-        toast.error('Please select a country and province/state.');
-        return;
-      }
-
-      if (addressToSave.isPrimary) {
-        updatedAddresses.forEach((addr) => {
-          addr.isPrimary = addr._id
-            ? addr._id === addressToSave._id
-            : addr.street === addressToSave.street &&
-              addr.city === addressToSave.city &&
-              addr.region === addressToSave.region &&
-              addr.country === addressToSave.country &&
-              addr.postalCode === addressToSave.postalCode;
-        });
-      }
-
-      const updatePayload: iUserProfile = {
-        ...(isEditMode ? tempProfile : profile),
-        _id: profile._id,
-        addresses: updatedAddresses,
-      };
-
-      const updated = await updateProfile(updatePayload);
-      const { password, ...userWithoutPassword } = updated.data.updatedUser;
-      sessionStorage.setItem('profile', JSON.stringify(userWithoutPassword));
-
-      if (isEditMode) {
-        setTempProfile((prev) => ({
-          ...prev,
-          addresses: updated.data.updatedUser.addresses,
-        }));
-      } else {
-        setProfile(updated.data.updatedUser);
-      }
-
-      setNewAddress({});
-      setEditAddressIndex(-1);
-      toast.success('Address saved successfully!');
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to save address');
-    }
-  };
   const [showDeleteModal, setShowDeleteModal] = useState<number | null>(null);
   const handleDeleteAddress = async (index: number) => {
     try {

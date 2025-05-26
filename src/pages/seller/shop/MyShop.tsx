@@ -20,7 +20,7 @@ const isImage = (file: File) => file.type.startsWith('image/');
 const MyShop = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [shopData, setShopData] = useState({
+  const [shopData, setShopData] = useState<any>({
     _id: '',
     name: '',
     description: '',
@@ -69,7 +69,7 @@ const MyShop = () => {
 
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
-      setShopData((prev) => ({
+      setShopData((prev: any) => ({
         ...prev,
         address: {
           ...prev.address,
@@ -77,7 +77,7 @@ const MyShop = () => {
         },
       }));
     } else {
-      setShopData((prev) => ({ ...prev, [name]: value }));
+      setShopData((prev: any) => ({ ...prev, [name]: value }));
     }
 
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -171,20 +171,20 @@ const MyShop = () => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
       setNewLogo(file);
-      setShopData((prev) => ({
+      setShopData((prev: any) => ({
         ...prev,
         logo: URL.createObjectURL(file),
       }));
     }
   };
 
-  const handleRemoveExistingImage = (index) => {
+  const handleRemoveExistingImage = (index: any) => {
     const updatedImages = [...shopData.images];
     updatedImages.splice(index, 1);
     setShopData({ ...shopData, images: updatedImages });
   };
 
-  const handleRemovePreview = (index) => {
+  const handleRemovePreview = (index: any) => {
     const updatedPreviews = [...imagePreviews];
     updatedPreviews.splice(index, 1);
     setImagePreviews(updatedPreviews);
@@ -440,7 +440,7 @@ const MyShop = () => {
             <h3 className="text-lg font-semibold">Shop Images</h3>
           </div>
           <div className="grid grid-cols-3 gap-4">
-            {shopData.images?.map((img, index) => (
+            {shopData.images?.map((img: any, index: any) => (
               <div
                 key={`existing-${index}`}
                 className="relative aspect-square bg-primary-100 rounded-lg overflow-hidden"
