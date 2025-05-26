@@ -66,7 +66,7 @@ const DashboardHeader = ({ sideBarToggle }: { sideBarToggle: () => void }) => {
         </button>
 
         <Link
-          to={'/dashboard/profile'}
+          to={'/seller/profile'}
           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 flex items-center justify-center"
         >
           <span className="text-xs sm:text-sm">
