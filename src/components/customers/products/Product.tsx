@@ -204,9 +204,9 @@ const Product = ({
               <span>{isInCart ? 'In Cart' : 'Add to Cart'}</span>
             </button>
             <a
-              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                whatsappMessage
-              )}`}
+              href={`https://wa.me/${
+                product.shop?.phone || whatsappNumber
+              }?text=${encodeURIComponent(whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 rounded-lg font-medium transition-colors"
