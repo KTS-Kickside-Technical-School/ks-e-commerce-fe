@@ -11,7 +11,7 @@ interface ProductsProps {
     text: string;
     location: string;
   };
-  limit?: number; // Optional limit on how many products to display
+  limit?: number;
 }
 
 const Products = ({ title, link, limit }: ProductsProps) => {
@@ -42,7 +42,6 @@ const Products = ({ title, link, limit }: ProductsProps) => {
   return (
     <section className="bg-gray-50 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <h2 className="text-3xl font-bold text-primary-500">{title}</h2>
           <Link
@@ -53,7 +52,6 @@ const Products = ({ title, link, limit }: ProductsProps) => {
           </Link>
         </div>
 
-        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {isLoading
             ? Array.from({ length: 4 }).map((_, index) => (
@@ -70,7 +68,6 @@ const Products = ({ title, link, limit }: ProductsProps) => {
               ))}
         </div>
 
-        {/* Empty State */}
         {!isLoading && displayedProducts.length === 0 && (
           <div className="text-center py-16 text-gray-500 text-lg font-medium">
             No products found.
