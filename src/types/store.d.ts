@@ -3,6 +3,7 @@ export interface ISellerShop {
   description?: string;
   logo?: string;
   images?: [];
+  phone?: string;
 }
 
 export interface IProductCategory {
@@ -29,6 +30,7 @@ export interface iProduct {
   description: string;
   category: string;
   status?: string;
+  shop?: ISellerShop;
 }
 
 export interface Address {

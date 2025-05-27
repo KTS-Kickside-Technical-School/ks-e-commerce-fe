@@ -22,6 +22,8 @@ import LoginPromptModal from '../LoginPromptModal';
 import { ImSpinner } from 'react-icons/im';
 import BuyNowModal from './BuyNowModal';
 import TextWhatsappButton from './TextWhatsappButton';
+import Product from './Product';
+import ProductTabs from './ProductTabs';
 const defaultProduct: iProduct = {
   productName: '',
   description: '',
@@ -44,6 +46,8 @@ export default function ProductDetails() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isLoginPromptOpen, setIsPromptModalOpen] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
+  const [shop, setShop] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<iProduct[]>([]);
 
   const whatsappMessage = `Hi! I'm interested in ${product.productName} (${window.location.href})`;
 
@@ -65,12 +69,15 @@ export default function ProductDetails() {
       }
 
       const response = await customerViewSingleProduct(slug);
+      console.log(response);
       if (response.status !== 200) {
         setError(response.message);
         return;
       }
 
       setProduct(response.data.product);
+      setShop(response.data.product.shop);
+      setRelatedProducts(response.data.relatedProducts || []);
       setIsWishlisted(false);
     } catch (error) {
       setError('Failed to fetch product details. Please try again later.');
@@ -185,8 +192,7 @@ export default function ProductDetails() {
     <>
       <Toaster richColors position="top-center" />
       <Header />
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* Product Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="px-4 lg:px-0">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             {product.productName}
@@ -198,7 +204,6 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
           {/* Image Gallery Section */}
           <div className="space-y-6">
@@ -211,7 +216,6 @@ export default function ProductDetails() {
                 className="w-full h-full object-contain transition-opacity duration-500"
               />
 
-              {/* Navigation Arrows */}
               <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() =>
@@ -234,7 +238,6 @@ export default function ProductDetails() {
                 </button>
               </div>
 
-              {/* Discount Badge */}
               {product.discount > 0 && (
                 <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
                   {product.discount}% OFF
@@ -242,8 +245,7 @@ export default function ProductDetails() {
               )}
             </div>
 
-            {/* Image Thumbnails */}
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-10 gap-3">
               {product.images.map((img, index) => (
                 <button
                   key={img}
@@ -297,6 +299,12 @@ export default function ProductDetails() {
               </div>
 
               <div className="space-y-4 mt-6">
+                <TextWhatsappButton
+                  phoneNumber={product.shop?.phone || whatsappNumber}
+                  message={whatsappMessage}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
+                  buttonText="Chat on WhatsApp"
+                />
                 <button
                   onClick={() => {
                     if (!sessionStorage.getItem('profile')) {
@@ -358,36 +366,31 @@ export default function ProductDetails() {
                     <span>Wishlist</span>
                   </button>
                 </div>
-
-                <TextWhatsappButton
-                  phoneNumber={whatsappNumber}
-                  message={whatsappMessage}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
-                  buttonText="Chat on WhatsApp"
-                />
               </div>
-            </div>
-
-            {/* Product Details */}
-            <div className="p-6 bg-white rounded-xl border border-gray-100">
-              <h2 className="text-xl font-bold mb-4">Product Details</h2>
-              <div
-                className="prose text-gray-600"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
             </div>
           </div>
         </div>
+
+        <ProductTabs product={product} shop={shop} />
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-semibold mb-4">Related Products</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((related) => (
+                <Product
+                  key={related._id}
+                  product={related}
+                  isInCart={false}
+                  isOnWishlist={false}
+                  isFetchingData={false}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Floating WhatsApp Button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <TextWhatsappButton
-          phoneNumber={whatsappNumber}
-          message={whatsappMessage}
-          className="animate-soft-bounce hover:animate-none shadow-xl"
-        />
-      </div>
       <Footer />
       {isLoginPromptOpen && (
         <LoginPromptModal
