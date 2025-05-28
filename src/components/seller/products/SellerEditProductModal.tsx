@@ -19,6 +19,7 @@ class SellerEditProductModal extends React.Component<Props, any> {
         price: props.product.price,
         category: props.product.category,
         discount: props.product.discount,
+        stock: props.product.stock,
         status: props.product.status || 'inactive',
       },
       images: props.product.images,
@@ -125,201 +126,230 @@ class SellerEditProductModal extends React.Component<Props, any> {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[200]">
         <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-4xl">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">New Product</h2>
-          <form
-            onSubmit={this.handleSubmit}
-            className="flex flex-col md:flex-row gap-8"
-          >
-            <div className="flex-1 space-y-6">
-              <div>
-                <label
-                  htmlFor="productName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Product Name
-                </label>
-                <input
-                  type="text"
-                  id="productName"
-                  name="productName"
-                  value={formData.productName}
-                  onChange={this.handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  placeholder="Enter product name"
-                />
-                {errors.productName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.productName}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="productDescription"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Product Description
-                </label>
-                <RichTextEditor
-                  height={200}
-                  id="productDescription"
-                  value={formData.description}
-                  onChange={this.handleDescriptionChange}
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.description}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="productName"
-                  className="block text-sm font-medium text-gray-700 mb-1 mt-2"
-                >
-                  Product Price
-                </label>
-                <input
-                  type="number"
-                  id="productPrice"
-                  name="price"
-                  value={formData.price}
-                  onChange={this.handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  placeholder="Enter product price"
-                />
-                {errors.price && (
-                  <p className="text-red-500 text-sm mt-1">{errors.price}</p>
-                )}
-              </div>
-              <div className="flex items-center justify-between mt-4">
-                <span className="text-sm font-medium text-gray-700">
-                  Product Status
-                </span>
-                <label className="relative inline-flex items-center cursor-pointer">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+            Edit Product
+          </h2>
+          <div className="max-h-[70vh] overflow-y-auto">
+            <form
+              onSubmit={this.handleSubmit}
+              className="flex flex-col md:flex-row gap-8"
+            >
+              <div className="flex-1 space-y-6">
+                <div>
+                  <label
+                    htmlFor="productName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Product Name
+                  </label>
                   <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={formData.status === 'active'}
-                    onChange={(e) =>
-                      this.setState((prevState: any) => ({
-                        formData: {
-                          ...prevState.formData,
-                          status: e.target.checked ? 'active' : 'inactive',
-                        },
-                      }))
-                    }
+                    type="text"
+                    id="productName"
+                    name="productName"
+                    value={formData.productName}
+                    onChange={this.handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter product name"
                   />
-                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
-                  <span className="ml-3 text-sm text-gray-600">
-                    {formData.status === 'active' ? 'Active' : 'Inactive'}
+                  {errors.productName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.productName}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="productDescription"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Product Description
+                  </label>
+                  <RichTextEditor
+                    height={200}
+                    id="productDescription"
+                    value={formData.description}
+                    onChange={this.handleDescriptionChange}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.description}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="productName"
+                    className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                  >
+                    Product Price
+                  </label>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    name="price"
+                    value={formData.price}
+                    onChange={this.handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter product price"
+                  />
+                  {errors.price && (
+                    <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="productName"
+                    className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                  >
+                    Product Stock
+                  </label>
+                  <input
+                    type="number"
+                    id="productStock"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={this.handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter product stock"
+                  />
+                  {errors.stock && (
+                    <p className="text-red-500 text-sm mt-1">{errors.stock}</p>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-sm font-medium text-gray-700">
+                    Product Status
                   </span>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Images
-                </label>
-                <div
-                  className="mt-1 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100"
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    this.handleImageUpload(e.dataTransfer.files);
-                  }}
-                >
-                  <div className="text-center">
-                    <FaUpload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                  <label className="relative inline-flex items-center cursor-pointer">
                     <input
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                      multiple
-                      onChange={(e: any) => {
-                        this.handleImageUpload(e.target.files);
-                        e.target.value = null;
-                      }}
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={formData.status === 'active'}
+                      onChange={(e) =>
+                        this.setState((prevState: any) => ({
+                          formData: {
+                            ...prevState.formData,
+                            status: e.target.checked ? 'active' : 'inactive',
+                          },
+                        }))
+                      }
                     />
-                    <label
-                      htmlFor="file-upload"
-                      className="cursor-pointer text-primary-600 hover:text-primary-500"
-                    >
-                      Upload images
-                    </label>
-                  </div>
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                    <span className="ml-3 text-sm text-gray-600">
+                      {formData.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
+                  </label>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {images.map((image: any, index: number) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={image}
-                        className="w-20 h-20 object-cover rounded-lg"
-                        alt="Upload preview"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => this.handleImageDelete(index)}
-                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                      >
-                        <FaTimes className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                {errors.images && (
-                  <p className="text-red-500 text-sm mt-1">{errors.images}</p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="discount"
-                  className="block text-sm font-medium text-gray-700 mb-1 mt-2"
-                >
-                  Discount (%)
-                </label>
-                <input
-                  type="number"
-                  id="discount"
-                  name="discount"
-                  value={formData.discount}
-                  onChange={this.handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  placeholder="Enter discount percentage"
-                  min={0}
-                  max={100}
-                />
-                {errors.discount && (
-                  <p className="text-red-500 text-sm mt-1">{errors.discount}</p>
-                )}
               </div>
 
-              <div>
-                <label
-                  htmlFor="productName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Product Category
-                </label>
-                <input
-                  type="text"
-                  id="productCategory"
-                  name="category"
-                  value={formData.category}
-                  onChange={this.handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  placeholder="Enter product name"
-                />
-                {errors.category && (
-                  <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-                )}
+              <div className="flex-1 space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Product Images
+                  </label>
+                  <div
+                    className="mt-1 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      this.handleImageUpload(e.dataTransfer.files);
+                    }}
+                  >
+                    <div className="text-center">
+                      <FaUpload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                      <input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        multiple
+                        onChange={(e: any) => {
+                          this.handleImageUpload(e.target.files);
+                          e.target.value = null;
+                        }}
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer text-primary-600 hover:text-primary-500"
+                      >
+                        Upload images
+                      </label>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {images.map((image: any, index: number) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={image}
+                          className="w-20 h-20 object-cover rounded-lg"
+                          alt="Upload preview"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => this.handleImageDelete(index)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                        >
+                          <FaTimes className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.images && (
+                    <p className="text-red-500 text-sm mt-1">{errors.images}</p>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor="discount"
+                    className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                  >
+                    Discount (%)
+                  </label>
+                  <input
+                    type="number"
+                    id="discount"
+                    name="discount"
+                    value={formData.discount}
+                    onChange={this.handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter discount percentage"
+                    min={0}
+                    max={100}
+                  />
+                  {errors.discount && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.discount}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="productName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Product Category
+                  </label>
+                  <input
+                    type="text"
+                    id="productCategory"
+                    name="category"
+                    value={formData.category}
+                    onChange={this.handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    placeholder="Enter product name"
+                  />
+                  {errors.category && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.category}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
           <div className="flex justify-end gap-4 mt-8">
             <button
               type="button"

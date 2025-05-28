@@ -22,17 +22,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/live-chat" className="hover:text-white">
-                Live Chat
-              </Link>
-            </li>
-            <li>
-              <Link to="/report-abuse" className="hover:text-white">
-                Report Abuse
-              </Link>
-            </li>
-            <li>
-              <Link to="/faq" className="hover:text-white">
+              <Link to="/help-center" className="hover:text-white">
                 FAQs
               </Link>
             </li>
@@ -98,10 +88,15 @@ const Footer = () => {
               <FaLocationDot className="text-white" /> Kigali, Rwanda - Norsken
             </li>
             <li className="flex items-center gap-2">
-              <FaEnvelope className="text-white" /> inquiries.shop@kickside.rw
+              <FaEnvelope className="text-white" />{' '}
+              <Link to="mailto: info.store@kickside.rw">
+                {' '}
+                info.store@kickside.rw
+              </Link>
             </li>
             <li className="flex items-center gap-2">
-              <FaPhone className="text-white" /> +250781234567
+              <FaPhone className="text-white" />
+              <Link to="tel: +250788923011">+250 788 923 011</Link>
             </li>
           </ul>
         </div>
