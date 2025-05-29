@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
-  FaRegHeart,
-  FaHeart,
-  FaShoppingBag,
+  // FaRegHeart,
+  // FaHeart,
+  // FaShoppingBag,
   FaChevronLeft,
   FaChevronRight,
-  FaShoppingCart,
+  // FaShoppingCart,
 } from 'react-icons/fa';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -16,14 +16,18 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { safeToFixed } from '../../../helpers/round';
 import { iProduct } from '../../../types/store';
-import { customerAddProductToCart } from '../../../requests/cartRequests';
-import { toast, Toaster } from 'sonner';
+// import { customerAddProductToCart } from '../../../requests/cartRequests';
+import {
+  // toast,
+  Toaster,
+} from 'sonner';
 import LoginPromptModal from '../LoginPromptModal';
-import { ImSpinner } from 'react-icons/im';
+// import { ImSpinner } from 'react-icons/im';
 import BuyNowModal from './BuyNowModal';
 import TextWhatsappButton from './TextWhatsappButton';
 import Product from './Product';
 import ProductTabs from './ProductTabs';
+import SEO from '../../../middlewares/SEO';
 const defaultProduct: iProduct = {
   productName: '',
   description: '',
@@ -37,7 +41,7 @@ const defaultProduct: iProduct = {
 };
 export default function ProductDetails() {
   const [activeImage, setActiveImage] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  // const [isWishlisted, setIsWishlisted] = useState(false);
   const [autoSlide, setAutoSlide] = useState(true);
   const [product, setProduct] = useState<iProduct>(defaultProduct);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,7 +82,7 @@ export default function ProductDetails() {
       setProduct(response.data.product);
       setShop(response.data.product.shop);
       setRelatedProducts(response.data.relatedProducts || []);
-      setIsWishlisted(false);
+      // setIsWishlisted(false);
     } catch (error) {
       setError('Failed to fetch product details. Please try again later.');
     } finally {
@@ -92,7 +96,7 @@ export default function ProductDetails() {
 
   useEffect(() => {
     setActiveImage(0);
-    setIsWishlisted(false);
+    // setIsWishlisted(false);
     setAutoSlide(true);
     setProduct(defaultProduct);
     setIsLoading(true);
@@ -127,58 +131,62 @@ export default function ProductDetails() {
       }
     };
   }, []);
-  const [isCartLoading, setIsCartLoading] = useState(false);
-  const handleAddProductToCart = async (isBuySelected = false) => {
-    setIsCartLoading(true);
-    try {
-      const response = await customerAddProductToCart({
-        product: product._id,
-      });
+  // const [isCartLoading, setIsCartLoading] = useState(false);
+  // const handleAddProductToCart = async (isBuySelected = false) => {
+  //   setIsCartLoading(true);
+  //   try {
+  //     const response = await customerAddProductToCart({
+  //       product: product._id,
+  //     });
 
-      if (response.status === 201) {
-        toast.success(response.message || 'Product added to cart');
-        if (isBuySelected) {
-          navigate('/my-cart');
-        }
-      } else if (response.status === 401) {
-        setIsPromptModalOpen(true);
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Operation failed');
-    } finally {
-      setIsCartLoading(false);
-    }
-  };
+  //     if (response.status === 201) {
+  //       toast.success(response.message || 'Product added to cart');
+  //       if (isBuySelected) {
+  //         navigate('/my-cart');
+  //       }
+  //     } else if (response.status === 401) {
+  //       setIsPromptModalOpen(true);
+  //     } else {
+  //       throw new Error(response.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error instanceof Error ? error.message : 'Operation failed');
+  //   } finally {
+  //     setIsCartLoading(false);
+  //   }
+  // };
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-3/4 mb-8" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="aspect-square bg-gray-200 rounded-xl" />
-            <div className="flex gap-4 overflow-x-auto">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-20 h-20 bg-gray-200 rounded-lg" />
-              ))}
+      <>
+        <SEO title="Loading Product - Kickside Store" />
+        <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-3/4 mb-8" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="aspect-square bg-gray-200 rounded-xl" />
+              <div className="flex gap-4 overflow-x-auto">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-20 h-20 bg-gray-200 rounded-lg" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="h-6 bg-gray-200 rounded w-1/4" />
+              <div className="h-12 bg-gray-200 rounded w-full" />
+              <div className="h-12 bg-gray-200 rounded w-full" />
             </div>
           </div>
-          <div className="space-y-6">
-            <div className="h-6 bg-gray-200 rounded w-1/4" />
-            <div className="h-12 bg-gray-200 rounded w-full" />
-            <div className="h-12 bg-gray-200 rounded w-full" />
-          </div>
+          <div className="mt-8 h-48 bg-gray-200 rounded-xl" />
         </div>
-        <div className="mt-8 h-48 bg-gray-200 rounded-xl" />
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
       <>
+        <SEO title="Wait a moment, or try again later - Kickside Store" />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <Header />
           <div className="text-red-500 text-center py-8">{error}</div>
@@ -190,6 +198,15 @@ export default function ProductDetails() {
 
   return (
     <>
+      <SEO
+        title={`${product?.productName} - Kickside Store`}
+        description={`${product.description}`}
+        ogImage={product.images?.[0]}
+        ogUrl={window.location.href}
+        ogTitle={`${product.productName} - Kickside Store`}
+        ogDescription={`${product.description.slice(0, 150)}...`}
+        canonicalUrl={window.location.href}
+      />
       <Toaster richColors position="top-center" />
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -305,7 +322,7 @@ export default function ProductDetails() {
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
                   buttonText="Chat on WhatsApp"
                 />
-                <button
+                {/* <button
                   onClick={() => {
                     if (!sessionStorage.getItem('profile')) {
                       setIsPromptModalOpen(true);
@@ -328,9 +345,9 @@ export default function ProductDetails() {
                       Buy Now
                     </>
                   )}
-                </button>
+                </button> */}
 
-                <div className="grid grid-cols-2 gap-3">
+                {/* <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => handleAddProductToCart()}
                     disabled={isCartLoading}
@@ -365,7 +382,7 @@ export default function ProductDetails() {
                     )}
                     <span>Wishlist</span>
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

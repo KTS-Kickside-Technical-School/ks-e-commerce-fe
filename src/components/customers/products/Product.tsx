@@ -1,17 +1,19 @@
 import { useState, useEffect, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  FaShoppingCart,
+  // FaShoppingCart,
   FaChevronLeft,
   FaChevronRight,
   FaHeart,
   FaWhatsapp,
 } from 'react-icons/fa';
-import { ImSpinner2 } from 'react-icons/im';
+// import { ImSpinner2 } from 'react-icons/im';
 import { iProduct } from '../../../types/store';
 import ProductSkeletonLoader from './ProductSkeletonLoader';
-import { toast, Toaster } from 'sonner';
-import { customerAddProductToCart } from '../../../requests/cartRequests';
+import {
+  //  toast,
+    Toaster } from 'sonner';
+// import { customerAddProductToCart } from '../../../requests/cartRequests';
 import LoginPromptModal from '../LoginPromptModal';
 import BuyNowModal from './BuyNowModal';
 import { whatsappNumber } from '../../../requests/productsRequests';
@@ -32,11 +34,11 @@ const Product = ({
   product,
   isFetchingData,
   isOnWishlist,
-  isInCart,
+  // isInCart,
 }: ProductProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
-  const [isCartLoading, setIsCartLoading] = useState(false);
+  // const [isCartLoading, setIsCartLoading] = useState(false);
   const [isLoginPromptOpen, setIsPromptModalOpen] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const whatsappMessage = `Hi! I'm interested in ${product?.productName} (${window.location.href}product/${product?.slug})`;
@@ -64,26 +66,26 @@ const Product = ({
     }
   }, [images, hasMultipleImages]);
 
-  const handleAddProductToCart = async () => {
-    setIsCartLoading(true);
-    try {
-      const response = await customerAddProductToCart({
-        product: product._id,
-      });
-      console.log(response);
-      if (response.status === 201) {
-        toast.success('Product added to cart successfully');
-      } else if (response.status === 401) {
-        setIsPromptModalOpen((prev) => !prev);
-      } else {
-        toast.error(response.message);
-      }
-    } catch (error) {
-      toast.error('Failed to add product to cart');
-    } finally {
-      setIsCartLoading(false);
-    }
-  };
+  // const handleAddProductToCart = async () => {
+  //   setIsCartLoading(true);
+  //   try {
+  //     const response = await customerAddProductToCart({
+  //       product: product._id,
+  //     });
+  //     console.log(response);
+  //     if (response.status === 201) {
+  //       toast.success('Product added to cart successfully');
+  //     } else if (response.status === 401) {
+  //       setIsPromptModalOpen((prev) => !prev);
+  //     } else {
+  //       toast.error(response.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error('Failed to add product to cart');
+  //   } finally {
+  //     setIsCartLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -187,7 +189,7 @@ const Product = ({
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <button
+            {/* <button
               onClick={handleAddProductToCart}
               disabled={isCartLoading || stock <= 0}
               className={`flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-colors ${
@@ -202,9 +204,9 @@ const Product = ({
                 <FaShoppingCart className="w-5 h-5" />
               )}
               <span>{isInCart ? 'In Cart' : 'Add to Cart'}</span>
-            </button>
-            <a
-              href={`https://wa.me/${
+            </button> */}
+            <Link
+              to={`https://wa.me/${
                 product.shop?.phone || whatsappNumber
               }?text=${encodeURIComponent(whatsappMessage)}`}
               target="_blank"
@@ -213,7 +215,7 @@ const Product = ({
             >
               <FaWhatsapp className="w-5 h-5" />
               <span className="hidden sm:inline">Chat</span>
-            </a>
+            </Link>
           </div>
 
           {/* Secondary Actions */}

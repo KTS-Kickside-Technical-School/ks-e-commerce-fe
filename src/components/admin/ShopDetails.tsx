@@ -43,8 +43,8 @@ const ShopDetails = () => {
           shop?.description ||
           'View shop details including products, orders, sales, and ratings.'
         }
-        image={shop?.logo || defaultShopLogo}
-        url={window.location.href}
+        ogImage={shop?.logo || defaultShopLogo}
+        ogUrl={window.location.href}
       />
       <Toaster richColors position="top-center" />
 

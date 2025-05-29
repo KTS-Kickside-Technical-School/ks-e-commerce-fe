@@ -29,20 +29,28 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
     >
       {hasDiscount ? (
         <motion.div
-          initial={{ rotate: -5 }}
-          animate={{ rotate: 0 }}
-          className="flex items-baseline gap-2 bg-gradient-to-r from-red-600 to-pink-500 px-4 py-2 rounded-full text-white"
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          style={{ userSelect: 'none' }}
+          aria-label="Discounted price"
+          className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 px-3 py-2 rounded-full shadow-lg text-white"
         >
-          <FaTag />
-          <div className="flex flex-col items-end">
-            <span className="text-sm font-bold">
+          <FaTag className="text-base sm:text-lg" />
+          <div className="flex flex-col leading-tight">
+            <span className="text-base sm:text-lg font-semibold">
               {formatRWF(discountedPrice)}
             </span>
-            <del className="text-xs opacity-70">{formatRWF(price)}</del>
+            <del className="text-xs sm:text-sm opacity-70">
+              {formatRWF(price)}
+            </del>
           </div>
         </motion.div>
       ) : (
-        <span className="text-primary-500 font-semibold text-lg">
+        <span
+          className="text-primary-600 bg-green-500 p-3  rounded-full shadow-lg text-white font-semibold text-base sm:text-lg"
+          style={{ userSelect: 'none' }}
+          aria-label="Regular price"
+        >
           {formatRWF(price)}
         </span>
       )}
@@ -51,4 +59,3 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 };
 
 export default ProductPrice;
-  
