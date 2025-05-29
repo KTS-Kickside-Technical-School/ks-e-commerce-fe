@@ -2,8 +2,8 @@ import Logo from '/logo.png';
 import { Helmet } from 'react-helmet-async';
 
 const SEO = ({
-  title = 'Kickside E-Commerce Rw: One stop for shopping various products.',
-  description = 'Kickside E-Commerce',
+  title = 'Kickside Store Rw: One stop for shopping various products.',
+  description = 'Kickside Store Rw is your one-stop destination for shopping a wide range of products, including electronics, fashion, home appliances, and more. Enjoy secure online shopping with fast delivery across Rwanda. Shop now for the best deals and quality products.',
   keywords = 'Shopping, Electronic devices',
   author = 'Kickside E-Commerce Rwanda',
   ogTitle,
