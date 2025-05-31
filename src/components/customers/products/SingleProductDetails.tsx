@@ -73,7 +73,6 @@ export default function ProductDetails() {
       }
 
       const response = await customerViewSingleProduct(slug);
-      console.log(response);
       if (response.status !== 200) {
         setError(response.message);
         return;

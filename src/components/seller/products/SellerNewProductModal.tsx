@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTimes, FaUpload } from 'react-icons/fa';
 import RichTextEditor from '../../RichTextEditor';
 import { createProduct } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
 import uploadToCloudinary from '../../../helpers/cloudinary';
+import { adminViewCategories } from '../../../requests/categoriesRequest';
 
 interface Props {
   onClose: () => void;
@@ -17,6 +18,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
         description: '',
         price: '',
         category: '',
+        categories: [],
       },
       images: [],
       loading: false,
@@ -83,6 +85,9 @@ class SellerNewProductModal extends React.Component<Props, any> {
     if (this.state.images.length === 0 || !this.state.images) {
       errors.images = 'Please upload at least one image';
     }
+    if (!formData.category.trim()) {
+      errors.category = 'Category is required';
+    }
 
     this.setState({ errors });
     return Object.keys(errors).length === 0;
@@ -95,6 +100,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
 
     this.setState({ loading: true });
     try {
+      delete this.state.formData.categories;
       const response = await createProduct({
         ...this.state.formData,
         images: this.state.images,
@@ -113,6 +119,20 @@ class SellerNewProductModal extends React.Component<Props, any> {
     }
   };
 
+  getCategories = async () => {
+    try {
+      const response = await adminViewCategories();
+      if (response.status === 200) {
+        this.setState({ categories: response.data.categories }); // ✅ Use setState
+      }
+    } catch (error) {
+      toast.error('Failed to fetch categories');
+    }
+  };
+
+  componentDidMount() {
+    this.getCategories();
+  }
   render() {
     const { formData, images, loading, errors }: any = this.state;
 
@@ -253,7 +273,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
                   Product Category
                 </label>
                 <input
-                  type="text"
+                  list="categories"
                   id="productCategory"
                   name="category"
                   value={formData.category}
@@ -261,6 +281,13 @@ class SellerNewProductModal extends React.Component<Props, any> {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   placeholder="Enter product name"
                 />
+                <datalist id="categories">
+                  {this.state.categories?.map((category: any) => (
+                    <option key={category._id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </datalist>
                 {errors.category && (
                   <p className="text-red-500 text-sm mt-1">{errors.category}</p>
                 )}

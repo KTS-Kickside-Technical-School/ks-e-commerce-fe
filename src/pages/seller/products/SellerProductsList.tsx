@@ -6,6 +6,8 @@ import SellerNewProductModal from '../../../components/seller/products/SellerNew
 import { sellerViewProducts } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
 import SellerEditProductModal from '../../../components/seller/products/SellerEditProductModal';
+import { formatTimeDate } from '../../../helpers/formatTime';
+// import SellerProductsNavBar from '../../../components/seller/products/SellerProductsNavBar';
 
 const SellerProductsList = () => {
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,6 @@ const SellerProductsList = () => {
     setLoading(true);
     try {
       const response = await sellerViewProducts();
-      console.log(response);
       if (response.status !== 200) {
         toast.error(response.message);
         setError(response.message);
@@ -55,6 +56,7 @@ const SellerProductsList = () => {
 
   return (
     <div className="container mx-auto p-6">
+      {/* <SellerProductsNavBar /> */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-gray-700">Products List</h2>
         <button
@@ -78,9 +80,11 @@ const SellerProductsList = () => {
                 <th className="p-3 text-left">#</th>
                 <th className="p-3 text-left">Images</th>
                 <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Category</th>
                 <th className="p-3 text-left">Price</th>
                 <th className="p-3 text-left">Stock</th>
                 <th className="p-3 text-left">Discount</th>
+                <th className="p-3 text-left">Time added</th>
                 <th className="p-3 text-left">Status</th>
                 <th className="p-3 text-center">Actions</th>
               </tr>
@@ -120,6 +124,7 @@ const SellerProductsList = () => {
                     )}
                   </td>
                   <td className="p-3 font-medium">{product.productName}</td>
+                  <td className="p-3 font-medium">{product.category}</td>
                   <td className="p-3 text-gray-600">{product.price} RWF</td>
                   <td className="p-3 text-gray-600">{product.stock}</td>
                   <td className="p-3">
@@ -139,7 +144,9 @@ const SellerProductsList = () => {
                       {Number(product.discount || 0)}%
                     </span>
                   </td>
-
+                  <td className="p-3 text-gray-600">
+                    {formatTimeDate(product?.createdAt)}
+                  </td>
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${

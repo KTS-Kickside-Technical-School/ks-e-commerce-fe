@@ -25,7 +25,6 @@ export const userViewProducts = async () => {
 export const sellerViewProducts = async () => {
     try {
         const response = await axiosInstance.get("/api/product/seller-get-products");
-        console.log("ee", response)
         return response.data
     } catch (error) {
         return handleError(error);
@@ -43,7 +42,6 @@ export const customerViewSingleProduct = async (slug: any) => {
 
 export const editProduct = async (id: any, productData: iProduct) => {
     try {
-        console.log("DAAA", productData)
         const response = await axiosInstance.put(`/api/product/update-product/${id}`, productData);
         return response.data;
     } catch (error) {

@@ -169,7 +169,6 @@ const CartCheckout = () => {
   const customerPayByStripe = async () => {
     try {
       const response = await userPayCartWithStripe();
-      console.log(response);
       if (response.status === 201) {
         localStorage.setItem('new-order', response.data.order._id);
         window.location.href = response?.data?.session;
@@ -462,7 +461,6 @@ const CartCheckout = () => {
         <PayNowConfirmAddress
           onClose={() => setIsPayNowOpen(false)}
           onConfirm={async () => {
-            console.log(selectedPayment);
             await handlePayment();
           }}
           profile={profile}

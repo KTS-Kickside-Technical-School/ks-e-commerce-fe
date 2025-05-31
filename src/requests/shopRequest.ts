@@ -14,7 +14,6 @@ export const sellerGetShopDetails = async () => {
 
 export const sellerCreateShop = async (data: any) => {
     try {
-        console.log("DD", data);
         const response = await axiosInstance.post("api/shop/seller-create-shop", data);
         return response.data
     } catch (error) {

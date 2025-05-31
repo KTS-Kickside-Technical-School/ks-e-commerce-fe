@@ -50,7 +50,6 @@ const MyShop = () => {
       try {
         setIsLoading(true);
         const response = await sellerGetShopDetails();
-        console.log(response);
         setShopData(response.data.shop);
       } catch (error) {
         toast.error('Error fetching shop data');
@@ -150,7 +149,6 @@ const MyShop = () => {
       };
 
       const response = await sellerUpdateShop(updatedData);
-      console.log('FFl', response);
       if (response.status === 200) {
         setShopData(response.data.shop);
         setNewImages([]);
