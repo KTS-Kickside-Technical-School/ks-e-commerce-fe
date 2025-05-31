@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaTimes, FaUpload } from 'react-icons/fa';
 import RichTextEditor from '../../RichTextEditor';
 import { createProduct } from '../../../requests/productsRequests';
