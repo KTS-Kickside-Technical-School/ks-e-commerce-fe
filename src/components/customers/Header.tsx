@@ -9,8 +9,10 @@ import {
   FaUser,
 } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Logo from '/logo.png';
+import { adminViewCategories } from '../../requests/categoriesRequest';
+import { IProductCategory } from '../../types/store';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -65,8 +67,32 @@ const Header = () => {
     return () => window.removeEventListener('storage', checkAuth);
   }, [location]);
 
-  const categories = ['Electronics', 'Clothing', 'Home', 'Books'];
+  const [categories, setCategories] = useState<IProductCategory[]>([]);
+  const fallbackCategories = useMemo(
+    () => ['Electronics', 'Clothing', 'Home', 'Books', 'Sports', 'Toys'],
+    []
+  );
+  const getCategories = async () => {
+    try {
+      const response = await adminViewCategories();
+      if (response && response.data) {
+        setCategories(response.data.categories);
+      } else {
+        setCategories(
+          fallbackCategories.map((name, idx) => ({
+            id: idx,
+            name,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
+  useEffect(() => {
+    getCategories();
+  }, []);
   return (
     <header className="shadow-md">
       {!profile?.role || profile?.role === 'customer' ? (
@@ -124,14 +150,14 @@ const Header = () => {
             </button>
             {categoriesOpen && (
               <ul className="absolute bg-white shadow-md mt-2 py-2 rounded-md w-48 z-[10]">
-                {categories.map((category, index) => (
-                  <li key={index}>
+                {categories.map((category: IProductCategory) => (
+                  <li key={category._id}>
                     <Link
-                      to={`/category/${category.toLowerCase()}`}
+                      to={`/category/${category.name.toLowerCase()}`}
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setCategoriesOpen(false)}
                     >
-                      {category}
+                      {category.name}
                     </Link>
                   </li>
                 ))}
@@ -214,14 +240,14 @@ const Header = () => {
             </button>
             {categoriesOpen && (
               <ul className="bg-white shadow-md mt-2 py-2 rounded-md w-48">
-                {categories.map((category, index) => (
-                  <li key={index}>
+                {categories.map((category: IProductCategory) => (
+                  <li key={category._id}>
                     <Link
-                      to={`/category/${category.toLowerCase()}`}
+                      to={`/category/${category.name.toLowerCase()}`}
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setCategoriesOpen(false)}
                     >
-                      {category}
+                      {category.name}
                     </Link>
                   </li>
                 ))}
