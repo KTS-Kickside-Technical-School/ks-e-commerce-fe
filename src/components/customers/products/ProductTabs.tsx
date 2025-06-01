@@ -42,7 +42,6 @@ const ProductTabs = ({ product, shop }: ProductTabsProps) => {
           <p className="text-gray-600">{shop.description}</p>
 
           <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
-            {/* Address */}
             <div className="flex items-start gap-2">
               <FaLocationDot className="text-lg mt-0.5 text-blue-500" />
               <div className="flex flex-col">
@@ -58,16 +57,17 @@ const ProductTabs = ({ product, shop }: ProductTabsProps) => {
             </div>
 
             <div className="flex items-center gap-2">
-              <FaPhone className="text-blue-500" />
-              <a
-                href={`tel:${shop.contactNumber}`}
-                className="text-blue-600 hover:underline"
-              >
-                {shop.contactNumber}
-              </a>
+              {shop.phone && (
+                <a
+                  href={`tel:${shop.phone}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  <FaPhone className="text-blue-500" />
+                  {shop.phone}
+                </a>
+              )}
             </div>
 
-            {/* Email */}
             {shop.email && (
               <div className="flex items-center gap-2">
                 <MdEmail className="text-blue-500 text-lg" />

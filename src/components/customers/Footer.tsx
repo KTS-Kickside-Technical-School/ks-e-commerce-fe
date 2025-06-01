@@ -89,9 +89,9 @@ const Footer = () => {
             </li>
             <li className="flex items-center gap-2">
               <FaEnvelope className="text-white" />{' '}
-              <Link to="mailto: info.store@kickside.rw">
+              <Link to="mailto: info.shop@kickside.rw">
                 {' '}
-                info.store@kickside.rw
+                info.shop@kickside.rw
               </Link>
             </li>
             <li className="flex items-center gap-2">

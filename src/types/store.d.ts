@@ -31,6 +31,8 @@ export interface iProduct {
   category: string;
   status?: string;
   shop?: ISellerShop;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Address {

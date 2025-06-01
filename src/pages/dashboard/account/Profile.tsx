@@ -89,22 +89,25 @@ const Profile = () => {
     <>
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-100 transition-all hover:shadow-md">
-            <Link
-              to={'/seller/my-shop'}
-              className="w-full flex items-center justify-between gap-4 group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <FaShoppingBag className="w-6 h-6 text-blue-600 transition-transform group-hover:scale-110" />
+          {tempProfile?.role === 'seller' && (
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-100 transition-all hover:shadow-md">
+              <Link
+                to={'/seller/my-shop'}
+                className="w-full flex items-center justify-between gap-4 group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <FaShoppingBag className="w-6 h-6 text-blue-600 transition-transform group-hover:scale-110" />
+                  </div>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Visit my shop
+                  </h2>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Visit my shop
-                </h2>
-              </div>
-              <FiExternalLink className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
-            </Link>
-          </div>
+                <FiExternalLink className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+              </Link>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-100">
             <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
               <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Logo from '/logo.png';
 
 const DashboardHeader = ({ sideBarToggle }: { sideBarToggle: () => void }) => {
+  const profile = JSON.parse(sessionStorage.getItem('profile') || '{}');
   return (
     <header className="bg-primary text-white shadow-lg px-4 py-3 sm:p-4 flex items-center justify-between z-10">
       <div className="flex items-center gap-2 sm:gap-4">
@@ -66,7 +67,7 @@ const DashboardHeader = ({ sideBarToggle }: { sideBarToggle: () => void }) => {
         </button>
 
         <Link
-          to={'/seller/profile'}
+          to={profile?.role === 'admin' ? '/admin/profile' : '/seller/profile'}
           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500 flex items-center justify-center"
         >
           <span className="text-xs sm:text-sm">

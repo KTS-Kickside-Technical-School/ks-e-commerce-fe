@@ -12,7 +12,6 @@ export const userPayCartWithStripe = async () => {
 
 export const userPaySIngleProductCartWithStripe = async (data: any) => {
     try {
-        console.log("data to send", data);
         const response = await axiosInstance.post("/api/payment/user-pay-single-product-with-stripe", data);
         return response.data
     } catch (error) {

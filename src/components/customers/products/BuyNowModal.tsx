@@ -48,7 +48,6 @@ const BuyNowModal = ({
     const defaultAddress = parsedProfile.addresses.find(
       (addr: any) => addr.isPrimary
     );
-    console.log(defaultAddress);
     if (defaultAddress) {
       setShippingAddress({
         street: defaultAddress.street || '',

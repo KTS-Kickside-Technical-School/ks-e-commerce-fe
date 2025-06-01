@@ -65,6 +65,7 @@ const AppRouter = () => {
           <Route path="shop-details" element={<ShopDetails />} />
           <Route path="products" element={<AdminViewProducts />} />
           <Route path="categories" element={<AdminViewCategories />} />
+          <Route path="profile" element={<Profile />} />
 
           <Route path="*" element={<AdminNotFound />} />
         </Route>
