@@ -1,9 +1,11 @@
 export interface ISellerShop {
+  _id?: any;
   name: string;
   description?: string;
   logo?: string;
-  images?: [];
+  images?: any;
   phone?: string;
+  address?: any;
 }
 
 export interface IProductCategory {

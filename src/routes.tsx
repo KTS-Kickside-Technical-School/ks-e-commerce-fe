@@ -26,6 +26,8 @@ import SellerNotFound from './components/seller/SellerNotFound';
 import MyShop from './pages/seller/shop/MyShop';
 import HelpCenter from './pages/customers/statics/get-support/HelpCenter';
 import About from './pages/customers/AboutUs';
+import UserViewShops from './pages/customers/shops/UserViewShops';
+import SingleShopDetails from './pages/customers/shops/SingleShopDetails';
 
 const AppRouter = () => {
   return (
@@ -39,6 +41,8 @@ const AppRouter = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/help-center" element={<HelpCenter />} />
       <Route path="/about" element={<About />} />
+      <Route path="/shops" element={<UserViewShops />} />
+      <Route path="/shop/:id" element={<SingleShopDetails />} />
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />

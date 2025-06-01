@@ -47,3 +47,23 @@ export const sellerUpdateShop = async (data: any) => {
         return handleError(error);
     }
 }
+
+export const userViewAllShops = async () => {
+    try {
+        const response = await axiosInstance.get("/api/shop/user-get-all-shops");
+        return response.data;
+    }
+    catch (error: any) {
+        return handleError(error);
+    }
+}
+
+
+export const getShopDetailsById = async (id: any) => {
+    try {
+        const response = await axiosInstance.get(`/api/shop/user-get-shop-details/${id}`);
+        return response.data;
+    } catch (error: any) {
+        return handleError(error);
+    }
+}
