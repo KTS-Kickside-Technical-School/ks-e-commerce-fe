@@ -43,6 +43,8 @@ const About = () => {
       <SEO
         title="About us - Kickside Store"
         description="Kickside is a Rwandan-built digital marketplace that connects sellers and buyers, simplifies transactions, and strengthens local commerce. Join us and start selling today!"
+        keywords="Kickside, Rwandan marketplace, e-commerce, online shopping, local commerce"
+        ogUrl={window.location.href}
       />
       <Header />
       <section className="bg-gradient-to-b from-primary-50 to-white text-gray-800 px-4 md:px-8 py-12">

@@ -65,7 +65,7 @@ const ShopDetails = () => {
                 showStatus={false}
               >
                 {shop?.images?.length
-                  ? shop.images.map((image, index) => (
+                  ? shop.images.map((image: any, index: number) => (
                       <div key={index}>
                         <img
                           src={image}

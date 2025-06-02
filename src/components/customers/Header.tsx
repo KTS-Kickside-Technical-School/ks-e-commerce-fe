@@ -134,7 +134,7 @@ const Header = () => {
           {['Home', 'Shops', 'About'].map((item, index) => (
             <li key={index}>
               <Link
-                to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                to={item === 'Home' ? '/' : `/${item}`}
                 className="hover:text-blue-500"
               >
                 {item}
@@ -153,7 +153,7 @@ const Header = () => {
                 {categories.map((category: IProductCategory) => (
                   <li key={category._id}>
                     <Link
-                      to={`/category/${category.name.toLowerCase()}`}
+                      to={`/category/${category.name}`}
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setCategoriesOpen(false)}
                     >
@@ -223,7 +223,7 @@ const Header = () => {
           {['Home', 'Shops', 'About'].map((item, index) => (
             <li key={index}>
               <Link
-                to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                to={item === 'Home' ? '/' : `/${item}`}
                 className="hover:text-blue-500"
                 onClick={() => setMenuOpen(false)}
               >
@@ -243,7 +243,7 @@ const Header = () => {
                 {categories.map((category: IProductCategory) => (
                   <li key={category._id}>
                     <Link
-                      to={`/category/${category.name.toLowerCase()}`}
+                      to={`/category/${category.name}`}
                       className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setCategoriesOpen(false)}
                     >
