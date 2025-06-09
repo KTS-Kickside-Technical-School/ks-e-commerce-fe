@@ -14,6 +14,7 @@ import { userViewAllShops } from '../../../requests/shopRequest';
 import { Link } from 'react-router-dom';
 import { ISellerShop } from '../../../types/store';
 import { adminViewCategories } from '../../../requests/categoriesRequest';
+import SEO from '../../../middlewares/SEO';
 
 const ITEMS_PER_PAGE = 21;
 
@@ -107,199 +108,209 @@ const ShopExplorer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <Header />
-      <main className="max-w-7xl mx-auto px-4 py-10">
-        <div className="text-center mb-12">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
-          >
-            Discover Local Shops
-          </motion.h1>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Explore unique stores and support local businesses in your community
-          </p>
-        </div>
-
-        <div className="mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-1/2">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search shops by name or description..."
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              >
-                <FaTimes className="text-gray-400 hover:text-gray-600" />
-              </button>
-            )}
+    <>
+      <SEO
+        title="Shop Explorer - Discover Local Shops"
+        description="Explore unique local shops and support small businesses in your community."
+        ogUrl={window.location.href}
+      />
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+        <Header />
+        <main className="max-w-7xl mx-auto px-4 py-10">
+          <div className="text-center mb-12">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            >
+              Discover Local Shops
+            </motion.h1>
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Explore unique stores and support local businesses in your
+              community
+            </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
-              <FaStore className="mr-1" />
-              {filteredShops.length} shops
-            </span>
-          </div>
-        </div>
-
-        <div className="mb-8 overflow-x-auto pb-2">
-          <div className="flex space-x-2 min-w-max">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedCategory === category
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {error ? (
-          <div className="text-center py-20">
-            <div className="bg-red-50 text-red-700 p-6 rounded-xl max-w-md mx-auto">
-              <h3 className="font-bold text-xl mb-2">
-                Oops! Something went wrong
-              </h3>
-              <p className="mb-4">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
-          </div>
-        ) : isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
-              <ShopCardSkeleton key={idx} />
-            ))}
-          </div>
-        ) : filteredShops.length > 0 ? (
-          <>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${currentPage}-${selectedCategory}-${searchTerm}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {paginatedShops.map((shop: ISellerShop) => (
-                  <ShopCard key={shop._id} shop={shop} />
-                ))}
-              </motion.div>
-            </AnimatePresence>
-
-            {totalPages > 1 && (
-              <div className="flex justify-center mt-14 gap-2 items-center">
-                <button
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className={`p-3 rounded-full ${
-                    currentPage === 1
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-blue-600 hover:bg-blue-100'
-                  }`}
-                >
-                  <FaArrowLeft />
-                </button>
-
-                {Array.from({ length: totalPages }).map((_, index) => {
-                  const page = index + 1;
-                  if (
-                    Math.abs(page - currentPage) <= 2 ||
-                    page === 1 ||
-                    page === totalPages
-                  ) {
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`w-10 h-10 rounded-full font-medium transition ${
-                          page === currentPage
-                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                            : 'text-gray-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    );
-                  }
-
-                  if (Math.abs(page - currentPage) === 3) {
-                    return (
-                      <span key={page} className="px-2">
-                        ...
-                      </span>
-                    );
-                  }
-
-                  return null;
-                })}
-
-                <button
-                  onClick={() =>
-                    handlePageChange(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`p-3 rounded-full ${
-                    currentPage === totalPages
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-blue-600 hover:bg-blue-100'
-                  }`}
-                >
-                  <FaArrowRight />
-                </button>
+          <div className="mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="relative w-full md:w-1/2">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaSearch className="text-gray-400" />
               </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto">
-              <div className="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FaStore className="text-4xl text-gray-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                No shops found
-              </h3>
-              <p className="text-gray-600 mb-6">
-                {searchTerm
-                  ? `No shops match "${searchTerm}"`
-                  : 'No shops available at the moment'}
-              </p>
+              <input
+                type="text"
+                placeholder="Search shops by name or description..."
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
-                  Clear Search
+                  <FaTimes className="text-gray-400 hover:text-gray-600" />
                 </button>
               )}
             </div>
+
+            <div className="flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
+                <FaStore className="mr-1" />
+                {filteredShops.length} shops
+              </span>
+            </div>
           </div>
-        )}
-      </main>
-      <Footer />
-    </div>
+
+          <div className="mb-8 overflow-x-auto pb-2">
+            <div className="flex space-x-2 min-w-max">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {error ? (
+            <div className="text-center py-20">
+              <div className="bg-red-50 text-red-700 p-6 rounded-xl max-w-md mx-auto">
+                <h3 className="font-bold text-xl mb-2">
+                  Oops! Something went wrong
+                </h3>
+                <p className="mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
+                <ShopCardSkeleton key={idx} />
+              ))}
+            </div>
+          ) : filteredShops.length > 0 ? (
+            <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${currentPage}-${selectedCategory}-${searchTerm}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {paginatedShops.map((shop: ISellerShop) => (
+                    <ShopCard key={shop._id} shop={shop} />
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-14 gap-2 items-center">
+                  <button
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    disabled={currentPage === 1}
+                    className={`p-3 rounded-full ${
+                      currentPage === 1
+                        ? 'text-gray-400 cursor-not-allowed'
+                        : 'text-blue-600 hover:bg-blue-100'
+                    }`}
+                  >
+                    <FaArrowLeft />
+                  </button>
+
+                  {Array.from({ length: totalPages }).map((_, index) => {
+                    const page = index + 1;
+                    if (
+                      Math.abs(page - currentPage) <= 2 ||
+                      page === 1 ||
+                      page === totalPages
+                    ) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`w-10 h-10 rounded-full font-medium transition ${
+                            page === currentPage
+                              ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
+                              : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    }
+
+                    if (Math.abs(page - currentPage) === 3) {
+                      return (
+                        <span key={page} className="px-2">
+                          ...
+                        </span>
+                      );
+                    }
+
+                    return null;
+                  })}
+
+                  <button
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className={`p-3 rounded-full ${
+                      currentPage === totalPages
+                        ? 'text-gray-400 cursor-not-allowed'
+                        : 'text-blue-600 hover:bg-blue-100'
+                    }`}
+                  >
+                    <FaArrowRight />
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto">
+                <div className="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FaStore className="text-4xl text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  No shops found
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  {searchTerm
+                    ? `No shops match "${searchTerm}"`
+                    : 'No shops available at the moment'}
+                </p>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-colors"
+                  >
+                    Clear Search
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 

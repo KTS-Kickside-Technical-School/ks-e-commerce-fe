@@ -12,7 +12,7 @@ const SEO = ({
   ogType = 'website',
   twitterCard = 'summary_large_image',
   twitterCreator = '@kickside_rw',
-  canonicalUrl,
+  canonicalUrl= window.location.href,
 }: {
   title?: string;
   description?: string;
