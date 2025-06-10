@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /seller
+Disallow: /login
+Allow: /
+
+Sitemap: https://shop.kickside.rw/sitemap.xml

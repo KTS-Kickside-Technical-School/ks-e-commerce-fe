@@ -2,10 +2,17 @@ import { Link } from 'react-router-dom';
 import Header from '../components/customers/Header';
 import Footer from '../components/customers/Footer';
 import NotFoundImage from '/notfound.jpg';
+import SEO from '../middlewares/SEO';
 
 const NotFound = () => {
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO
+        title="Page Not Found 404 - Kickside Store"
+        description="The page you are looking for does not exist."
+        ogImage={NotFoundImage}
+        ogUrl={window.location.href}
+      />
       <Header />
       <div className="flex-grow flex items-center justify-center px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">

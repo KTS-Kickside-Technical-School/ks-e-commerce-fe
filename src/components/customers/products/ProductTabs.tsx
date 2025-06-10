@@ -85,7 +85,7 @@ const ProductTabs = ({ product, shop }: ProductTabsProps) => {
                 <FaLink />
               </span>
               <a
-                href={`/shops/${shop._id}`}
+                href={`/shop/${shop._id}`}
                 className="text-blue-500 hover:underline font-medium"
               >
                 Visit Shop

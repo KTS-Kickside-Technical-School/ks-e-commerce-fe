@@ -53,26 +53,27 @@ const SingleShopDetails = () => {
     return products.slice(start, start + PRODUCTS_PER_PAGE);
   }, [currentPage, products]);
 
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 animate-pulse">
+        <div className="space-y-6">
+          <div className="w-full h-64 bg-gray-200 rounded-md" />
+          <div className="w-24 h-24 bg-gray-200 rounded-full" />
+          <div className="h-4 bg-gray-200 w-1/2 rounded" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded-md" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error || !shop) {
     return (
       <div className="text-center text-red-600 py-10">
         <p>{error || 'Shop not found'}</p>
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="animate-pulse space-y-4">
-          <div className="w-full h-64 bg-gray-200 rounded-md" />
-          <div className="w-32 h-32 bg-gray-200 rounded-full mt-4" />
-          <div className="h-4 bg-gray-200 w-1/2 rounded" />
-          <div className="grid grid-cols-3 gap-6 mt-8">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded" />
-            ))}
-          </div>
-        </div>
       </div>
     );
   }
@@ -88,23 +89,23 @@ const SingleShopDetails = () => {
         ogUrl={window.location.href}
       />
       <Header />
-      <div className="max-w-6xl mx-auto px-4 py-10">
-        <div className="relative w-full h-64 mb-12">
+
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <div className="relative w-full h-64 md:h-80 mb-16">
           <CoverCarousel
             images={Array.isArray(shop.images) ? shop.images : []}
           />
-          <div className="absolute bottom-[-3rem] z-[10] left-6 flex items-center gap-4">
+          <div className="absolute -bottom-16 left-6 z-10 flex items-center gap-4">
             <img
               src={shop.logo}
               alt={`${shop.name} logo`}
-              className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg"
             />
-            <div className="">
-              <h1 className="text-2xl font-bold text-white">{shop.name}</h1>
-              <p className="text-white">{shop.description}</p>
-            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-black sm:text-gray-800 md:text-white drop-shadow-md">
+              {shop.name}
+            </h1>
           </div>
-          <div className="absolute top-4 right-4 flex gap-2">
+          <div className="absolute top-4 right-4 flex gap-3">
             <button
               onClick={handleCopyLink}
               className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
@@ -112,55 +113,64 @@ const SingleShopDetails = () => {
             >
               <FaCopy />
             </button>
-            <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100">
+            <button
+              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+              title="Share Shop"
+            >
               <FaShareAlt />
             </button>
           </div>
         </div>
 
-        <div className="pt-8">
-          <div className="mt-28">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              Explore our products
-            </h2>
-            {products && products.length > 0 ? (
-              <>
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {currentProducts.map((product) => (
-                    <Product
-                      key={product._id}
-                      product={product}
-                      isFetchingData={false}
-                      isOnWishlist={false}
-                      isInCart={false}
-                    />
-                  ))}
-                </div>
+        <div className="pt-24 px-2">
+          {shop.description && (
+            <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-10">
+              {shop.description}
+            </p>
+          )}
 
-                <div className="flex justify-center mt-8 gap-2">
-                  {Array.from({ length: totalPages }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentPage(index + 1)}
-                      className={`px-4 py-2 rounded-md border ${
-                        currentPage === index + 1
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-gray-700 border-gray-300'
-                      } hover:bg-blue-500 hover:text-white`}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-500">
-                No products available in this shop.
-              </p>
-            )}
-          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+            Explore Our Products
+          </h2>
+
+          {products.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {currentProducts.map((product) => (
+                  <Product
+                    key={product._id}
+                    product={product}
+                    isFetchingData={false}
+                    isOnWishlist={false}
+                    isInCart={false}
+                  />
+                ))}
+              </div>
+
+              <div className="flex justify-center mt-10 flex-wrap gap-3">
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-4 py-2 rounded-md border transition duration-200 ${
+                      currentPage === index + 1
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-500 hover:text-white'
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500 mt-6">
+              No products available in this shop.
+            </p>
+          )}
         </div>
-      </div>
+      </section>
+
       <Footer />
     </>
   );
