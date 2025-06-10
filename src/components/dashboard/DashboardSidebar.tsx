@@ -9,6 +9,7 @@ import {
   FaShippingFast,
 } from 'react-icons/fa';
 import { toast, Toaster } from 'sonner';
+import { MdOutlineSystemSecurityUpdate } from 'react-icons/md';
 
 interface DashboardSidebarProps {
   isSidebarOpen: boolean;
@@ -30,11 +31,15 @@ const DashboardSidebar = ({
     }
   }, []);
 
-  const commonLinks = [{ name: 'I', icon: <FaUser />, path: '/admin/profile' }];
   const adminLinks = [
     { name: 'Dashboard', icon: <FaHome />, path: '/admin/' },
     { name: 'Sellers', icon: <FaStore />, path: '/admin/sellers' },
     { name: 'Products', icon: <FaBox />, path: '/admin/products' },
+    {
+      name: 'System information',
+      icon: <MdOutlineSystemSecurityUpdate />,
+      path: '/admin/info',
+    },
     { name: 'Profile', icon: <FaUser />, path: '/admin/profile' },
   ];
   const sellerLinks = [
@@ -43,10 +48,9 @@ const DashboardSidebar = ({
     { name: 'Orders', icon: <FaShippingFast />, path: '/seller/orders' },
   ];
 
-  let visibleLinks = commonLinks;
-  if (userRole === 'admin') visibleLinks = [...adminLinks, ...commonLinks];
-  else if (userRole === 'seller')
-    visibleLinks = [...sellerLinks, ...commonLinks];
+  let visibleLinks = [{}];
+  if (userRole === 'admin') visibleLinks = [...adminLinks];
+  else if (userRole === 'seller') visibleLinks = [...sellerLinks];
 
   const navigate = useNavigate();
 
@@ -66,7 +70,7 @@ const DashboardSidebar = ({
         } md:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-primary h-full flex flex-col justify-between`}
       >
         <nav className="p-4 space-y-2">
-          {visibleLinks.map((link) => (
+          {visibleLinks.map((link: any) => (
             <Link
               key={link.name}
               to={link.path}
