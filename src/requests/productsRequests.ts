@@ -14,7 +14,6 @@ export const createProduct = async (productData: any) => {
 
 export const userViewProducts = async () => {
     try {
-
         const response = await axiosInstance.get("/api/product/customer-gel-all-products");
         return response.data
     } catch (error: any) {
@@ -46,5 +45,20 @@ export const editProduct = async (id: any, productData: iProduct) => {
         return response.data;
     } catch (error) {
         return handleError(error);
+    }
+}
+
+export const getProductsByCategory = async (name: string) => {
+    try {
+        let response: any = "";
+        if (name === "All") {
+            response = await axiosInstance.get("/api/product/customer-gel-all-products");
+        }
+        else {
+            response = await axiosInstance.get(`/api/product/get-products-by-category/${name}`);
+        }
+        return response.data
+    } catch (error) {
+
     }
 }

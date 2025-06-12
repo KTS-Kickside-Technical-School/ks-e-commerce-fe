@@ -156,6 +156,15 @@ const Header = () => {
             </button>
             {categoriesOpen && (
               <ul className="absolute bg-white shadow-md mt-2 py-2 rounded-md w-48 z-[10]">
+                <li>
+                  <Link
+                    to={`/category/All`}
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setCategoriesOpen(false)}
+                  >
+                    All
+                  </Link>
+                </li>
                 {categories.map((category: IProductCategory) => (
                   <li key={category._id}>
                     <Link
@@ -246,6 +255,15 @@ const Header = () => {
             </button>
             {categoriesOpen && (
               <ul className="bg-white shadow-md mt-2 py-2 rounded-md w-48">
+                <li>
+                  <Link
+                    to={`/category/All`}
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setCategoriesOpen(false)}
+                  >
+                    All
+                  </Link>
+                </li>
                 {categories.map((category: IProductCategory) => (
                   <li key={category._id}>
                     <Link
