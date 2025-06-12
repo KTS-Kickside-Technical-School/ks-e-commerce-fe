@@ -41,7 +41,14 @@ const SearchResults = () => {
       const keywords = q.toLowerCase().split(/\s+/);
       result = result.filter((p) => {
         const name = p?.productName?.toLowerCase() || '';
-        return keywords.every((kw) => name.includes(kw));
+        const description = p?.description?.toLowerCase() || '';
+        const category = p?.category?.toLowerCase() || '';
+        return keywords.some(
+          (kw) =>
+            name.includes(kw) ||
+            category.includes(kw) ||
+            description.includes(kw)
+        );
       });
     }
 
@@ -109,7 +116,6 @@ const SearchResults = () => {
         <aside className="w-full md:w-1/4 bg-blue-50 rounded-lg p-4 shadow-md">
           <h2 className="text-lg font-semibold text-blue-700 mb-3">Filters</h2>
 
-          {/* Category Filter */}
           <div className="mb-4">
             <label className="block text-sm text-gray-600 mb-1">Category</label>
             <select
@@ -126,7 +132,6 @@ const SearchResults = () => {
             </select>
           </div>
 
-          {/* Price Filter */}
           <div className="mb-4">
             <label className="block text-sm text-gray-600">Price Range</label>
             <div className="flex space-x-2">
