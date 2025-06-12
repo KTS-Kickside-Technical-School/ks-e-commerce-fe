@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   FaStore,
   FaPhone,
@@ -220,6 +220,38 @@ const MyShop = () => {
     };
   }, [imagePreviews]);
 
+  const uniqueCities = useMemo(() => {
+    const cityMap = new Map<string, string>();
+    locations.forEach((loc) => {
+      if (loc.city && typeof loc.city === 'string') {
+        const trimmed = loc.city.trim();
+        if (trimmed) {
+          const lower = trimmed.toLowerCase();
+          if (!cityMap.has(lower)) {
+            cityMap.set(lower, trimmed);
+          }
+        }
+      }
+    });
+    return Array.from(cityMap.values());
+  }, [locations]);
+
+  const uniqueCountries = useMemo(() => {
+    const countryMap = new Map<string, string>();
+    locations.forEach((loc) => {
+      if (loc.country && typeof loc.country === 'string') {
+        const trimmed = loc.country.trim();
+        if (trimmed) {
+          const lower = trimmed.toLowerCase();
+          if (!countryMap.has(lower)) {
+            countryMap.set(lower, trimmed);
+          }
+        }
+      }
+    });
+    return Array.from(countryMap.values());
+  }, [locations]);
+
   if (isLoading) {
     return (
       <div className="w-full h-96 flex justify-center items-center">
@@ -435,10 +467,8 @@ const MyShop = () => {
                     className="w-full p-3 border-2 border-primary-100 rounded-lg focus:border-primary-500 focus:outline-none"
                   />
                   <datalist id="city">
-                    {locations.map((location) => (
-                      <option key={location._id} value={location.city}>
-                        {location.city}
-                      </option>
+                    {uniqueCities.map((city) => (
+                      <option key={city} value={city} />
                     ))}
                   </datalist>
 
@@ -491,10 +521,8 @@ const MyShop = () => {
                     className="w-full p-3 border-2 border-primary-100 rounded-lg focus:border-primary-500 focus:outline-none"
                   />
                   <datalist id="country">
-                    {locations.map((location) => (
-                      <option key={location._id} value={location.country}>
-                        {location.country}
-                      </option>
+                    {uniqueCountries.map((country) => (
+                      <option key={country} value={country} />
                     ))}
                   </datalist>
                   {errors['address.country'] && (

@@ -53,6 +53,29 @@ const SingleShopDetails = () => {
     return products.slice(start, start + PRODUCTS_PER_PAGE);
   }, [currentPage, products]);
 
+  const handleShare = async () => {
+    const shareData = {
+      title: shop?.name,
+      text: `Check out ${shop?.name} - ${shop?.description?.substring(
+        0,
+        100
+      )}...`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        toast.success('Link copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+      toast.error('Failed to share');
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-10 animate-pulse">
@@ -108,13 +131,15 @@ const SingleShopDetails = () => {
           <div className="absolute top-4 right-4 flex gap-3">
             <button
               onClick={handleCopyLink}
-              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10"
+              style={{ cursor: 'pointer' }}
               title="Copy Shop Link"
             >
               <FaCopy />
             </button>
             <button
-              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+              onClick={handleShare}
+              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10"
               title="Share Shop"
             >
               <FaShareAlt />
