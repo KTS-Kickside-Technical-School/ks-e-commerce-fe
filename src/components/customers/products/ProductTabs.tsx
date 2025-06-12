@@ -5,6 +5,7 @@ import { MdEmail } from 'react-icons/md';
 import { FaLink, FaPhone, FaRegCopy } from 'react-icons/fa';
 import { FaLocationDot, FaShop } from 'react-icons/fa6';
 import { iProduct } from '../../../types/store';
+import { whatsappNumber } from '../../../requests/productsRequests';
 
 interface ProductTabsProps {
   product: iProduct;
@@ -14,7 +15,11 @@ const ProductTabs = ({ product, shop }: ProductTabsProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  const fullAddress = `${shop.address.street}, ${shop.address.city}, ${shop.address.region}, ${shop.address.country} ${shop.address.postalCode}`;
+  const fullAddress = `${shop.address.street || ''}, ${
+    shop.address.city || ''
+  }, ${shop.address.state || ''}, ${shop.address.country || ''} ${
+    shop.address.postalCode || ''
+  }`;
 
   const copyAddress = async () => {
     await navigator.clipboard.writeText(fullAddress);
@@ -60,10 +65,10 @@ const ProductTabs = ({ product, shop }: ProductTabsProps) => {
               {shop.phone && (
                 <a
                   href={`tel:${shop.phone}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-blue-600 hover:underline flex"
                 >
-                  <FaPhone className="text-blue-500" />
-                  {shop.phone}
+                  <FaPhone className="text-blue-500 m-1" />
+                  <span>{shop.phone || whatsappNumber}</span>
                 </a>
               )}
             </div>

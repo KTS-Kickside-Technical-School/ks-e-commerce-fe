@@ -75,3 +75,15 @@ interface IUserProfileUpdate {
   isEmailVerified?: boolean;
   isUserVerified?: boolean;
 }
+
+export interface iLocation {
+  _id?: any;
+  code: string;
+  name: string;
+  country: string;
+  city?: string;
+  region?: string;
+  street?: string;
+  postalCode?: string;
+  createdAt?: Date;
+}

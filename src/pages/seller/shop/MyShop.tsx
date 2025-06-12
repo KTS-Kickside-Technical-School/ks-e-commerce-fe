@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   FaStore,
   FaPhone,
   FaImage,
   FaClock,
   FaMapMarkerAlt,
+  FaRegEdit,
+  FaRegSave,
 } from 'react-icons/fa';
 import { MdDescription } from 'react-icons/md';
 import {
@@ -14,6 +16,7 @@ import {
 import Logo from '/logo.png';
 import uploadToCloudinary from '../../../helpers/cloudinary';
 import { toast } from 'sonner';
+import { getAllLocations } from '../../../requests/locationRequests';
 
 const isImage = (file: File) => file.type.startsWith('image/');
 
@@ -44,6 +47,7 @@ const MyShop = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [locations, setLocations] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchShopData = async () => {
@@ -58,6 +62,18 @@ const MyShop = () => {
         setIsLoading(false);
       }
     };
+
+    const fetchLocation = async () => {
+      try {
+        const response = await getAllLocations();
+        if (response.status === 200) {
+          setLocations(response.data.locations || []);
+        }
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };
+    fetchLocation();
     fetchShopData();
   }, []);
 
@@ -89,6 +105,8 @@ const MyShop = () => {
     if (!shopData?.description.trim())
       newErrors.description = 'Description is required';
     if (!shopData?.phone?.trim()) newErrors.phone = 'Phone is required';
+    if (shopData?.description?.trim().length >= 500)
+      newErrors.description = 'Description should be less than 500 characters';
 
     const requiredAddressFields = [
       'street',
@@ -105,12 +123,10 @@ const MyShop = () => {
       }
     });
 
-    // Image validations
     const totalImages = shopData.images.length + newImages.length;
     if (totalImages < 3) newErrors.images = 'At least 3 images are required';
     if (totalImages > 10) newErrors.images = 'Maximum 10 images are allowed';
 
-    // Show errors if any
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast.error('Please fix validation errors.');
@@ -120,21 +136,17 @@ const MyShop = () => {
     try {
       setIsSaving(true);
 
-      // Upload logo if updated
       let logoUrl = shopData.logo;
       if (newLogo) {
         logoUrl = await uploadToCloudinary(newLogo);
       }
 
-      // Upload new images
       const uploadedImages = await Promise.all(
         newImages.map(uploadToCloudinary)
       );
 
-      // Strip unneeded fields
       const { _id, createdAt, updatedAt, __v, seller, ...rest } = shopData;
 
-      // Final object to submit
       const updatedData = {
         ...rest,
         logo: logoUrl,
@@ -208,6 +220,38 @@ const MyShop = () => {
     };
   }, [imagePreviews]);
 
+  const uniqueCities = useMemo(() => {
+    const cityMap = new Map<string, string>();
+    locations.forEach((loc) => {
+      if (loc.city && typeof loc.city === 'string') {
+        const trimmed = loc.city.trim();
+        if (trimmed) {
+          const lower = trimmed.toLowerCase();
+          if (!cityMap.has(lower)) {
+            cityMap.set(lower, trimmed);
+          }
+        }
+      }
+    });
+    return Array.from(cityMap.values());
+  }, [locations]);
+
+  const uniqueCountries = useMemo(() => {
+    const countryMap = new Map<string, string>();
+    locations.forEach((loc) => {
+      if (loc.country && typeof loc.country === 'string') {
+        const trimmed = loc.country.trim();
+        if (trimmed) {
+          const lower = trimmed.toLowerCase();
+          if (!countryMap.has(lower)) {
+            countryMap.set(lower, trimmed);
+          }
+        }
+      }
+    });
+    return Array.from(countryMap.values());
+  }, [locations]);
+
   if (isLoading) {
     return (
       <div className="w-full h-96 flex justify-center items-center">
@@ -217,19 +261,18 @@ const MyShop = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-primary-100">
-        {/* Header Section */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-primary-500 flex items-center gap-3">
-            <FaStore className="text-2xl" />
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 border border-primary-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary-500 flex items-center gap-3">
+            <FaStore className="text-xl sm:text-2xl" />
             {isEditing ? (
               <input
                 type="text"
                 name="name"
                 value={shopData.name}
                 onChange={handleInputChange}
-                className={`border-b-2 border-primary-500 focus:outline-none ${
+                className={`border-b-2 border-primary-500 focus:outline-none w-full ${
                   errors.name ? 'border-red-500' : ''
                 }`}
               />
@@ -240,19 +283,53 @@ const MyShop = () => {
           <button
             onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
             disabled={isSaving}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center ${
               isEditing
                 ? 'bg-green-500 hover:bg-green-600 text-white'
                 : 'bg-primary-100 hover:bg-primary-200 text-primary-700'
             } ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isSaving ? 'Saving...' : isEditing ? 'Save Changes' : 'Edit Shop'}
+            {isSaving ? (
+              <div className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span>Saving...</span>
+              </div>
+            ) : isEditing ? (
+              <div className="flex items-center gap-2">
+                <FaRegSave />
+                <span>Save changes</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <FaRegEdit />
+                <span>Edit Shop</span>
+              </div>
+            )}
           </button>
         </div>
         {errors.name && <p className="text-red-500 mb-2">{errors.name}</p>}
 
-        <div className="mb-8 flex items-center gap-6">
-          <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center">
+        <div className="mb-8 flex flex-col sm:flex-row items-center gap-6">
+          <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
             <img
               src={shopData.logo}
               alt="Shop logo"
@@ -270,15 +347,17 @@ const MyShop = () => {
               />
               <label
                 htmlFor="logoUpload"
-                className="flex items-center gap-2 cursor-pointer text-primary-500 hover:text-primary-600 transition-colors group"
+                className="flex flex-col sm:flex-row items-center gap-2 cursor-pointer text-primary-500 hover:text-primary-600 transition-colors group"
               >
                 <div className="p-2 bg-primary-100 rounded-lg group-hover:bg-primary-200 transition-colors">
                   <FaImage className="text-lg" />
                 </div>
-                <span className="font-medium">Upload Logo</span>
-                <span className="text-sm text-gray-400">
-                  (JPEG, PNG, max 5MB)
-                </span>
+                <div className="text-center sm:text-left">
+                  <span className="font-medium">Upload Logo</span>
+                  <span className="block text-sm text-gray-400">
+                    (JPEG, PNG, max 5MB)
+                  </span>
+                </div>
               </label>
             </div>
           )}
@@ -295,17 +374,37 @@ const MyShop = () => {
                 name="description"
                 value={shopData.description}
                 onChange={handleInputChange}
-                className={`w-full p-3 border-2 border-primary-100 rounded-lg focus:border-primary-500 focus:outline-none ${
-                  errors.description ? 'border-red-500' : ''
+                className={`w-full p-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors ${
+                  errors.description ? 'border-red-500' : 'border-gray-300'
                 }`}
-                rows={4}
+                rows={8}
+                placeholder="Tell your customers about your shop. What makes it special?"
               />
-              {errors.description && (
-                <p className="text-red-500 mt-2">{errors.description}</p>
-              )}
+              <div className="flex justify-between items-start mt-2 text-sm">
+                <p
+                  className={`pr-4 ${
+                    errors.description || shopData.description.length > 500
+                      ? 'text-red-600'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  {errors.description
+                    ? errors.description
+                    : 'Description must not exceed 500 characters.'}
+                </p>
+                <p
+                  className={`font-medium whitespace-nowrap pl-4 ${
+                    shopData.description.length > 500
+                      ? 'text-red-600'
+                      : 'text-green-600'
+                  }`}
+                >
+                  {shopData.description.length}
+                </p>
+              </div>
             </>
           ) : (
-            <p className="text-gray-600">{shopData.description}</p>
+            <p className="text-gray-600 prose">{shopData.description}</p>
           )}
         </div>
 
@@ -340,7 +439,7 @@ const MyShop = () => {
             <h3 className="text-lg font-semibold">Shop Address</h3>
           </div>
           {isEditing ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-4">
                 <div>
                   <input
@@ -359,13 +458,20 @@ const MyShop = () => {
                 </div>
                 <div>
                   <input
-                    type="text"
+                    list="city"
+                    id="city"
                     name="address.city"
                     value={shopData.address.city}
                     onChange={handleInputChange}
                     placeholder="City"
                     className="w-full p-3 border-2 border-primary-100 rounded-lg focus:border-primary-500 focus:outline-none"
                   />
+                  <datalist id="city">
+                    {uniqueCities.map((city) => (
+                      <option key={city} value={city} />
+                    ))}
+                  </datalist>
+
                   {errors['address.city'] && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors['address.city']}
@@ -406,13 +512,19 @@ const MyShop = () => {
                 </div>
                 <div>
                   <input
-                    type="text"
+                    list="country"
+                    id="country"
                     name="address.country"
                     value={shopData.address.country}
-                    onChange={handleInputChange}
                     placeholder="Country"
+                    onChange={handleInputChange}
                     className="w-full p-3 border-2 border-primary-100 rounded-lg focus:border-primary-500 focus:outline-none"
                   />
+                  <datalist id="country">
+                    {uniqueCountries.map((country) => (
+                      <option key={country} value={country} />
+                    ))}
+                  </datalist>
                   {errors['address.country'] && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors['address.country']}
@@ -437,7 +549,7 @@ const MyShop = () => {
             <FaImage className="text-xl" />
             <h3 className="text-lg font-semibold">Shop Images</h3>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {shopData.images?.map((img: any, index: any) => (
               <div
                 key={`existing-${index}`}
@@ -497,12 +609,10 @@ const MyShop = () => {
                   className="aspect-square bg-primary-100 hover:bg-primary-200 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors group"
                 >
                   <FaImage className="text-2xl text-primary-500 mb-2 group-hover:text-primary-600 transition-colors" />
-                  <span className="text-sm text-primary-500 group-hover:text-primary-600">
+                  <span className="text-sm text-center text-primary-500 group-hover:text-primary-600">
                     Add Images
                   </span>
-                  <span className="text-xs text-gray-400 mt-1">
-                    (Multiple allowed)
-                  </span>
+                  <span className="text-xs text-gray-400 mt-1">(Multiple)</span>
                 </label>
               </div>
             )}
@@ -513,7 +623,7 @@ const MyShop = () => {
         </div>
 
         {/* Timestamps */}
-        <div className="flex gap-6 text-sm text-gray-400">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <FaClock />
             <span>

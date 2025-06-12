@@ -28,6 +28,8 @@ import HelpCenter from './pages/customers/statics/get-support/HelpCenter';
 import About from './pages/customers/AboutUs';
 import UserViewShops from './pages/customers/shops/UserViewShops';
 import SingleShopDetails from './pages/customers/shops/SingleShopDetails';
+import SystemInformation from './pages/admin/SystemInformation';
+import Locations from './pages/admin/Locations';
 
 const AppRouter = () => {
   return (
@@ -72,7 +74,8 @@ const AppRouter = () => {
           <Route path="products" element={<AdminViewProducts />} />
           <Route path="categories" element={<AdminViewCategories />} />
           <Route path="profile" element={<Profile />} />
-
+          <Route path="info" element={<SystemInformation />} />
+          <Route path="locations" element={<Locations />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>
