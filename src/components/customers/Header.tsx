@@ -27,7 +27,6 @@ const Header = () => {
     }
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -121,19 +120,20 @@ const Header = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4 flex-grow mx-4">
-          <div className="relative w-full">
+          <form method="GET" action={`/search`} className="relative w-full">
             <input
-              type="text"
-              placeholder="Search products, shops..."
+              name="q"
+              placeholder="Search products..."
               className="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
             />
             <button
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary-500 text-white px-3 py-1.5 rounded-md hover:bg-primary-600 transition"
               title="Search"
+              type="submit"
             >
               <FaSearch className="w-5 h-5" />
             </button>
-          </div>
+          </form>
         </div>
 
         <ul className="hidden md:flex gap-6 text-gray-700 font-medium mx-2">
@@ -300,12 +300,14 @@ const Header = () => {
 
       {searchOpen && (
         <div className="md:hidden fixed top-16 left-0 w-full z-50 bg-white border-b border-gray-200 shadow-md px-4 py-3">
-          <div className="flex items-center gap-2">
+          <form
+            method="GET"
+            action={`/search`}
+            className="flex items-center gap-2"
+          >
             <input
-              type="text"
-              placeholder="Search for products or shops..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              name="q"
+              placeholder="Search products..."
               onKeyDown={(e) => e.key === 'Enter' && ''}
               className="flex-grow px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
@@ -313,11 +315,11 @@ const Header = () => {
             <button
               className="bg-primary-500 text-white p-2 rounded-md hover:bg-primary-600 transition"
               title="Search"
+              type="submit"
             >
               <FaSearch className="w-5 h-5" />
             </button>
 
-            {/* Close Button */}
             <button
               onClick={() => setSearchOpen(false)}
               className="bg-gray-200 text-gray-700 p-2 rounded-md hover:bg-gray-300 transition"
@@ -325,7 +327,7 @@ const Header = () => {
             >
               <FaTimes className="w-5 h-5" />
             </button>
-          </div>
+          </form>
         </div>
       )}
     </header>

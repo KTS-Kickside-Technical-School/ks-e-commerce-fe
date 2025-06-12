@@ -31,6 +31,7 @@ import SingleShopDetails from './pages/customers/shops/SingleShopDetails';
 import SystemInformation from './pages/admin/SystemInformation';
 import Locations from './pages/admin/Locations';
 import ProductsByCategory from './pages/customers/products/ProductsByCategory';
+import SearchResults from './pages/customers/products/SearchResults';
 
 const AppRouter = () => {
   return (
@@ -47,6 +48,8 @@ const AppRouter = () => {
       <Route path="/shops" element={<UserViewShops />} />
       <Route path="/shop/:id" element={<SingleShopDetails />} />
       <Route path="/category/:name" element={<ProductsByCategory />} />
+      <Route path="/search" element={<SearchResults />} />
+
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
