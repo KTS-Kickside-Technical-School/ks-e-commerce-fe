@@ -33,6 +33,11 @@ export interface iProduct {
   category: string;
   status?: string;
   shop?: ISellerShop;
+  shippingOptions: {
+    fee: number;
+    note: string;
+    duration: string;
+  }
   createdAt?: Date;
   updatedAt?: Date;
 }

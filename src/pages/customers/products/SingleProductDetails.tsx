@@ -5,10 +5,13 @@ import {
   // FaShoppingBag,
   FaChevronLeft,
   FaChevronRight,
+  FaInfoCircle,
+  FaShoppingBag,
+  FaTruck,
   // FaShoppingCart,
 } from 'react-icons/fa';
-import Header from '../Header';
-import Footer from '../Footer';
+import Header from '../../../components/customers/Header';
+import Footer from '../../../components/customers/Footer';
 import {
   customerViewSingleProduct,
   whatsappNumber,
@@ -21,13 +24,14 @@ import {
   // toast,
   Toaster,
 } from 'sonner';
-import LoginPromptModal from '../LoginPromptModal';
+import LoginPromptModal from '../../../components/customers/LoginPromptModal';
 // import { ImSpinner } from 'react-icons/im';
-import BuyNowModal from './BuyNowModal';
-import TextWhatsappButton from './TextWhatsappButton';
-import Product from './Product';
-import ProductTabs from './ProductTabs';
+import BuyNowModal from '../../../components/customers/products/BuyNowModal';
+import TextWhatsappButton from '../../../components/customers/products/TextWhatsappButton';
+import Product from '../../../components/customers/products/Product';
+import ProductTabs from '../../../components/customers/products/ProductTabs';
 import SEO from '../../../middlewares/SEO';
+import { ImSpinner } from 'react-icons/im';
 const defaultProduct: iProduct = {
   productName: '',
   description: '',
@@ -38,6 +42,11 @@ const defaultProduct: iProduct = {
   stock: 0,
   _id: '',
   category: '',
+  shippingOptions: {
+    fee: 0,
+    note: '',
+    duration: '',
+  },
 };
 export default function ProductDetails() {
   const [activeImage, setActiveImage] = useState(0);
@@ -283,70 +292,42 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* Product Info Sidebar */}
           <div className="lg:sticky lg:top-20 lg:h-[calc(100vh-160px)] lg:overflow-y-auto lg:pb-8 space-y-8">
-            {/* Pricing Section */}
             <div className="bg-gray-50 p-6 rounded-xl">
               <div className="space-y-4">
-                <div className="flex items-baseline gap-4">
-                  <span className="text-3xl font-bold text-primary-600">
-                    {safeToFixed(discountedPrice)} RWF
-                  </span>
-                  {product.discount > 0 && (
-                    <span className="text-gray-500 line-through">
-                      {safeToFixed(product.price)} RWF
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <span
-                    className={`px-2 py-1 rounded-full ${
-                      product.stock > 0
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                <div className="space-y-4 mt-6">
+                  <TextWhatsappButton
+                    phoneNumber={product.shop?.phone || whatsappNumber}
+                    message={whatsappMessage}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
+                    buttonText="Chat on WhatsApp"
+                  />
+                  <button
+                    onClick={() => {
+                      if (!sessionStorage.getItem('profile')) {
+                        setIsPromptModalOpen(true);
+                        return;
+                      }
+                      setShowBuyModal(true);
+                    }}
+                    disabled={showBuyModal}
+                    className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold transition-all ${
+                      showBuyModal
+                        ? 'bg-primary-100 text-primary-500 cursor-not-allowed'
+                        : 'bg-primary-500 hover:bg-primary-600 text-white'
                     }`}
                   >
-                    {product.stock > 0
-                      ? `${product.stock} in stock`
-                      : 'Out of stock'}
-                  </span>
-                </div>
-              </div>
+                    {showBuyModal ? (
+                      <ImSpinner className="animate-spin" />
+                    ) : (
+                      <>
+                        <FaShoppingBag className="w-5 h-5" />
+                        Buy Now
+                      </>
+                    )}
+                  </button>
 
-              <div className="space-y-4 mt-6">
-                <TextWhatsappButton
-                  phoneNumber={product.shop?.phone || whatsappNumber}
-                  message={whatsappMessage}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
-                  buttonText="Chat on WhatsApp"
-                />
-                {/* <button
-                  onClick={() => {
-                    if (!sessionStorage.getItem('profile')) {
-                      setIsPromptModalOpen(true);
-                      return;
-                    }
-                    setShowBuyModal(true);
-                  }}
-                  disabled={showBuyModal}
-                  className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold transition-all ${
-                    showBuyModal
-                      ? 'bg-primary-100 text-primary-500 cursor-not-allowed'
-                      : 'bg-primary-500 hover:bg-primary-600 text-white'
-                  }`}
-                >
-                  {showBuyModal ? (
-                    <ImSpinner className="animate-spin" />
-                  ) : (
-                    <>
-                      <FaShoppingBag className="w-5 h-5" />
-                      Buy Now
-                    </>
-                  )}
-                </button> */}
-
-                {/* <div className="grid grid-cols-2 gap-3">
+                  {/* <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => handleAddProductToCart()}
                     disabled={isCartLoading}
@@ -382,6 +363,75 @@ export default function ProductDetails() {
                     <span>Wishlist</span>
                   </button>
                 </div> */}
+                </div>
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 bg-blue-50/40 border border-blue-100 rounded-xl px-4 py-3 shadow-sm transition duration-300">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl flex font-extrabold text-blue-700 tracking-tight">
+                        {discountedPrice} RWF
+                      </span>
+                      {product.discount > 0 && (
+                        <span className="text-base text-gray-500 line-through">
+                          {safeToFixed(product.price)} RWF
+                        </span>
+                      )}
+                    </div>
+
+                    {product.discount > 0 && (
+                      <div className="bg-red-100 text-red-700 text-xs font-semibold px-3 py-1 rounded-full sm:ml-auto animate-pulse shadow-sm">
+                        -{product.discount}% OFF
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-md">
+                    <span
+                      className={`px-2 py-1 rounded-full ${
+                        product.stock > 0
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {product.stock > 0
+                        ? `${product.stock} in stock`
+                        : 'Out of stock'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 rounded-2xl shadow-lg bg-gradient-to-br from-blue-50 to-white border border-blue-100 animate-fade-in space-y-3 transition-all duration-300 ease-in-out">
+                <h3 className="text-xl font-bold text-blue-800 flex items-center gap-2">
+                  <FaTruck className="text-blue-600" /> Shipping Info
+                </h3>
+
+                <div className="flex items-center justify-between text-sm text-gray-700">
+                  <span className="font-medium">Fee:</span>
+                  {product?.shippingOptions?.fee === 0 ||
+                  product.shippingOptions.fee === 0 ? (
+                    <span className="px-3 py-1 text-sm font-bold text-green-700 bg-green-100 rounded-full animate-bounce">
+                      🎉 FREE Shipping
+                    </span>
+                  ) : (
+                    <span className="font-semibold text-blue-700">
+                      {product.shippingOptions.fee} RWF
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between text-sm text-gray-700">
+                  <span className="font-medium">Estimated Time:</span>
+                  <span className="text-gray-900">
+                    {product.shippingOptions.duration}
+                  </span>
+                </div>
+
+                {product.shippingOptions.note && (
+                  <div className="text-sm text-gray-500 italic border-t border-blue-100 pt-2">
+                    <FaInfoCircle className="inline-block mr-1 text-blue-400" />
+                    {product.shippingOptions.note}
+                  </div>
+                )}
               </div>
             </div>
           </div>
