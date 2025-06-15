@@ -12,11 +12,13 @@ import { iProduct } from '../../../types/store';
 import ProductSkeletonLoader from './ProductSkeletonLoader';
 import {
   //  toast,
-    Toaster } from 'sonner';
+  Toaster,
+} from 'sonner';
 // import { customerAddProductToCart } from '../../../requests/cartRequests';
 import LoginPromptModal from '../LoginPromptModal';
 import BuyNowModal from './BuyNowModal';
 import { whatsappNumber } from '../../../requests/productsRequests';
+import { formatRWF } from '../../../helpers/round';
 
 interface ProductProps {
   product?: iProduct;
@@ -34,8 +36,8 @@ const Product = ({
   product,
   isFetchingData,
   isOnWishlist,
-  // isInCart,
-}: ProductProps) => {
+}: // isInCart,
+ProductProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   // const [isCartLoading, setIsCartLoading] = useState(false);
@@ -146,7 +148,6 @@ const Product = ({
           )}
         </div>
 
-        {/* Product Info */}
         <div className="p-4 space-y-4">
           <div className="space-y-2">
             <Link
@@ -156,23 +157,20 @@ const Product = ({
               {productName}
             </Link>
 
-            {/* Price Section */}
             <div className="flex items-baseline gap-3">
               <span className="text-xl font-bold text-primary-600">
-                {formatPrice(
+                {formatRWF(
                   numericDiscount > 0 ? discountedPrice : numericPrice
-                )}{' '}
-                RWF
+                )}
               </span>
               {numericDiscount > 0 && (
                 <span className="text-sm text-gray-400 line-through">
-                  {formatPrice(numericPrice)} RWF
+                  {formatRWF(numericPrice)}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Stock Status */}
           <div className="flex items-center gap-2 text-sm">
             <span
               className={`flex items-center gap-1 ${

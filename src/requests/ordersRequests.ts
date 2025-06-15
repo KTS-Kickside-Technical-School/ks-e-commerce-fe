@@ -1,41 +1,42 @@
+import { OrderFormData } from "../types/store";
 import { axiosInstance } from "../utils/axios";
 import { handleError } from "./authRequests"
 
-export const updateOrderStatus = async (data: {
-    _id: string,
-    orderStatus: string
-}) => {
+export const saveOrder = async (data: OrderFormData | any) => {
     try {
-        const response = await axiosInstance.put("/api/order/update-order-status", data);
+        const response = await axiosInstance.post("/api/order/save-order",
+            data
+        );
         return response.data
     } catch (error) {
-        handleError(error);
+        return handleError(error)
     }
 }
 
-export const sellerViewOrders = async () => {
+export const getSingleOrderDetails = async (id: any) => {
     try {
-        const response = await axiosInstance.get("/api/order/seller-view-orders");
+        const response = await axiosInstance.get(`/api/order/customer-get-single-order/${id}`);
         return response.data
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 
-export const addSingleProductOrderProcess = async (data: any) => {
+export const customerUpdateOrder = async (id: any, data: any) => {
     try {
-        const response = await axiosInstance.put("/api/order/add-single-product-order-process", data);
+        const response = await axiosInstance.put(`/api/order/customer-update-order/${id}`, data);
         return response.data
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 
-export const sellerGetSingleOrderDetails = async (_id: any) => {
+export const getCustomerOrders = async () => {
     try {
-        const response = await axiosInstance.get(`/api/order/view-single-product-order-details/${_id}`);
+        const response = await axiosInstance.get("/api/order/customer-get-orders");
         return response.data
+
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { FaTag } from 'react-icons/fa';
+import { formatRWF } from '../../../helpers/round';
 
 interface ProductPriceProps {
   price: number;
@@ -14,12 +15,6 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 }) => {
   const hasDiscount = discount > 0;
   const discountedPrice = Math.round(price - (price * discount) / 100);
-  const formatRWF = (amount: number) =>
-    new Intl.NumberFormat('rw-RW', {
-      style: 'currency',
-      currency: 'RWF',
-      minimumFractionDigits: 0,
-    }).format(amount);
 
   return (
     <motion.div

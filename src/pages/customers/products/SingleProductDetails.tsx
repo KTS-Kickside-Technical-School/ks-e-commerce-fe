@@ -17,7 +17,7 @@ import {
   whatsappNumber,
 } from '../../../requests/productsRequests';
 import { useNavigate, useParams } from 'react-router-dom';
-import { safeToFixed } from '../../../helpers/round';
+import { formatRWF, safeToFixed } from '../../../helpers/round';
 import { iProduct } from '../../../types/store';
 // import { customerAddProductToCart } from '../../../requests/cartRequests';
 import {
@@ -368,11 +368,11 @@ export default function ProductDetails() {
                   <div className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 bg-blue-50/40 border border-blue-100 rounded-xl px-4 py-3 shadow-sm transition duration-300">
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl flex font-extrabold text-blue-700 tracking-tight">
-                        {discountedPrice} RWF
+                        {formatRWF(discountedPrice)}
                       </span>
                       {product.discount > 0 && (
                         <span className="text-base text-gray-500 line-through">
-                          {safeToFixed(product.price)} RWF
+                          {formatRWF(product.price)}
                         </span>
                       )}
                     </div>

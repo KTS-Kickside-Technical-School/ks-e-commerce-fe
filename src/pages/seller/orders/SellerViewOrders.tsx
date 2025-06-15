@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fa';
 import SkeletonTable from '../../../components/SkeletonTable';
 import { FaTruck } from 'react-icons/fa6';
-import { sellerViewOrders } from '../../../requests/ordersRequests';
+// import { sellerViewOrders } from '../../../requests/ordersRequests';
 import SellerNewProductModal from '../../../components/seller/products/SellerNewProductModal';
 import { safeToFixed } from '../../../helpers/round';
 import { FiPackage, FiXCircle } from 'react-icons/fi';
@@ -55,13 +55,13 @@ const SellerViewOrders = () => {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await sellerViewOrders();
-      if (response.status !== 200) {
-        toast.error(response.message);
-        setError(response.message);
-        return;
-      }
-      setData(response.data.orders || []);
+      // const response = await sellerViewOrders();
+      // if (response.status !== 200) {
+      //   toast.error(response.message);
+      //   setError(response.message);
+      //   return;
+      // }
+      // setData(response.data.orders || []);
     } catch (error: any) {
       toast.error('An error occurred while fetching products');
       setError('Failed to load orders. Please try again later.');

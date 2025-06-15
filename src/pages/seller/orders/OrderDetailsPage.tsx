@@ -17,7 +17,7 @@ import SingleOrderImageCarousel from './SingleOrderImageCarousel';
 import { safeToFixed } from '../../../helpers/round';
 import SingleOrderTImeline from './SingleOrderTImeline';
 import SingleOrderSkeleton from './SingleOrderSkeleton';
-import { sellerGetSingleOrderDetails } from '../../../requests/ordersRequests';
+// import { sellerGetSingleOrderDetails } from '../../../requests/ordersRequests';
 import CourierModal from './CourierModal';
 import SingleProductOrderProcesses from './SingleProductOrderProcesses';
 import AddProcessModal from './AddProcessModal';
@@ -41,13 +41,13 @@ const OrderDetailsPage = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await sellerGetSingleOrderDetails(orderId!);
-        if (response.status === 200) {
-          setOrder(response.data.order);
-        } else {
-          setError('Order not found');
-          toast.error('Could not fetch order details');
-        }
+        // const response = await sellerGetSingleOrderDetails(orderId!);
+        // if (response.status === 200) {
+        //   setOrder(response.data.order);
+        // } else {
+        //   setError('Order not found');
+        //   toast.error('Could not fetch order details');
+        // }
       } catch (err) {
         setError('Failed to load order details');
         toast.error('An error occurred');

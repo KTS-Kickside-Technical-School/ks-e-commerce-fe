@@ -191,7 +191,6 @@ const SearchResults = () => {
                 ))}
           </div>
 
-          {/* Pagination */}
           <div className="flex justify-center mt-8 space-x-2">
             {Array.from({ length: totalPages }, (_, i) => (
               <button

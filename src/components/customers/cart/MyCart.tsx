@@ -25,7 +25,6 @@ import PayNowConfirmAddress from './PayNowConfirmAddress';
 import { getProfile } from '../../../utils/axios';
 import CartSkeletonLoader from './CartSkeletonLoader';
 import { iUserProfile } from '../../../types/store';
-import { userPayCartWithStripe } from '../../../requests/paymentRequests';
 
 const CartCheckout = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -159,26 +158,13 @@ const CartCheckout = () => {
     }
 
     if (selectedPayment === 'Bank Card') {
-      await customerPayByStripe();
+      // await customerPayByStripe();
       return;
     } else {
       toast.error('Invalid Payment method selected!');
     }
   };
 
-  const customerPayByStripe = async () => {
-    try {
-      const response = await userPayCartWithStripe();
-      if (response.status === 201) {
-        localStorage.setItem('new-order', response.data.order._id);
-        window.location.href = response?.data?.session;
-        return;
-      }
-      toast.error(response.message);
-    } catch (error: any) {
-      toast.error('Unknonw error occurred', error.message);
-    }
-  };
   return (
     <>
       <Toaster richColors position="top-center" />
@@ -260,7 +246,7 @@ const CartCheckout = () => {
 
                         <div className="flex-1">
                           <Link
-                            to={`/product/${product.slugF}`}
+                            to={`/product/${product.slug}`}
                             className="text-lg font-semibold text-gray-800"
                           >
                             {product.productName}

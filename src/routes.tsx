@@ -32,6 +32,7 @@ import SystemInformation from './pages/admin/SystemInformation';
 import Locations from './pages/admin/Locations';
 import ProductsByCategory from './pages/customers/products/ProductsByCategory';
 import SearchResults from './pages/customers/products/SearchResults';
+import MySingleOrderDetails from './pages/customers/orders/MySingleOrderDetails';
 
 const AppRouter = () => {
   return (
@@ -54,6 +55,7 @@ const AppRouter = () => {
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-order/:id" element={<MySingleOrderDetails />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['seller']} />}>
         <Route path="/seller" element={<DashboardLayout />}>

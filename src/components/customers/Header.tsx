@@ -4,8 +4,8 @@ import {
   FaBars,
   FaChevronDown,
   FaSearch,
-  FaShoppingCart,
   FaTimes,
+  FaTruck,
   FaUser,
 } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -18,7 +18,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [token, setToken] = useState(getToken());
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  // const [cartItems, setCartItems] = useState<any[]>([]);
   const [profile, setProfile] = useState<any>(() => {
     try {
       return JSON.parse(getProfile() || '') || {};
@@ -31,23 +31,23 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      if (token) {
-        try {
-          const response = await customerViewCartProducts();
-          setCartItems(response.data.cartProducts);
-        } catch (error) {
-          console.error('Error fetching cart items:', error);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCartItems = async () => {
+  //     if (token) {
+  //       try {
+  //         const response = await customerViewCartProducts();
+  //         setCartItems(response.data.cartProducts);
+  //       } catch (error) {
+  //         console.error('Error fetching cart items:', error);
+  //       }
+  //     }
+  //   };
 
-    fetchCartItems();
+  //   fetchCartItems();
 
-    const interval = setInterval(fetchCartItems, 30000);
-    return () => clearInterval(interval);
-  }, [token]);
+  //   const interval = setInterval(fetchCartItems, 30000);
+  //   return () => clearInterval(interval);
+  // }, [token]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -188,7 +188,7 @@ const Header = () => {
           >
             <FaSearch />
           </button>
-
+          {/* 
           <Link to="/my-cart" className="relative cursor-pointer">
             <FaShoppingCart className="text-2xl text-gray-700 hover:text-blue-500" />
             {cartItems.length > 0 && (
@@ -196,8 +196,15 @@ const Header = () => {
                 {cartItems.length}
               </span>
             )}
-          </Link>
+          </Link> */}
 
+          <Link
+            to="/my-orders"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm transition-all duration-200"
+          >
+            <FaTruck className="text-blue-600 text-lg" />
+            <span>My Orders</span>
+          </Link>
           {token && profile ? (
             <Link to="/my-account" className="text-gray-700 text-sm">
               <p className="font-semibold">

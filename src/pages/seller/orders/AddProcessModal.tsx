@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaTimes, FaUpload, FaInfoCircle, FaHistory } from 'react-icons/fa';
 import { toast } from 'sonner';
-import { addSingleProductOrderProcess } from '../../../requests/ordersRequests';
+// import { addSingleProductOrderProcess } from '../../../requests/ordersRequests';
 import uploadToCloudinary from '../../../helpers/cloudinary';
 import StatusTimeline from '../../../components/seller/orders/StatusTimeline';
 import ProgressBar from '../../../components/seller/orders/ProgressBar';
@@ -63,14 +63,14 @@ const AddProcessModal = ({
     }
 
     try {
-      await addSingleProductOrderProcess({
-        _id: orderId,
-        orderStatus: status,
-        process: `${status} - ${process}`,
-        date: new Date().toISOString(),
-        ...(status === 'Shipped' && { courier }),
-        images,
-      });
+      // await addSingleProductOrderProcess({
+      //   _id: orderId,
+      //   orderStatus: status,
+      //   process: `${status} - ${process}`,
+      //   date: new Date().toISOString(),
+      //   ...(status === 'Shipped' && { courier }),
+      //   images,
+      // });
 
       toast.success('Order process updated successfully');
       onClose();
