@@ -40,3 +40,22 @@ export const getCustomerOrders = async () => {
         return handleError(error);
     }
 }
+
+export const adminCustomerOrders = async () => {
+    try {
+        const response = await axiosInstance.get("/api/order/admin-get-all-orders");
+        return response.data
+
+    } catch (error) {
+        return handleError(error);
+    }
+}
+
+export const adminGetSingleOrder = async (id: any) => {
+    try {
+        const response = await axiosInstance.get(`/api/order/admin-get-single-order/${id}`);
+        return response.data
+    } catch (error) {
+        return handleError(error);
+    }
+}

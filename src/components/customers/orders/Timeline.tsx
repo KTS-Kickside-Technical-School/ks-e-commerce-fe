@@ -1,18 +1,12 @@
-import React from 'react';
-
-const Timeline = ({
-  events,
-}: {
-  events: Array<{ status: string; note: string; timestamp: string }>;
-}) => (
+const Timeline = ({ events }: any) => (
   <div className="relative pl-8 before:content-[''] before:absolute before:left-3 before:top-2 before:h-[calc(100%-1rem)] before:w-0.5 before:bg-gray-200">
     {events
       .slice()
       .sort(
-        (a, b) =>
+        (a: any, b: any) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       )
-      .map((event, idx) => (
+      .map((event: any, idx: any) => (
         <div key={idx} className="relative mb-6 last:mb-0">
           <div className="absolute -left-8 top-0.5 w-6 h-6 rounded-full bg-white border-4 border-blue-500 z-10"></div>
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">

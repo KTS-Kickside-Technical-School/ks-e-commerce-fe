@@ -170,7 +170,7 @@ interface IContactInfo {
 
 interface IOrderTrackingEntry {
   status: string;
-  note?: string;
+  note: string;
   timestamp: Date;
 }
 

@@ -33,6 +33,8 @@ import Locations from './pages/admin/Locations';
 import ProductsByCategory from './pages/customers/products/ProductsByCategory';
 import SearchResults from './pages/customers/products/SearchResults';
 import MySingleOrderDetails from './pages/customers/orders/MySingleOrderDetails';
+import Orders from './pages/admin/Orders';
+import SingleOrderDetails from './pages/admin/SingleOrderDetails';
 
 const AppRouter = () => {
   return (
@@ -83,6 +85,8 @@ const AppRouter = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="info" element={<SystemInformation />} />
           <Route path="locations" element={<Locations />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="order/:id" element={<SingleOrderDetails />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>
