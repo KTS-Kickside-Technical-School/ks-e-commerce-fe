@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   adminGetSingleOrder,
+  adminUpdateOrder,
   customerUpdateOrder,
 } from '../../requests/ordersRequests';
 import { toast, Toaster } from 'sonner';
@@ -14,6 +15,7 @@ import {
   FaChevronDown,
   FaEnvelope,
   FaPrint,
+  FaTimes,
   FaUpload,
   FaWhatsapp,
 } from 'react-icons/fa';
@@ -111,6 +113,29 @@ const SingleOrderDetails = () => {
     }));
   };
 
+  const handleUpdateorder = async () => {
+    try {
+      const response = await adminUpdateOrder(order!._id, {
+        orderStatus: 'cancelled',
+        orderTrackingHistory: {
+          status: 'Order cancelled',
+          note: 'Admin cancelled the order',
+          timestamp: new Date(),
+        },
+      });
+      if (response.status === 200) {
+        toast.success('Order updated successfully');
+        await fetchOrder();
+      } else {
+        throw new Error(response.message || 'Failed to save payment proof');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <>
       <SEO title={`My Order Details ${order?.trackingCode}: Kickside Store`} />
@@ -166,6 +191,15 @@ const SingleOrderDetails = () => {
               >
                 <FaWhatsapp className="text-green-500" /> WhatsApp
               </button>
+
+              {order.orderStatus === 'pending' && (
+                <button
+                  onClick={handleUpdateorder}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-300 rounded-lg transition-colors text-white"
+                >
+                  <FaTimes /> <span>Cancel</span>
+                </button>
+              )}
             </div>
           </div>
 

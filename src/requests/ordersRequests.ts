@@ -59,3 +59,12 @@ export const adminGetSingleOrder = async (id: any) => {
         return handleError(error);
     }
 }
+
+export const adminUpdateOrder = async (id: any, data: any) => {
+    try {
+        const response = await axiosInstance.put(`/api/order/admin-update-order/${id}`, data);
+        return response.data
+    } catch (error) {
+        return handleError(error);
+    }
+}

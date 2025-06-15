@@ -7,6 +7,7 @@ import {
   FaEnvelope,
   FaWhatsapp,
   FaChevronDown,
+  FaTimes,
 } from 'react-icons/fa';
 import Header from '../../../components/customers/Header';
 import Footer from '../../../components/customers/Footer';
@@ -85,6 +86,7 @@ const MySingleOrderDetails = () => {
     try {
       setLoading(true);
       const response = await getSingleOrderDetails(id!);
+      console.log(response);
       if (response.status === 200) {
         setOrder(response.data.order);
       } else {
@@ -112,6 +114,11 @@ const MySingleOrderDetails = () => {
 
       const response = await customerUpdateOrder(order!._id, {
         paymentProof: imageUrl,
+        orderTrackingHistory: {
+          status: 'Payment proof',
+          note: 'The customer submitted the payment proof',
+          timestamp: new Date(),
+        },
       });
       if (response.status === 200) {
         toast.success('Payment proof uploaded successfully');
@@ -120,6 +127,29 @@ const MySingleOrderDetails = () => {
           paymentProof: imageUrl,
           paymentStatus: 'pending',
         }));
+      } else {
+        throw new Error(response.message || 'Failed to save payment proof');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleUpdateorder = async () => {
+    try {
+      const response = await customerUpdateOrder(order!._id, {
+        orderStatus: 'cancelled',
+        orderTrackingHistory: {
+          status: 'Order cancelled',
+          note: 'The customer cancelled the order',
+          timestamp: new Date(),
+        },
+      });
+      if (response.status === 200) {
+        toast.success('Order updated successfully');
+        await fetchOrder();
       } else {
         throw new Error(response.message || 'Failed to save payment proof');
       }
@@ -214,6 +244,14 @@ const MySingleOrderDetails = () => {
               >
                 <FaWhatsapp className="text-green-500" /> WhatsApp
               </button>
+              {order.orderStatus === 'pending' && (
+                <button
+                  onClick={handleUpdateorder}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-300 rounded-lg transition-colors text-white"
+                >
+                  <FaTimes /> <span>Cancel</span>
+                </button>
+              )}
             </div>
           </div>
 
