@@ -65,10 +65,7 @@ const AppRouter = () => {
           <Route path="new-shop" element={<NewShopForm />} />
           <Route path="products" element={<SellerProductsList />} />
           <Route path="orders" element={<SellerViewOrders />} />
-          <Route
-            path="single-order-details/:orderId"
-            element={<OrderDetailsPage />}
-          />
+          <Route path="order/:id" element={<OrderDetailsPage />} />
           <Route path="profile" element={<Profile />} />
           <Route path="my-shop" element={<MyShop />} />
           <Route path="*" element={<SellerNotFound />} />

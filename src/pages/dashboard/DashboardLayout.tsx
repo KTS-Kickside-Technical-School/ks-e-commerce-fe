@@ -11,6 +11,12 @@ const DashboardLayout = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const token = sessionStorage.getItem('token');
+  console.log('A');
+  if (!token) {
+    window.location.href = '/login';
+  }
   return (
     <div className="h-screen flex flex-col bg-primary-500 overflow-hidden">
       <Toaster richColors position="top-center" />

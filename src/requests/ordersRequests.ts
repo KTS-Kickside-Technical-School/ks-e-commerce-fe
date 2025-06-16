@@ -68,3 +68,14 @@ export const adminUpdateOrder = async (id: any, data: any) => {
         return handleError(error);
     }
 }
+
+export const sellerGetOrders = async () => {
+    try {
+
+        const response = await axiosInstance.get("/api/order/seller-get-shop-orders");
+        return response.data
+
+    } catch (error) {
+        return handleError(error);
+    }
+}

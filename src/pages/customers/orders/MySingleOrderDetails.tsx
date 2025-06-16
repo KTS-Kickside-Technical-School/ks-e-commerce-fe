@@ -96,29 +96,6 @@ const MySingleOrderDetails = () => {
     }
   };
 
-  const handleUpdateorder = async () => {
-    try {
-      const response = await customerUpdateOrder(order!._id, {
-        orderStatus: 'cancelled',
-        orderTrackingHistory: {
-          status: 'Order cancelled',
-          note: 'The customer cancelled the order',
-          timestamp: new Date(),
-        },
-      });
-      if (response.status === 200) {
-        toast.success('Order updated successfully');
-        await fetchOrder();
-      } else {
-        throw new Error(response.message || 'Failed to save payment proof');
-      }
-    } catch (error: any) {
-      toast.error(error.message || 'Upload failed');
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleFileDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     if (!e.dataTransfer.files.length) return;
@@ -234,16 +211,16 @@ const MySingleOrderDetails = () => {
                 >
                   <FaWhatsapp className="text-green-500" /> WhatsApp
                 </button>
-                {/* {order.orderStatus !== 'cancelled' && ( */}
-                <button
-                  onClick={() => {
-                    setCancelConfirmationOpen(true);
-                  }}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-300 rounded-lg transition-colors text-white"
-                >
-                  <FaTimes /> <span>Cancel</span>
-                </button>
-                {/* )} */}
+                {order.orderStatus !== 'cancelled' && (
+                  <button
+                    onClick={() => {
+                      setCancelConfirmationOpen(true);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-300 rounded-lg transition-colors text-white"
+                  >
+                    <FaTimes /> <span>Cancel</span>
+                  </button>
+                )}
               </div>
             </div>
 

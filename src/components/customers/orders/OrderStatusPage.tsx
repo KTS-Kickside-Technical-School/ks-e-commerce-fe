@@ -1,5 +1,3 @@
-import React from 'react';
-
 const statusColors = {
   pending: 'bg-blue-100 text-blue-800',
   processing: 'bg-indigo-100 text-indigo-800',

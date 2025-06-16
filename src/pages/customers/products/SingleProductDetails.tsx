@@ -17,7 +17,7 @@ import {
   whatsappNumber,
 } from '../../../requests/productsRequests';
 import { useNavigate, useParams } from 'react-router-dom';
-import { formatRWF, safeToFixed } from '../../../helpers/round';
+import { formatRWF } from '../../../helpers/round';
 import { iProduct } from '../../../types/store';
 // import { customerAddProductToCart } from '../../../requests/cartRequests';
 import {

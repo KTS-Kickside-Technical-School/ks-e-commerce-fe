@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { adminCustomerOrders } from '../../requests/ordersRequests';
 import { IOrder } from '../../types/store';
 import { toast } from 'sonner';
@@ -16,10 +16,8 @@ import {
   FaTimes,
 } from 'react-icons/fa';
 import SEO from '../../middlewares/SEO';
-import Header from '../../components/customers/Header';
 import { format } from 'date-fns';
 import { formatAccronymsRWF, formatRWF } from '../../helpers/round';
-import Footer from '../../components/customers/Footer';
 
 const Orders = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);

@@ -1,567 +1,631 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import SEO from '../../../middlewares/SEO';
+import { useNavigate } from 'react-router-dom';
+import { sellerGetOrders } from '../../../requests/ordersRequests';
 import { toast } from 'sonner';
 import {
   FaBoxOpen,
-  FaCheckCircle,
+  FaCalendarAlt,
   FaChevronLeft,
   FaChevronRight,
-  FaClock,
-  FaCopy,
   FaEye,
-  FaListAlt,
-  FaPlus,
+  FaFilter,
+  FaMobile,
   FaSearch,
+  FaSortAmountDown,
+  FaTimes,
 } from 'react-icons/fa';
-import SkeletonTable from '../../../components/SkeletonTable';
-import { FaTruck } from 'react-icons/fa6';
-// import { sellerViewOrders } from '../../../requests/ordersRequests';
-import SellerNewProductModal from '../../../components/seller/products/SellerNewProductModal';
-import { safeToFixed } from '../../../helpers/round';
-import { FiPackage, FiXCircle } from 'react-icons/fi';
-import SingleProductOrderProcesses from './SingleProductOrderProcesses';
-import AddProcessModal from './AddProcessModal';
-import CourierModal from './CourierModal';
-import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import { formatAccronymsRWF, formatRWF } from '../../../helpers/round';
+import { IOrder } from '../../../types/store';
 
 const SellerViewOrders = () => {
+  const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any>([]);
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [error, setError] = useState('');
-  const [imageIndex, setImageIndex] = useState<{ [key: string]: number }>({});
-  const [selectedOrder, setSelectedOrder] = useState<{
-    id: string;
-    processes: Array<{ process: string; date: Date }>;
-  } | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [sortOption, setSortOption] = useState('newest');
+  const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchOrders();
+    getOrders();
   }, []);
 
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const [currentOrder, setCurrentOrder] = useState<any>({});
-  const [isAddProcessModalOpen, setIsAddProcessModalOpen] = useState(false);
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const [isCourierModalOpen, setIsCourierModalOpen] = useState(false);
-  const [selectedCourierOrder, setSelectedCourierOrder] = useState<any>(null);
-
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
+  const getOrders = async () => {
     try {
-      // const response = await sellerViewOrders();
-      // if (response.status !== 200) {
-      //   toast.error(response.message);
-      //   setError(response.message);
-      //   return;
-      // }
-      // setData(response.data.orders || []);
+      setLoading(true);
+      const response = await sellerGetOrders();
+      if (response.status !== 200) {
+        throw new Error(response.message);
+      }
+      setOrders(response.data.orders);
     } catch (error: any) {
-      toast.error('An error occurred while fetching products');
-      setError('Failed to load orders. Please try again later.');
+      toast.error(error.message || 'Failed to load orders');
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  const handleImageChange = (
-    id: string,
-    direction: 'prev' | 'next',
-    images: string[]
-  ) => {
-    setImageIndex((prev) => {
-      const currentIndex = prev[id] || 0;
-      const newIndex =
-        direction === 'next'
-          ? (currentIndex + 1) % images.length
-          : (currentIndex - 1 + images.length) % images.length;
-      return { ...prev, [id]: newIndex };
-    });
   };
 
-  const filteredData = data.filter((order: any) => {
-    const matchesSearch = [
-      order.productName?.toLowerCase(),
-      order.trackingNumber?.toLowerCase(),
-      order?.addresses?.street?.toLowerCase(),
-      order?.addresses?.city?.toLowerCase(),
-    ].some((value) => value?.includes(searchQuery.toLowerCase()));
+  const filteredOrders = useMemo(() => {
+    let result = [...orders];
 
-    const matchesStatus =
-      !selectedStatus || order.orderStatus === selectedStatus;
+    if (searchTerm) {
+      result = result.filter(
+        (order) =>
+          order.trackingCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.user.fullNames
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          order.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.contactInfo.phone.includes(searchTerm) ||
+          order.productName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-    const orderDate = new Date(order.createdAt);
-    const matchesDateRange =
-      (!startDate || orderDate >= new Date(startDate)) &&
-      (!endDate || orderDate <= new Date(endDate));
+    if (statusFilter) {
+      result = result.filter((order) => order.orderStatus === statusFilter);
+    }
 
-    return matchesSearch && matchesStatus && matchesDateRange;
-  });
+    switch (sortOption) {
+      case 'newest':
+        result.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
+      case 'oldest':
+        result.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        break;
+      case 'price-high':
+        result.sort((a, b) => b.finalTotalPrice - a.finalTotalPrice);
+        break;
+      case 'price-low':
+        result.sort((a, b) => a.finalTotalPrice - b.finalTotalPrice);
+        break;
+      default:
+        break;
+    }
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    return result;
+  }, [orders, searchTerm, statusFilter, sortOption]);
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'processing':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'shipped':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-300';
+      case 'delivered':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 border-red-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
+    }
+  };
+
+  const getPaymentMethodIcon = (method: string) => {
+    switch (method) {
+      case 'momo':
+        return <FaMobile />;
+      case 'visa':
+        return '💳';
+      case 'stripe':
+        return '💳';
+      case 'cash':
+        return '💵';
+      case 'paypal':
+        return '🔵';
+      default:
+        return '💳';
+    }
+  };
+
+  const viewOrderDetails = (orderId: string) => {
+    navigate(`/seller/order/${orderId}`);
+  };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, sortOption]);
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedOrders = filteredOrders.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const maxButtons = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    let endPage = startPage + maxButtons - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+
+    return (
+      <div className="flex justify-center mt-8">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className={`p-2 rounded-md ${
+              currentPage === 1
+                ? 'text-gray-400 cursor-not-allowed'
+                : 'text-blue-600 hover:bg-blue-100'
+            }`}
+          >
+            <FaChevronLeft />
+          </button>
+
+          {startPage > 1 && (
+            <>
+              <button
+                onClick={() => setCurrentPage(1)}
+                className={`w-10 h-10 rounded-md ${
+                  1 === currentPage
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-600 hover:bg-blue-100'
+                }`}
+              >
+                1
+              </button>
+              {startPage > 2 && <span className="px-2">...</span>}
+            </>
+          )}
+
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+            <button
+              key={startPage + i}
+              onClick={() => setCurrentPage(startPage + i)}
+              className={`w-10 h-10 rounded-md ${
+                startPage + i === currentPage
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-blue-100'
+              }`}
+            >
+              {startPage + i}
+            </button>
+          ))}
+
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && <span className="px-2">...</span>}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`w-10 h-10 rounded-md ${
+                  totalPages === currentPage
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-600 hover:bg-blue-100'
+                }`}
+              >
+                {totalPages}
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage === totalPages}
+            className={`p-2 rounded-md ${
+              currentPage === totalPages
+                ? 'text-gray-400 cursor-not-allowed'
+                : 'text-blue-600 hover:bg-blue-100'
+            }`}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold text-gray-700">
-          Orders Management
-        </h2>
-        <button
-          title="Add New Product"
-          onClick={() => setIsProductModalOpen(true)}
-          className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg"
-        >
-          <FaPlus className="text-sm" />
-          <span className="hidden sm:inline">Add Product</span>
-        </button>
-      </div>
-
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Search Input - Full width on mobile, then normal */}
-        <div className="relative sm:col-span-2 lg:col-span-1">
-          <input
-            type="text"
-            placeholder="Search orders..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
-          <FaSearch className="absolute right-3 top-3 text-gray-400" />
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <SEO
+        title="View Shop Orders - Kickside Store: Seller"
+        description="View and manage your shop orders, track their status and update them as they progress."
+      />
+      <div className="max-w-7xl mx-auto p-4 md:p-6  mx-auto px-4 py-8">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+            Track Orders
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            View and manage all customers recent orders in one place. Track
+            shipments, view order details, and check order status.
+          </p>
         </div>
 
-        {/* Date Inputs - Stack on mobile, side by side on sm+ */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            placeholder="From date"
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            placeholder="To date"
-          />
-        </div>
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search by tracking code, name, email, phone, or product..."
+                className="w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-400 outline-none shadow-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FaSearch className="absolute left-4 top-4 text-gray-400" />
+            </div>
 
-        {/* Items Per Page - Full width on mobile, normal on sm+ */}
-        <select
-          value={itemsPerPage}
-          onChange={(e) => {
-            setItemsPerPage(Number(e.target.value));
-            setCurrentPage(1);
-          }}
-          className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 w-full sm:w-auto"
-        >
-          <option value="10">10 per page</option>
-          <option value="20">20 per page</option>
-          <option value="50">50 per page</option>
-        </select>
-      </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white border rounded-xl shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              <FaFilter className="text-blue-500" />
+              <span>Filters</span>
+            </button>
+          </div>
 
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2 border-b border-gray-200">
-          <button
-            onClick={() => setSelectedStatus(null)}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              !selectedStatus
-                ? 'bg-blue-100 text-blue-800 border-b-2 border-blue-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FaListAlt className="mr-2" />
-            All Orders
-          </button>
-          <button
-            onClick={() => setSelectedStatus('Pending')}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              selectedStatus === 'Pending'
-                ? 'bg-yellow-100 text-yellow-800 border-b-2 border-yellow-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FaClock className="mr-2" />
-            Pending
-          </button>
-          <button
-            onClick={() => setSelectedStatus('Paid')}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              selectedStatus === 'Paid'
-                ? 'bg-blue-100 text-blue-800 border-b-2 border-blue-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FaCheckCircle className="mr-2" />
-            Paid
-          </button>
-          <button
-            onClick={() => setSelectedStatus('Shipped')}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              selectedStatus === 'Shipped'
-                ? 'bg-indigo-100 text-indigo-800 border-b-2 border-indigo-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FaTruck className="mr-2" />
-            Shipped
-          </button>
-          <button
-            onClick={() => setSelectedStatus('Delivered')}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              selectedStatus === 'Delivered'
-                ? 'bg-green-100 text-green-800 border-b-2 border-green-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FaBoxOpen className="mr-2" />
-            Delivered
-          </button>
-          <button
-            onClick={() => setSelectedStatus('Cancelled')}
-            className={`flex items-center px-4 py-2 rounded-t-lg ${
-              selectedStatus === 'Cancelled'
-                ? 'bg-red-100 text-red-800 border-b-2 border-red-500'
-                : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <FiXCircle className="mr-2" />
-            Cancelled
-          </button>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
-        {loading ? (
-          <SkeletonTable rows={5} cols={6} />
-        ) : error ? (
-          <div className="text-center text-red-500 py-4">{error}</div>
-        ) : data.length > 0 ? (
-          <>
-            <table className="min-w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="p-3  min-w-[120px] text-left whitespace-nowrap">
-                    Tracking number
-                  </th>
-                  <th className="p-3 min-w-[120px] text-left">Product image</th>
-                  <th className="p-3  min-w-[120px] text-left whitespace-nowrap">
-                    Customer email
-                  </th>
-                  <th className="p-3 min-w-[160px] flex-1 text-left">
-                    Product Name
-                  </th>
-                  <th className="p-3 min-w-[80px] text-left">Quantity</th>
-                  <th className="p-3 min-w-[120px] text-left whitespace-nowrap">
-                    Total Paid Price
-                  </th>
-                  <th className="p-3 min-w-[140px] text-left">
-                    Payment method
-                  </th>
-                  <th className="p-3 min-w-[200px] text-left">
-                    Shipping address
-                  </th>
-                  <th className="p-3 min-w-[100px] text-left">Status</th>
-                  <th className="p-3 w-32 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.length > 0 ? (
-                  filteredData
-                    .slice(
-                      (currentPage - 1) * itemsPerPage,
-                      currentPage * itemsPerPage
-                    )
-                    .map((order: any) => (
-                      <tr
-                        key={order._id}
-                        className="border-b hover:bg-gray-100 transition duration-200"
-                      >
-                        <td className="p-3">{order.trackingNumber}</td>
-                        <td className="p-3 align-top flex items-center justify-center gap-2">
-                          {order.images.length > 1 && (
-                            <button
-                              onClick={() =>
-                                handleImageChange(
-                                  order._id,
-                                  'prev',
-                                  order.images
-                                )
-                              }
-                            >
-                              <FaChevronLeft className="text-gray-600 hover:text-gray-800" />
-                            </button>
-                          )}
-
-                          <img
-                            src={order.images[imageIndex[order._id] || 0]}
-                            alt={order.productName}
-                            className="w-12 h-12 rounded-md border object-cover"
-                          />
-
-                          {order.images.length > 1 && (
-                            <button
-                              onClick={() =>
-                                handleImageChange(
-                                  order._id,
-                                  'next',
-                                  order.images
-                                )
-                              }
-                            >
-                              <FaChevronRight className="text-gray-600 hover:text-gray-800" />
-                            </button>
-                          )}
-                        </td>
-                        <td className="p-3">
-                          <a href={`mailto: ${order.customer.email}`}>
-                            {order.customer.email}
-                          </a>
-                        </td>
-                        <td className="p-3 font-medium">{order.productName}</td>
-                        <td className="p-3 text-gray-600">{order.quantity}</td>
-                        <td className="p-3 text-gray-600">
-                          {safeToFixed(order.finalTotalPrice)}RWF
-                        </td>
-                        <td className="p-3 text-gray-600">
-                          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors bg-green-100 text-green-800 hover:bg-yellow-200">
-                            <span className="mt-0.5">
-                              {order.paymentMethod}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="p-3">
-                          <div className="group relative">
-                            <div className="flex items-center gap-2">
-                              <div className="text-gray-700">
-                                <div className="flex flex-col">
-                                  <span className="block">
-                                    {order?.addresses?.street}
-                                  </span>
-                                  <span className="block">
-                                    {order?.addresses?.city},{' '}
-                                    {order?.addresses?.region}
-                                  </span>
-                                  <span className="block">
-                                    {order?.addresses?.country},{' '}
-                                    {order?.addresses?.postalCode}
-                                  </span>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() => {
-                                  const addressText = `${order?.addresses?.street}, ${order?.addresses?.city}, ${order?.addresses?.region}, ${order?.addresses?.country}, ${order?.addresses?.postalCode}`;
-                                  navigator.clipboard
-                                    .writeText(addressText)
-                                    .then(() =>
-                                      toast.success(
-                                        'Address copied to clipboard!'
-                                      )
-                                    )
-                                    .catch(() =>
-                                      toast.error('Failed to copy address')
-                                    );
-                                }}
-                                className="text-gray-400 hover:text-blue-600 transition-colors duration-200"
-                                title="Copy address"
-                                aria-label="Copy address to clipboard"
-                              >
-                                <FaCopy className="w-4 h-4" />
-                                <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                  Copy
-                                </span>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="p-3">
-                          <div
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                              order.orderStatus === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                                : order.orderStatus === 'Paid'
-                                ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                                : order.orderStatus === 'Shipped'
-                                ? 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
-                                : order.orderStatus === 'Delivered'
-                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                : 'bg-red-100 text-red-800 hover:bg-red-200'
-                            }`}
-                          >
-                            {order.orderStatus === 'Pending' && (
-                              <FaClock className="w-4 h-4 mr-1.5 opacity-90" />
-                            )}
-                            {order.orderStatus === 'Paid' && (
-                              <FaCheckCircle className="w-4 h-4 mr-1.5 opacity-90" />
-                            )}
-                            {order.orderStatus === 'Shipped' && (
-                              <FaTruck className="w-4 h-4 mr-1.5 opacity-90" />
-                            )}
-                            {order.orderStatus === 'Delivered' && (
-                              <FiPackage className="w-4 h-4 mr-1.5 opacity-90" />
-                            )}
-                            {order.orderStatus === 'Cancelled' && (
-                              <FiXCircle className="w-4 h-4 mr-1.5 opacity-90" />
-                            )}
-                            <span className="mt-0.5">{order.orderStatus}</span>
-                          </div>
-                        </td>
-                        <td className="p-3 flex justify-center space-x-3">
-                          <div className="hidden md:flex space-x-2">
-                            <button
-                              onClick={() =>
-                                setSelectedOrder({
-                                  id: order._id,
-                                  processes: order.orderProcesses || [],
-                                })
-                              }
-                              className="p-2 rounded-md bg-gray-500 hover:bg-gray-600 text-white flex items-center transition duration-200"
-                              aria-label="View order processes"
-                            >
-                              <FaListAlt className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                setCurrentOrder(order);
-                                setIsAddProcessModalOpen(true);
-                              }}
-                              className="p-2 rounded-md bg-green-500 hover:bg-green-600 text-white flex items-center transition duration-200"
-                              aria-label="Add order process"
-                            >
-                              <FaPlus className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSelectedCourierOrder(order);
-                                setIsCourierModalOpen(true);
-                              }}
-                              className="p-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white flex items-center transition duration-200"
-                              aria-label="Add courier info"
-                            >
-                              <FaTruck className="w-4 h-4" />
-                            </button>
-                            <Link
-                              to={`/seller/single-order-details/${order._id}`}
-                              className="p-2 rounded-md bg-purple-500 hover:bg-purple-600 text-white flex items-center transition duration-200"
-                              aria-label="View order details"
-                            >
-                              <FaEye className="w-4 h-4" />
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="p-3 text-center">
-                      No orders found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-            <div className="flex flex-col md:flex-row items-center justify-between mt-4 px-4 py-3 border-t border-gray-200">
-              <div className="mb-2 md:mb-0 text-sm text-gray-700">
-                Showing{' '}
-                {Math.min(
-                  (currentPage - 1) * itemsPerPage + 1,
-                  filteredData.length
-                )}
-                -{Math.min(currentPage * itemsPerPage, filteredData.length)} of{' '}
-                {filteredData.length} orders
+          {showFilters && (
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-4 border border-gray-100">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Filter Orders
+                </h3>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <FaTimes />
+                </button>
               </div>
 
-              <div className="flex items-center gap-2">
-                <select
-                  value={itemsPerPage}
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                  className="border rounded-md px-2 py-1 text-sm"
-                >
-                  {[10, 20, 50].map((size) => (
-                    <option key={size} value={size}>
-                      Show {size}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Order Status
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      'pending',
+                      'processing',
+                      'shipped',
+                      'delivered',
+                      'cancelled',
+                    ].map((status) => (
+                      <button
+                        key={status}
+                        onClick={() =>
+                          setStatusFilter(statusFilter === status ? '' : status)
+                        }
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                          statusFilter === status
+                            ? `${getStatusBadgeClass(status)} border`
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1 rounded-md border hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FaChevronLeft className="inline-block" />
-                </button>
-
-                <span className="px-3 py-1 text-sm">
-                  Page {currentPage} of {totalPages}
-                </span>
-
-                <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1 rounded-md border hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FaChevronRight className="inline-block" />
-                </button>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Sort By
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setSortOption('newest')}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                        sortOption === 'newest'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <FaCalendarAlt /> Newest
+                    </button>
+                    <button
+                      onClick={() => setSortOption('oldest')}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                        sortOption === 'oldest'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <FaCalendarAlt /> Oldest
+                    </button>
+                    <button
+                      onClick={() => setSortOption('price-high')}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                        sortOption === 'price-high'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <FaSortAmountDown /> Price: High to Low
+                    </button>
+                    <button
+                      onClick={() => setSortOption('price-low')}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                        sortOption === 'price-low'
+                          ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <FaSortAmountDown className="transform rotate-180" />{' '}
+                      Price: Low to High
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </>
+          )}
+
+          {(searchTerm || statusFilter) && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {searchTerm && (
+                <div className="flex items-center bg-blue-50 rounded-full px-3 py-1 text-sm">
+                  <span>Search: "{searchTerm}"</span>
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <FaTimes size={12} />
+                  </button>
+                </div>
+              )}
+
+              {statusFilter && (
+                <div className="flex items-center bg-blue-50 rounded-full px-3 py-1 text-sm">
+                  <span>Status: {statusFilter}</span>
+                  <button
+                    onClick={() => setStatusFilter('')}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <FaTimes size={12} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600 text-lg">Loading your orders...</p>
+          </div>
+        ) : paginatedOrders.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <FaBoxOpen className="text-gray-500 text-2xl" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700">
+              No orders found
+            </h3>
+            <p className="text-gray-500 mt-2 max-w-md mx-auto">
+              {searchTerm || statusFilter
+                ? 'Try changing your search or filter criteria'
+                : "You haven't placed any orders yet. Start shopping to see your orders here!"}
+            </p>
+            {!searchTerm && !statusFilter && (
+              <button
+                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => navigate('/category/All')}
+              >
+                Browse Products
+              </button>
+            )}
+          </div>
         ) : (
-          <div className="text-center text-gray-500 py-4">No orders found.</div>
+          <>
+            <div className="grid grid-cols-1 gap-6">
+              {paginatedOrders.map((order) => (
+                <div
+                  key={order._id}
+                  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-shadow"
+                >
+                  <div className="p-5 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-gray-800">Order:</span>
+                        <button
+                          onClick={() => viewOrderDetails(order._id)}
+                          className="text-blue-600 font-mono"
+                        >
+                          {order.trackingCode}
+                        </button>
+                      </div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {format(
+                          new Date(order.createdAt),
+                          'MMM dd, yyyy - hh:mm a'
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(
+                          order.orderStatus
+                        )} border`}
+                      >
+                        {order.orderStatus.charAt(0).toUpperCase() +
+                          order.orderStatus.slice(1)}
+                      </span>
+                      <button
+                        onClick={() => viewOrderDetails(order._id)}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      >
+                        <FaEye /> View Details
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="flex gap-4">
+                        {order.productImages.length > 0 && (
+                          <button
+                            onClick={() => viewOrderDetails(order._id)}
+                            className="flex items-center gap-4"
+                          >
+                            <img
+                              src={order.productImages[0]}
+                              alt={order.productName}
+                              className="w-20 h-20 rounded-lg object-cover border"
+                            />
+                          </button>
+                        )}
+                        <div className="flex-1">
+                          <button
+                            onClick={() => viewOrderDetails(order._id)}
+                            className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                          >
+                            {order.productName}
+                          </button>
+                          <div className="mt-2 flex gap-4">
+                            <div>
+                              <div className="text-xs text-gray-500">
+                                Quantity
+                              </div>
+                              <div className="font-medium">
+                                {order.quantity}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500">
+                                Unit Price
+                              </div>
+                              <div className="font-medium">
+                                {formatRWF(order.finalUnitPrice)}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-500 mb-2">
+                          Customer
+                        </h4>
+                        <div className="space-y-1">
+                          <div className="font-medium">
+                            {order.user?.fullNames}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {order.user.email}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {order.contactInfo.phone}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-gray-600">Subtotal:</span>
+                          <span>
+                            {formatRWF(order.finalUnitPrice * order.quantity)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-gray-600">Shipping:</span>
+                          <span>{formatRWF(order.shippingOptions.fee)}</span>
+                        </div>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-gray-600">Discount:</span>
+                          <span className="text-red-600">
+                            -{order.discount}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                          <span className="font-semibold text-gray-800">
+                            Total:
+                          </span>
+                          <span className="text-xl font-bold text-blue-600">
+                            {formatRWF(order.finalTotalPrice)}
+                          </span>
+                        </div>
+                        <div className="flex justify-end mt-1">
+                          <span className="text-sm text-gray-500 flex items-center gap-1">
+                            {getPaymentMethodIcon(order.paymentMethod)}{' '}
+                            {order.paymentMethod.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm text-gray-600">
+                Showing {Math.min(startIndex + 1, filteredOrders.length)} to{' '}
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredOrders.length)}{' '}
+                of {filteredOrders.length} orders
+              </div>
+
+              {renderPagination()}
+            </div>
+            {!loading && (
+              <div className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm p-5 border border-blue-100">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="text-center p-4 bg-white/80 rounded-xl border border-blue-200 select-none">
+                    <div className="text-3xl font-bold text-blue-600">
+                      {filteredOrders.length || 0}
+                    </div>
+                    <div className="text-blue-700 font-medium">
+                      Total Orders
+                    </div>
+                  </div>
+                  <div className="text-center p-4 bg-white/80 rounded-xl border border-blue-200 select-none">
+                    <div className="text-3xl font-bold text-blue-500">
+                      {filteredOrders.filter((o) => o.orderStatus === 'pending')
+                        .length || 0}
+                    </div>
+                    <div className="text-blue-700 font-medium">Pending</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/80 rounded-xl border border-blue-200 select-none">
+                    <div className="text-3xl font-bold text-indigo-500">
+                      {filteredOrders.filter((o) => o.orderStatus === 'shipped')
+                        .length || 0}
+                    </div>
+                    <div className="text-blue-700 font-medium">Shipped</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/80 rounded-xl border border-blue-200 select-none">
+                    <div className="text-3xl font-bold text-teal-500">
+                      {filteredOrders.filter(
+                        (o) => o.orderStatus === 'delivered'
+                      ).length || 0}
+                    </div>
+                    <div className="text-blue-700 font-medium">Delivered</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/80 rounded-xl border border-blue-200 select-none">
+                    <div className="text-3xl font-bold text-blue-600">
+                      {formatAccronymsRWF(
+                        filteredOrders.reduce(
+                          (sum, order) => sum + order.finalTotalPrice,
+                          0
+                        )
+                      )}
+                    </div>
+                    <div className="text-blue-700 font-medium">Total Spent</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
-      {isProductModalOpen && (
-        <SellerNewProductModal onClose={() => setIsProductModalOpen(false)} />
-      )}
-      {selectedOrder && (
-        <SingleProductOrderProcesses
-          onClose={() => setSelectedOrder(null)}
-          processes={selectedOrder.processes}
-        />
-      )}
-      {isAddProcessModalOpen && currentOrder && (
-        <AddProcessModal
-          isOpen={isAddProcessModalOpen}
-          onClose={() => {
-            setIsAddProcessModalOpen(false);
-            setCurrentOrder(null);
-          }}
-          orderId={currentOrder?._id || ''}
-          orderStatus={currentOrder.orderStatus}
-        />
-      )}
-
-      {isCourierModalOpen && selectedCourierOrder && (
-        <CourierModal
-          order={selectedCourierOrder}
-          onClose={() => {
-            setIsCourierModalOpen(false);
-            setSelectedCourierOrder(null);
-          }}
-        />
-      )}
     </div>
   );
 };
