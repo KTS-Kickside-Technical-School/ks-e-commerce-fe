@@ -17,15 +17,7 @@ import {
 } from 'react-icons/fa';
 import { FiChevronDown } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-
-const countries = [
-  {
-    code: 'CN',
-    name: 'China',
-    provinces: ['Beijing', 'Shanghai', 'Guangdong'],
-  },
-  { code: 'US', name: 'United States', provinces: ['California', 'New York'] },
-];
+import { getAllLocations } from '../../../requests/locationRequests';
 
 const CustomerProfile = () => {
   const [profile, setProfile] = useState<iUserProfile>(() => {
@@ -45,9 +37,56 @@ const CustomerProfile = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<number | null>(null);
   const navigate = useNavigate();
 
+  const [countries, setCountries] = useState([
+    {
+      code: 'CN',
+      name: 'China',
+      provinces: ['Beijing', 'Shanghai', 'Guangdong'],
+    },
+    {
+      code: 'US',
+      name: 'United States',
+      provinces: ['California', 'New York'],
+    },
+  ]);
+
   useEffect(() => {
     setTempProfile({ ...profile });
   }, [profile]);
+
+  useEffect(() => {
+    getLocations();
+  }, []);
+
+  const getLocations = async () => {
+    try {
+      const response = await getAllLocations();
+
+      if (response.status === 200) {
+        const rawLocations = response.data.locations;
+
+        const grouped = rawLocations.reduce((acc: any, loc: any) => {
+          const existing = acc.find((c: any) => c.code === loc.code);
+          if (existing) {
+            if (!existing.provinces.includes(loc.city)) {
+              existing.provinces.push(loc.city);
+            }
+          } else {
+            acc.push({
+              code: loc.code,
+              name: loc.country,
+              provinces: [loc.city],
+            });
+          }
+          return acc;
+        }, []);
+
+        setCountries(grouped);
+      }
+    } catch (error) {
+      toast.error('Unknown error occurred');
+    }
+  };
 
   const handleAddressSave = async () => {
     try {
@@ -162,6 +201,7 @@ const CustomerProfile = () => {
       toast.error('Failed to update profile');
     }
   };
+
   const logout = () => {
     sessionStorage.clear();
     toast.success('Logged out successfully!');
@@ -306,7 +346,6 @@ const CustomerProfile = () => {
               </button>
             </div>
 
-            {/* Address Form */}
             {(editAddressIndex >= 0 || Object.keys(newAddress).length > 0) && (
               <div className="bg-blue-50 p-6 rounded-xl mb-8 border border-blue-200">
                 <h3 className="text-lg font-semibold mb-6 text-blue-900 flex items-center gap-2">

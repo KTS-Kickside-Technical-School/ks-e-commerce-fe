@@ -13,7 +13,7 @@ import AdminViewProducts from './components/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
 import AdminNotFound from './components/admin/AdminNotFound';
 import SellerProductsList from './pages/seller/products/SellerProductsList';
-import SingleProductDetails from './components/customers/products/SingleProductDetails';
+import SingleProductDetails from './pages/customers/products/SingleProductDetails';
 import CartCheckout from './components/customers/cart/MyCart';
 import CustomerProfile from './pages/customers/profile/CustomerProfile';
 import MyOrders from './pages/customers/orders/MyOrders';
@@ -32,6 +32,9 @@ import SystemInformation from './pages/admin/SystemInformation';
 import Locations from './pages/admin/Locations';
 import ProductsByCategory from './pages/customers/products/ProductsByCategory';
 import SearchResults from './pages/customers/products/SearchResults';
+import MySingleOrderDetails from './pages/customers/orders/MySingleOrderDetails';
+import Orders from './pages/admin/Orders';
+import SingleOrderDetails from './pages/admin/SingleOrderDetails';
 
 const AppRouter = () => {
   return (
@@ -54,6 +57,7 @@ const AppRouter = () => {
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-order/:id" element={<MySingleOrderDetails />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['seller']} />}>
         <Route path="/seller" element={<DashboardLayout />}>
@@ -61,10 +65,7 @@ const AppRouter = () => {
           <Route path="new-shop" element={<NewShopForm />} />
           <Route path="products" element={<SellerProductsList />} />
           <Route path="orders" element={<SellerViewOrders />} />
-          <Route
-            path="single-order-details/:orderId"
-            element={<OrderDetailsPage />}
-          />
+          <Route path="order/:id" element={<OrderDetailsPage />} />
           <Route path="profile" element={<Profile />} />
           <Route path="my-shop" element={<MyShop />} />
           <Route path="*" element={<SellerNotFound />} />
@@ -81,6 +82,8 @@ const AppRouter = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="info" element={<SystemInformation />} />
           <Route path="locations" element={<Locations />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="order/:id" element={<SingleOrderDetails />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>

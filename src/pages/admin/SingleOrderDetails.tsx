@@ -1,29 +1,33 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { IOrder } from '../../../types/store';
 import {
   adminGetSingleOrder,
   adminUpdateOrder,
-} from '../../../requests/ordersRequests';
+  customerUpdateOrder,
+} from '../../requests/ordersRequests';
 import { toast, Toaster } from 'sonner';
-import { formatRWF } from '../../../helpers/round';
-import SEO from '../../../middlewares/SEO';
+import { IOrder } from '../../types/store';
+import uploadToCloudinary from '../../helpers/cloudinary';
+import { formatRWF } from '../../helpers/round';
+import SEO from '../../middlewares/SEO';
 import {
   FaChevronDown,
   FaEnvelope,
   FaPrint,
   FaTimes,
+  FaUpload,
   FaWhatsapp,
 } from 'react-icons/fa';
-import OrderStatusBadge from '../../../components/customers/orders/OrderStatusPage';
-import PaymentStatusBadge from '../../../components/customers/orders/PaymentStatusPage';
-import Timeline from '../../../components/customers/orders/Timeline';
-import CancelOrderConfirmation from '../../../components/admin/orders/CancelOrderConfirmation';
+import OrderStatusBadge from '../../components/customers/orders/OrderStatusPage';
+import PaymentStatusBadge from '../../components/customers/orders/PaymentStatusPage';
+import Timeline from '../../components/customers/orders/Timeline';
+import CancelOrderConfirmation from '../../components/admin/orders/CancelOrderConfirmation';
 
-const OrderDetailsPage = () => {
+const SingleOrderDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<IOrder | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     orderInfo: true,
     product: true,
@@ -55,6 +59,46 @@ const OrderDetailsPage = () => {
     fetchOrder();
   }, [fetchOrder]);
 
+  const handlePaymentProofUpload = async (file: File) => {
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const imageUrl = await uploadToCloudinary(file);
+
+      if (!imageUrl) throw new Error('Upload failed');
+
+      const response = await customerUpdateOrder(order!._id, {
+        paymentProof: imageUrl,
+      });
+      if (response.status === 200) {
+        toast.success('Payment proof uploaded successfully');
+        setOrder((prev) => ({
+          ...prev!,
+          paymentProof: imageUrl,
+          paymentStatus: 'pending',
+        }));
+      } else {
+        throw new Error(response.message || 'Failed to save payment proof');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    if (!e.dataTransfer.files.length) return;
+    handlePaymentProofUpload(e.dataTransfer.files[0]);
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    handlePaymentProofUpload(e.target.files[0]);
+  };
+
   const handlePrint = () => window.print();
   const handleEmail = () =>
     window.open(`mailto:${order?.contactInfo?.email || ''}`);
@@ -78,8 +122,8 @@ const OrderDetailsPage = () => {
       const response = await adminUpdateOrder(order!._id, {
         orderStatus: 'cancelled',
         orderTrackingHistory: {
-          status: 'Seller cancelled order',
-          note: reason || 'Cancelled by seller',
+          status: 'Admin cancelled order',
+          note: reason || 'Cancelled by admin',
           timestamp: new Date(),
         },
       });
@@ -104,11 +148,7 @@ const OrderDetailsPage = () => {
 
   return (
     <>
-      <SEO
-        title={`Order Details ${
-          order?.trackingCode || ''
-        }: Seller - Kickside Store`}
-      />
+      <SEO title={`My Order Details ${order?.trackingCode}: Kickside Store`} />
       <Toaster position="top-center" richColors />
       {loading ? (
         <div className="max-w-5xl mx-auto p-6">
@@ -436,13 +476,63 @@ const OrderDetailsPage = () => {
                         alt="Payment proof"
                         className="max-w-full md:max-w-md rounded-lg border shadow mb-4"
                       />
+                      <button
+                        onClick={() =>
+                          setOrder({ ...order, paymentProof: undefined })
+                        }
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Re-upload Payment Proof
+                      </button>
                     </div>
                   ) : (
-                    <div className="bg-red-50 text-red-700 p-8 rounded-xl">
-                      <h2 className="text-2xl font-bold mb-4">
-                        Payment proof not found!
-                      </h2>
-                      <p>Customer has not yet uploaded the payment proof, be</p>
+                    <div className="text-center py-8">
+                      <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer"
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={handleFileDrop}
+                      >
+                        <div className="max-w-md mx-auto p-8 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-blue-50 transition-colors">
+                          <div className="flex flex-col items-center justify-center gap-4">
+                            <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                              <FaUpload className="h-8 w-8 text-blue-600" />
+                            </div>
+
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                Upload payment proof
+                              </p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Drag & drop your file here or click to browse
+                              </p>
+                              <p className="text-xs text-gray-400 mt-2">
+                                Supported formats: JPG, PNG, PDF (max 5MB)
+                              </p>
+                            </div>
+
+                            <input
+                              id="file-upload"
+                              type="file"
+                              className="hidden"
+                              accept="image/*,application/pdf"
+                              onChange={handleFileInput}
+                              disabled={uploading}
+                            />
+
+                            {uploading && (
+                              <div className="mt-4">
+                                <div className="h-2 w-48 bg-gray-200 rounded-full overflow-hidden">
+                                  <div className="h-full bg-blue-600 rounded-full animate-pulse w-3/4"></div>
+                                </div>
+                                <p className="text-sm text-gray-500 mt-2">
+                                  Uploading...
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </label>
                     </div>
                   )}
                 </div>
@@ -463,4 +553,4 @@ const OrderDetailsPage = () => {
   );
 };
 
-export default OrderDetailsPage;
+export default SingleOrderDetails;

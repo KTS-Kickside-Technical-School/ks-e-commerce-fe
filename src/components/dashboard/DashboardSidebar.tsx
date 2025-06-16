@@ -7,6 +7,7 @@ import {
   FaSignOutAlt,
   FaStore,
   FaShippingFast,
+  FaTruck,
 } from 'react-icons/fa';
 import { toast, Toaster } from 'sonner';
 import { MdOutlineSystemSecurityUpdate } from 'react-icons/md';
@@ -35,6 +36,7 @@ const DashboardSidebar = ({
     { name: 'Dashboard', icon: <FaHome />, path: '/admin/' },
     { name: 'Sellers', icon: <FaStore />, path: '/admin/sellers' },
     { name: 'Products', icon: <FaBox />, path: '/admin/products' },
+    { name: 'Orders', icon: <FaTruck />, path: '/admin/orders' },
     {
       name: 'System information',
       icon: <MdOutlineSystemSecurityUpdate />,

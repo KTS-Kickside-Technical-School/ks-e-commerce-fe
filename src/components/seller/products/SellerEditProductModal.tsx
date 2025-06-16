@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTimes, FaUpload } from 'react-icons/fa';
+import { FaSave, FaTimes, FaUpload } from 'react-icons/fa';
 import RichTextEditor from '../../RichTextEditor';
 import { editProduct } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
@@ -23,6 +23,11 @@ class SellerEditProductModal extends React.Component<Props, any> {
         stock: props.product.stock,
         status: props.product.status || 'inactive',
         categories: [],
+        shippingOptions: {
+          fee: props.product.shippingOptions.fee || 0,
+          note: props.product.shippingOptions.note || 'no note',
+          duration: props.product.shippingOptions.duration,
+        },
       },
       images: props.product.images,
       loading: false,
@@ -40,6 +45,22 @@ class SellerEditProductModal extends React.Component<Props, any> {
       errors: {
         ...prevState.errors,
         [name]: '',
+      },
+    }));
+  };
+  handleShippingInputChange = (e: any) => {
+    const { name, value } = e.target;
+    this.setState((prevState: any) => ({
+      formData: {
+        ...prevState.formData,
+        shippingOptions: {
+          ...prevState.formData.shippingOptions,
+          [name]: value,
+        },
+      },
+      errors: {
+        ...prevState.errors,
+        shippingOptions: '',
       },
     }));
   };
@@ -136,7 +157,7 @@ class SellerEditProductModal extends React.Component<Props, any> {
     }
   };
 
-   componentDidMount() {
+  componentDidMount() {
     this.getCategories();
   }
   render() {
@@ -144,7 +165,7 @@ class SellerEditProductModal extends React.Component<Props, any> {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[200]">
-        <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-4xl">
+        <div className="bg-white h-[95%] overflow-auto p-8 rounded-lg shadow-2xl w-full max-w-4xl">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
             Edit Product
           </h2>
@@ -373,6 +394,76 @@ class SellerEditProductModal extends React.Component<Props, any> {
                     </p>
                   )}
                 </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Shipping Options
+                    <span className="text-red-500">*</span>
+                  </label>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div>
+                      <label
+                        htmlFor="shippingFee"
+                        className="block text-sm text-gray-600 mb-1"
+                      >
+                        Fee(FRW)
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="shippingFee"
+                        name="fee"
+                        onChange={this.handleShippingInputChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g. 2000"
+                        min="0"
+                        value={formData.shippingOptions.fee}
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="shippingNote"
+                        className="block text-sm text-gray-600 mb-1"
+                      >
+                        Note
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="shippingNote"
+                        name="note"
+                        value={formData.shippingOptions.note}
+                        onChange={this.handleShippingInputChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g. Free shipping"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="shippingDuration"
+                        className="block text-sm text-gray-600 mb-1"
+                      >
+                        Duration
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="shippingDuration"
+                        name="duration"
+                        value={formData.shippingOptions.duration}
+                        onChange={this.handleShippingInputChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                  {errors.shippingOptions && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.shippingOptions}
+                    </p>
+                  )}
+                </div>
               </div>
             </form>
           </div>
@@ -380,9 +471,10 @@ class SellerEditProductModal extends React.Component<Props, any> {
             <button
               type="button"
               onClick={this.props.onClose}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg"
+              className="bg-red-500 flex hover:bg-gray-600 text-white px-6 py-2 rounded-lg"
             >
-              Cancel
+              <FaTimes className="m-1" />
+              <span>Cancel</span>
             </button>
             <button
               type="submit"
@@ -390,7 +482,14 @@ class SellerEditProductModal extends React.Component<Props, any> {
               className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg"
               onClick={this.handleSubmit}
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? (
+                'Saving...'
+              ) : (
+                <div className="flex">
+                  <FaSave className="m-1" />
+                  <span>Save</span>
+                </div>
+              )}
             </button>
           </div>
         </div>

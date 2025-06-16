@@ -33,6 +33,11 @@ export interface iProduct {
   category: string;
   status?: string;
   shop?: ISellerShop;
+  shippingOptions: {
+    fee: number;
+    note: string;
+    duration: string;
+  }
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -86,4 +91,116 @@ export interface iLocation {
   street?: string;
   postalCode?: string;
   createdAt?: Date;
+}
+
+export interface OrderTrackingHistoryItem {
+  status: string;
+  note?: string | null;
+  timestamp: Date;
+}
+
+export interface ShippingOptions {
+  fee: number;
+  note?: string | null;
+  duration?: string | null;
+}
+
+export interface ShippingAddress {
+  street: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface ContactInfo {
+  phone: string;
+  email?: string | null;
+}
+
+export interface OrderFormData {
+  product: string;
+  productName: string;
+  productImages: string[];
+  quantity: number;
+  originalPrice: number;
+  finalUnitPrice: number;
+  discount: number;
+  finalTotalPrice: number;
+
+  shippingOptions: ShippingOptions;
+  shippingAddress: ShippingAddress;
+  contactInfo: ContactInfo;
+
+  paymentMethod: 'momo' | 'visa' | 'stripe' | 'cash' | 'paypal';
+  paymentStatus: 'pending' | 'confirmed' | 'failed' | 'refunded';
+
+  paymentProof?: string | null;
+  orderStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+  isPaid: boolean;
+  paidAt?: Date | null;
+  deliveredAt?: Date | null;
+
+  orderTrackingHistory?: OrderTrackingHistoryItem[];
+}
+
+
+
+
+
+interface IShippingOptions {
+  fee: number;
+  note: string;
+  duration: string;
+}
+
+interface IShippingAddress {
+  street: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  country: string;
+}
+
+interface IContactInfo {
+  phone: string;
+  email: string;
+}
+
+interface IOrderTrackingEntry {
+  status: string;
+  note: string;
+  timestamp: Date;
+}
+
+interface IOrder {
+  _id: string;
+  user: {
+    _id: string;
+    fullNames: string;
+    email: string;
+    phone: string;
+  };
+  product: string;
+  productName: string;
+  productImages: string[];
+  quantity: number;
+  originalPrice: number;
+  finalUnitPrice: number;
+  discount: number;
+  finalTotalPrice: number;
+  shippingOptions: IShippingOptions;
+  shippingAddress: IShippingAddress;
+  contactInfo: IContactInfo;
+  paymentMethod: 'momo' | 'visa' | 'stripe' | 'cash' | 'paypal';
+  paymentStatus: 'pending' | 'confirmed' | 'failed' | 'refunded';
+  paymentProof?: string;
+  orderStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  isPaid: boolean;
+  paidAt?: Date;
+  deliveredAt?: Date;
+  trackingCode: string;
+  orderTrackingHistory: IOrderTrackingEntry[];
+  createdAt: Date;
 }

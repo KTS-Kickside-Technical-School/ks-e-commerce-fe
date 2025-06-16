@@ -5,6 +5,7 @@ export const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
 
 export const createProduct = async (productData: any) => {
     try {
+        console.log(productData)
         const response = await axiosInstance.post('/api/product/create-product', productData);
         return response.data;
     } catch (error) {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import SEO from '../../../middlewares/SEO';
 import { useNavigate } from 'react-router-dom';
-import { sellerGetOrders } from '../../../requests/ordersRequests';
+import { adminCustomerOrders } from '../../requests/ordersRequests';
+import { IOrder } from '../../types/store';
 import { toast } from 'sonner';
 import {
   FaBoxOpen,
@@ -15,11 +15,11 @@ import {
   FaSortAmountDown,
   FaTimes,
 } from 'react-icons/fa';
+import SEO from '../../middlewares/SEO';
 import { format } from 'date-fns';
-import { formatAccronymsRWF, formatRWF } from '../../../helpers/round';
-import { IOrder } from '../../../types/store';
+import { formatAccronymsRWF, formatRWF } from '../../helpers/round';
 
-const SellerViewOrders = () => {
+const Orders = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,7 +38,7 @@ const SellerViewOrders = () => {
   const getOrders = async () => {
     try {
       setLoading(true);
-      const response = await sellerGetOrders();
+      const response = await adminCustomerOrders();
       if (response.status !== 200) {
         throw new Error(response.message);
       }
@@ -131,7 +131,7 @@ const SellerViewOrders = () => {
   };
 
   const viewOrderDetails = (orderId: string) => {
-    navigate(`/seller/order/${orderId}`);
+    navigate(`/admin/order/${orderId}`);
   };
   useEffect(() => {
     setCurrentPage(1);
@@ -238,9 +238,10 @@ const SellerViewOrders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <SEO
-        title="View Shop Orders - Kickside Store: Seller"
-        description="View and manage your shop orders, track their status and update them as they progress."
+        title="Track Orders - Kickside Store"
+        description="Track my Orders easily with Kickside Store"
       />
+
       <div className="max-w-7xl mx-auto p-4 md:p-6  mx-auto px-4 py-8">
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
@@ -630,4 +631,4 @@ const SellerViewOrders = () => {
   );
 };
 
-export default SellerViewOrders;
+export default Orders;
