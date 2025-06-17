@@ -158,14 +158,22 @@ const Header = () => {
               </ul>
             )}
           </div>
-
-          <Link
-            to="/my-orders"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
-          >
-            <FaTruck className="text-blue-600 text-lg" />
-            <span>My Orders</span>
-          </Link>
+          {token ? (
+            <Link
+              to="/my-orders"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+            >
+              <FaTruck className="text-blue-600 text-lg" />
+              <span>My Orders</span>
+            </Link>
+          ) : (
+            <Link
+              to="/track-order"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+            >
+              Track order
+            </Link>
+          )}
 
           {token && profile ? (
             <Link to="/my-account" className="text-gray-700 text-sm">
@@ -249,7 +257,7 @@ const Header = () => {
               )}
             </li>
 
-            <li className="relative">
+            {token ? (
               <Link
                 to="/my-orders"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
@@ -257,7 +265,14 @@ const Header = () => {
                 <FaTruck className="text-blue-600 text-lg" />
                 <span>My Orders</span>
               </Link>
-            </li>
+            ) : (
+              <Link
+                to="/track-order"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+              >
+                Track order
+              </Link>
+            )}
 
             <li className="flex items-center gap-2">
               {token && profile ? (

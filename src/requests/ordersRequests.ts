@@ -79,3 +79,12 @@ export const sellerGetOrders = async () => {
         return handleError(error);
     }
 }
+
+export const customerTrackOrder = async (id: any) => {
+    try {
+        const response = await axiosInstance.get(`/api/order/customer-track-order/${id}`);
+        return response.data
+    } catch (error) {
+        return handleError(error);
+    }
+}
