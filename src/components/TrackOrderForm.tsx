@@ -3,7 +3,6 @@ import SEO from '../middlewares/SEO';
 import Header from './customers/Header';
 import Footer from './customers/Footer';
 import { customerTrackOrder } from '../requests/ordersRequests';
-import { toast, Toaster } from 'sonner';
 import { motion } from 'framer-motion';
 import { IOrder } from '../types/store';
 import {
@@ -94,7 +93,6 @@ const TrackOrderForm = () => {
         title="Track your order - Kickside Store"
         description="Track your order easily on Kickside Store"
       />
-      <Toaster richColors position="top-center" />
       <Header />
 
       <main className="py-16 px-6 min-h-screen bg-white text-gray-800">
