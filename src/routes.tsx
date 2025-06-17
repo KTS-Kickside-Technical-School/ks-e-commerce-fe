@@ -35,6 +35,7 @@ import SearchResults from './pages/customers/products/SearchResults';
 import MySingleOrderDetails from './pages/customers/orders/MySingleOrderDetails';
 import Orders from './pages/admin/Orders';
 import SingleOrderDetails from './pages/admin/SingleOrderDetails';
+import TrackOrderForm from './components/TrackOrderForm';
 
 const AppRouter = () => {
   return (
@@ -52,7 +53,8 @@ const AppRouter = () => {
       <Route path="/shop/:id" element={<SingleShopDetails />} />
       <Route path="/category/:name" element={<ProductsByCategory />} />
       <Route path="/search" element={<SearchResults />} />
-
+      <Route path="/track-order" element={<TrackOrderForm />} />
+      
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
