@@ -1,4 +1,5 @@
 import { FaLocationCrosshairs } from 'react-icons/fa6';
+import { MdFeaturedPlayList } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 interface SystemInformationSubNavBarProps {}
@@ -15,6 +16,13 @@ const SystemInformationSubNavBar = ({}: SystemInformationSubNavBarProps) => {
         >
           <FaLocationCrosshairs />
           Locations
+        </Link>
+        <Link
+          to="/admin/featured-shops"
+          className="bg-primary-500 hover:bg-primary-500-dark text-white px-4 py-2 rounded flex items-center gap-2 transition"
+        >
+          <MdFeaturedPlayList />
+          Featured shops
         </Link>
       </nav>
     </div>

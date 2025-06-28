@@ -8,14 +8,16 @@ const HomePage = () => {
   return (
     <div className="">
       <SEO
-        title="Home - Kickside Store"
+        title="Home of Best Electronic devices, Home decor materials, Kitchen Equipments.
+        The first E-Commerce Digital Marketplace in Rwanda and East Africa. Order one and get your pocket shortly.  - Kickside Store"
         description="Welcome to our online store. Explore our latest products and offers."
       />
       <Header />
       <Hero />
       <Products
         title="New arrivals"
-        link={{ text: 'See more', location: '/see-more' }}
+        limit={40}
+        link={{ text: 'See more', location: '/category/All' }}
       />
       <Footer />
     </div>
