@@ -28,3 +28,12 @@ export const updateFeaturedShopStatus = async (id: any, status: string) => {
         return handleError(error);
     }
 }
+
+export const customerGetFeaturedShops = async () => {
+    try {
+        const response = await axiosInstance.get("/api/ads/customer-get-featured-shops");
+        return response.data;
+    } catch (error) {
+        return handleError(error);
+    }
+}

@@ -10,7 +10,7 @@ import {
   FaTruck,
 } from 'react-icons/fa';
 import { toast, Toaster } from 'sonner';
-import { MdAdsClick, MdOutlineSystemSecurityUpdate } from 'react-icons/md';
+import {  MdOutlineSystemSecurityUpdate } from 'react-icons/md';
 
 interface DashboardSidebarProps {
   isSidebarOpen: boolean;
