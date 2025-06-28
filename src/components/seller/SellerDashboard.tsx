@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { sellerGetShopDetails } from '../../requests/shopRequest';
 import { ISellerShop } from '../../types/store';
 import { Link } from 'react-router-dom';
+import SEO from '../../middlewares/SEO';
 
 const SellerDashboard = () => {
   const [shop, setShop] = useState<ISellerShop | null>(null);
@@ -23,6 +24,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-6">
+      <SEO title="Seller Dashboard - Kickside Store" />
       <div className="max-w-4xl mx-auto">
         {isLoading ? (
           <div className="animate-pulse">

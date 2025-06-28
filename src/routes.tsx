@@ -36,6 +36,7 @@ import MySingleOrderDetails from './pages/customers/orders/MySingleOrderDetails'
 import Orders from './pages/admin/Orders';
 import SingleOrderDetails from './pages/admin/SingleOrderDetails';
 import TrackOrderForm from './components/TrackOrderForm';
+import SellerAds from './pages/admin/AdminFeaturedShops';
 
 const AppRouter = () => {
   return (
@@ -54,7 +55,7 @@ const AppRouter = () => {
       <Route path="/category/:name" element={<ProductsByCategory />} />
       <Route path="/search" element={<SearchResults />} />
       <Route path="/track-order" element={<TrackOrderForm />} />
-      
+
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
         <Route path="my-account" element={<CustomerProfile />} />
@@ -86,6 +87,7 @@ const AppRouter = () => {
           <Route path="locations" element={<Locations />} />
           <Route path="orders" element={<Orders />} />
           <Route path="order/:id" element={<SingleOrderDetails />} />
+          <Route path="featured-shops" element={<SellerAds />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>
