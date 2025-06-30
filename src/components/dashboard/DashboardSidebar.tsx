@@ -8,9 +8,10 @@ import {
   FaStore,
   FaShippingFast,
   FaTruck,
+  FaFileContract,
 } from 'react-icons/fa';
 import { toast, Toaster } from 'sonner';
-import {  MdOutlineSystemSecurityUpdate } from 'react-icons/md';
+import { MdOutlineSystemSecurityUpdate } from 'react-icons/md';
 
 interface DashboardSidebarProps {
   isSidebarOpen: boolean;
@@ -37,6 +38,11 @@ const DashboardSidebar = ({
     { name: 'Sellers', icon: <FaStore />, path: '/admin/sellers' },
     { name: 'Products', icon: <FaBox />, path: '/admin/products' },
     { name: 'Orders', icon: <FaTruck />, path: '/admin/orders' },
+    {
+      name: 'Terms & Conditions',
+      icon: <FaFileContract />,
+      path: '/admin/terms',
+    },
     {
       name: 'System information',
       icon: <MdOutlineSystemSecurityUpdate />,
