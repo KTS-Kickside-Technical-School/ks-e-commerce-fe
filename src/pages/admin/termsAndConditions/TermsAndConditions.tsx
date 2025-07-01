@@ -1,11 +1,12 @@
 import { Toaster } from 'sonner';
-import TermsSubNavbar from '../../components/admin/terms/TermsSubNavbar';
-import SEO from '../../middlewares/SEO';
-import SkeletonTable from '../../components/SkeletonTable';
+import TermsSubNavbar from '../../../components/admin/terms/TermsSubNavbar';
+import SEO from '../../../middlewares/SEO';
+import SkeletonTable from '../../../components/SkeletonTable';
 import { useEffect, useState } from 'react';
-import { adminFetchTermsAndConditions } from '../../requests/termsAndConditionsRequests';
+import { adminFetchTermsAndConditions } from '../../../requests/termsAndConditionsRequests';
 import Avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
+import { FaEdit, FaEye } from 'react-icons/fa';
 const TermsAndConditions = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
@@ -71,14 +72,12 @@ const TermsAndConditions = () => {
                       <td className="p-3 text-gray-600">{row.title}</td>
                       <td className="p-3 text-gray-600">{row.type}</td>
                       <td className="p-3 text-gray-600">
-                        <button>
-                          <Link
-                            to={`/admin/terms/${row._id}`}
-                            className="text-blue-600 hover:text-blue-800 transition-colors"
-                          >
-                            View
-                          </Link>
-                        </button>
+                      <Link
+                          to={`/admin/terms/update/${row.slug}`}
+                          className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                        >
+                          <FaEdit className="mr-1" /> Edit
+                        </Link>
                       </td>
                     </tr>
                   ))

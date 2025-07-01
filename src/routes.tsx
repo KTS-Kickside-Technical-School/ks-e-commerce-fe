@@ -37,8 +37,9 @@ import Orders from './pages/admin/Orders';
 import SingleOrderDetails from './pages/admin/SingleOrderDetails';
 import TrackOrderForm from './components/TrackOrderForm';
 import SellerAds from './pages/admin/AdminFeaturedShops';
-import TermsAndConditions from './pages/admin/TermsAndConditions';
-import NewTermsAndConditions from './pages/admin/NewTermsAndConditions';
+import TermsAndConditions from './pages/admin/termsAndConditions/TermsAndConditions';
+import NewTermsAndConditions from './pages/admin/termsAndConditions/NewTermsAndConditions';
+import UpdateTermsAndConditions from './pages/admin/termsAndConditions/UpdateTermsAndConditions';
 
 const AppRouter = () => {
   return (
@@ -92,6 +93,10 @@ const AppRouter = () => {
           <Route path="featured-shops" element={<SellerAds />} />
           <Route path="terms" element={<TermsAndConditions />} />
           <Route path="terms/new" element={<NewTermsAndConditions />} />
+          <Route
+            path="terms/update/:slug"
+            element={<UpdateTermsAndConditions />}
+          />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>
