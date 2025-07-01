@@ -6,6 +6,18 @@ export interface ISellerShop {
   images?: any;
   phone?: string;
   address?: any;
+  seller?: ISeller;
+  tin?: string;
+  rdbDocument?: string;
+  payment?: {
+    mobilePayment?: string;
+    bankName?: string;
+    accountNumber?: string;
+  }
+  status?: string;
+  isWaitingForApproval?: boolean;
+  isApproved?: boolean;
+
 }
 
 export interface IProductCategory {
@@ -16,9 +28,10 @@ export interface IProductCategory {
 export interface ISeller {
   _id: any;
   email: string;
-  profilePicture: string;
+  profile: string;
   fullNames: string;
   phone: string;
+  idDocument?: string;
 }
 
 export interface iProduct {

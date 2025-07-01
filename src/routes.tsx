@@ -42,6 +42,7 @@ import NewTermsAndConditions from './pages/admin/termsAndConditions/NewTermsAndC
 import UpdateTermsAndConditions from './pages/admin/termsAndConditions/UpdateTermsAndConditions';
 import CustomersTermsAndConditions from './pages/customers/terms/CustomersTermsAndConditions';
 import CustomerSingleTermsAndConditions from './pages/customers/terms/CustomerSingleTermsAndConditions';
+import SellerCreateAccount from './pages/customers/auth/SellerCreateAccount';
 
 const AppRouter = () => {
   return (
@@ -65,6 +66,7 @@ const AppRouter = () => {
         path="/terms/:slug"
         element={<CustomerSingleTermsAndConditions />}
       />
+      <Route path="/seller-register" element={<SellerCreateAccount />} />
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />

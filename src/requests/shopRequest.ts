@@ -67,3 +67,12 @@ export const getShopDetailsById = async (id: any) => {
         return handleError(error);
     }
 }
+
+export const submitSellerOnboarding = async (data: any) => {
+    try {
+        const response = await axiosInstance.put("/api/shop/seller-onboarding", data);
+        return response.data;
+    } catch (error: any) {
+        return handleError(error);
+    }
+}
