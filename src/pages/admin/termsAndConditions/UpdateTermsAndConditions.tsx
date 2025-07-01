@@ -93,7 +93,6 @@ const UpdateTermsAndConditions = () => {
   const fetchTermAndConditionsDetails = async (slug: string) => {
     try {
       const response = await adminFetchSingleTermsAndConditions(slug);
-      console.log('Response:', response);
       if (response.status !== 200)
         throw new Error('Failed to fetch terms details');
       const data = response.data.terms;

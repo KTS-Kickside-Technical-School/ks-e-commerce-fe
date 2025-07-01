@@ -4,7 +4,6 @@ import SEO from '../../../middlewares/SEO';
 import SkeletonTable from '../../../components/SkeletonTable';
 import { useEffect, useState } from 'react';
 import { adminFetchTermsAndConditions } from '../../../requests/termsAndConditionsRequests';
-import Avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaEye } from 'react-icons/fa';
 const TermsAndConditions = () => {
@@ -15,9 +14,7 @@ const TermsAndConditions = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Simulate fetching data
       const response = await adminFetchTermsAndConditions();
-      console.log('Unk', response);
       if (response.status !== 200) {
         setError(response.message);
         return;
@@ -45,7 +42,11 @@ const TermsAndConditions = () => {
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">
           Terms and Conditions
         </h2>
-
+        {error && (
+          <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
           {loading ? (
             <SkeletonTable cols={3} rows={5} />
@@ -72,7 +73,7 @@ const TermsAndConditions = () => {
                       <td className="p-3 text-gray-600">{row.title}</td>
                       <td className="p-3 text-gray-600">{row.type}</td>
                       <td className="p-3 text-gray-600">
-                      <Link
+                        <Link
                           to={`/admin/terms/update/${row.slug}`}
                           className="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                         >

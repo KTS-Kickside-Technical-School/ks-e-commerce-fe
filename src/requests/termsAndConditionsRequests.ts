@@ -36,3 +36,12 @@ export const updateTermsAndConditions = async (slug: string, data: any) => {
         return handleError(error);
     }
 }
+
+export const fetchActiveTermsAndConditions = async () => {
+    try {
+        const response = await axiosInstance.get('/api/terms-and-conditions/customers-view-terms');
+        return response.data;
+    } catch (error) {
+        return handleError(error);
+    }
+}

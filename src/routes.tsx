@@ -40,6 +40,8 @@ import SellerAds from './pages/admin/AdminFeaturedShops';
 import TermsAndConditions from './pages/admin/termsAndConditions/TermsAndConditions';
 import NewTermsAndConditions from './pages/admin/termsAndConditions/NewTermsAndConditions';
 import UpdateTermsAndConditions from './pages/admin/termsAndConditions/UpdateTermsAndConditions';
+import CustomersTermsAndConditions from './pages/customers/terms/CustomersTermsAndConditions';
+import CustomerSingleTermsAndConditions from './pages/customers/terms/CustomerSingleTermsAndConditions';
 
 const AppRouter = () => {
   return (
@@ -58,6 +60,11 @@ const AppRouter = () => {
       <Route path="/category/:name" element={<ProductsByCategory />} />
       <Route path="/search" element={<SearchResults />} />
       <Route path="/track-order" element={<TrackOrderForm />} />
+      <Route path="/terms" element={<CustomersTermsAndConditions />} />
+      <Route
+        path="/terms/:slug"
+        element={<CustomerSingleTermsAndConditions />}
+      />
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
