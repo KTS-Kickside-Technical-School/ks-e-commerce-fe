@@ -7,7 +7,7 @@ import DashboardLayout from './pages/dashboard/DashboardLayout';
 import SellerDashboard from './components/seller/SellerDashboard';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import NewShopForm from './components/seller/NewShop';
-import SellersList from './components/admin/SellersList';
+import SellersList from './pages/admin/SellersList';
 import ShopDetails from './components/admin/ShopDetails';
 import AdminViewProducts from './components/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
@@ -43,6 +43,7 @@ import UpdateTermsAndConditions from './pages/admin/termsAndConditions/UpdateTer
 import CustomersTermsAndConditions from './pages/customers/terms/CustomersTermsAndConditions';
 import CustomerSingleTermsAndConditions from './pages/customers/terms/CustomerSingleTermsAndConditions';
 import SellerCreateAccount from './pages/customers/auth/SellerCreateAccount';
+import AdminViewShopsList from './pages/admin/AdminViewShopsList';
 
 const AppRouter = () => {
   return (
@@ -106,6 +107,7 @@ const AppRouter = () => {
             path="terms/update/:slug"
             element={<UpdateTermsAndConditions />}
           />
+          <Route path="shops-list" element={<AdminViewShopsList />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>

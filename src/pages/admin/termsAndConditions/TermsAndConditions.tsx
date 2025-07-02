@@ -5,7 +5,7 @@ import SkeletonTable from '../../../components/SkeletonTable';
 import { useEffect, useState } from 'react';
 import { adminFetchTermsAndConditions } from '../../../requests/termsAndConditionsRequests';
 import { Link } from 'react-router-dom';
-import { FaEdit, FaEye } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
 const TermsAndConditions = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);

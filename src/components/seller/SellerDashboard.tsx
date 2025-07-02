@@ -6,6 +6,7 @@ import OnboardingLoadingSkeleton from './Onboarding/OnboardingLoadingSkeleton';
 import SellerOnboarding from './Onboarding/SellerOnboarding';
 import { FaCheckCircle } from 'react-icons/fa';
 import OnboardingWaitingForApproval from './Onboarding/OnboardingWaitingForApproval';
+import OnboardingRejected from './Onboarding/OnboardingRejected';
 
 const SellerDashboard = () => {
   const [shop, setShop] = useState<ISellerShop | null>(null);
@@ -47,6 +48,10 @@ const SellerDashboard = () => {
 
   if (shop?.isWaitingForApproval) {
     return <OnboardingWaitingForApproval />;
+  }
+
+  if (shop?.status === 'rejected') {
+    return <OnboardingRejected rejectionReason={shop?.rejectReason} />;
   }
 
   if (showOnboarding) {

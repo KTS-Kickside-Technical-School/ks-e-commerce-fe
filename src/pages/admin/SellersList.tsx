@@ -6,7 +6,8 @@ import { adminViewSellers } from '../../requests/shopRequest';
 import Avatar from '/Avatar.png';
 import { FaShop } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
-import SkeletonTable from '../SkeletonTable';
+import SkeletonTable from '../../components/SkeletonTable';
+import SellersMgtSubNavbar from '../../components/admin/sellers/SellersMgtSubNavbar';
 
 const SellersList = () => {
   const [sellers, setSellers] = useState<any[]>([]);
@@ -45,7 +46,7 @@ const SellersList = () => {
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">
           Sellers Management
         </h2>
-
+        <SellersMgtSubNavbar />
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
           {loading ? (
             <SkeletonTable cols={3} rows={5} />

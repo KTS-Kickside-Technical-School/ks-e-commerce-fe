@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SEO from '../../../middlewares/SEO';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { adminFetchSingleTermsAndConditions } from '../../../requests/termsAndConditionsRequests';
 import Header from '../../../components/customers/Header';
 import Footer from '../../../components/customers/Footer';
-import {
-  FaArrowLeft,
-  FaCalendarAlt,
-  FaCopy,
-  FaExclamationTriangle,
-  FaPrint,
-  FaRedo,
-} from 'react-icons/fa';
+import { FaArrowLeft, FaCalendarAlt, FaCopy, FaPrint } from 'react-icons/fa';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { toast, Toaster } from 'sonner';
 
 const CustomerSingleTermsAndConditions = () => {
   const { slug } = useParams();
   const [term, setTerm] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set()
@@ -34,13 +27,12 @@ const CustomerSingleTermsAndConditions = () => {
         );
       }
       setTerm(response.data.terms);
-      setError(null);
 
       const sectionIds = Object.keys(response.data.terms.contentSections || {});
       setExpandedSections(new Set(sectionIds));
     } catch (error) {
       console.error('Error fetching terms and conditions:', error);
-      setError(
+      toast.error(
         error instanceof Error ? error.message : 'An unexpected error occurred'
       );
     } finally {
@@ -113,6 +105,7 @@ const CustomerSingleTermsAndConditions = () => {
         }
         description={term?.summary || 'Kickside Store Terms and Conditions'}
       />
+      <Toaster richColors position="top-center" />
       <Header />
 
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16 text-white">

@@ -17,7 +17,7 @@ export interface ISellerShop {
   status?: string;
   isWaitingForApproval?: boolean;
   isApproved?: boolean;
-
+  rejectReason?: string;
 }
 
 export interface IProductCategory {

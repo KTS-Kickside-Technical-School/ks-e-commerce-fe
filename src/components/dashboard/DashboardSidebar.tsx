@@ -56,7 +56,7 @@ const DashboardSidebar = ({
     { name: 'Orders', icon: <FaShippingFast />, path: '/seller/orders' },
   ];
 
-  let visibleLinks = [{}];
+  let visibleLinks: { name: string; icon: JSX.Element; path: string }[] = [];
   if (userRole === 'admin') visibleLinks = [...adminLinks];
   else if (userRole === 'seller') visibleLinks = [...sellerLinks];
 
@@ -80,7 +80,7 @@ const DashboardSidebar = ({
         <nav className="p-4 space-y-2">
           {visibleLinks.map((link: any) => (
             <Link
-              key={link.name}
+              key={link.path}
               to={link.path}
               onClick={() => setActiveLink(link.name)}
               className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
