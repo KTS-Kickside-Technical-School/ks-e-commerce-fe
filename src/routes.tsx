@@ -7,7 +7,6 @@ import DashboardLayout from './pages/dashboard/DashboardLayout';
 import SellerDashboard from './components/seller/SellerDashboard';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import NewShopForm from './components/seller/NewShop';
-import SellersList from './pages/admin/UsersList';
 import ShopDetails from './components/admin/ShopDetails';
 import AdminViewProducts from './components/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
