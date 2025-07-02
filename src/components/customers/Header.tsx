@@ -85,7 +85,7 @@ const Header = () => {
               : 'Create an account to become a seller and start selling products.'}
           </span>
           <Link
-            to={token ? '/apply-seller' : '/create-account'}
+            to={token ? '/apply-seller' : '/seller-register'}
             className="inline-block mt-1 sm:mt-0 sm:ml-3 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs sm:text-sm md:text-base"
           >
             {token ? 'Apply to be Seller' : 'Register as Seller'}

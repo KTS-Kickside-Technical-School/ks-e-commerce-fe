@@ -7,7 +7,6 @@ import DashboardLayout from './pages/dashboard/DashboardLayout';
 import SellerDashboard from './components/seller/SellerDashboard';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import NewShopForm from './components/seller/NewShop';
-import SellersList from './components/admin/SellersList';
 import ShopDetails from './components/admin/ShopDetails';
 import AdminViewProducts from './components/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
@@ -37,6 +36,14 @@ import Orders from './pages/admin/Orders';
 import SingleOrderDetails from './pages/admin/SingleOrderDetails';
 import TrackOrderForm from './components/TrackOrderForm';
 import SellerAds from './pages/admin/AdminFeaturedShops';
+import TermsAndConditions from './pages/admin/termsAndConditions/TermsAndConditions';
+import NewTermsAndConditions from './pages/admin/termsAndConditions/NewTermsAndConditions';
+import UpdateTermsAndConditions from './pages/admin/termsAndConditions/UpdateTermsAndConditions';
+import CustomersTermsAndConditions from './pages/customers/terms/CustomersTermsAndConditions';
+import CustomerSingleTermsAndConditions from './pages/customers/terms/CustomerSingleTermsAndConditions';
+import SellerCreateAccount from './pages/customers/auth/SellerCreateAccount';
+import AdminViewShopsList from './pages/admin/AdminViewShopsList';
+import UsersList from './pages/admin/UsersList';
 
 const AppRouter = () => {
   return (
@@ -55,6 +62,12 @@ const AppRouter = () => {
       <Route path="/category/:name" element={<ProductsByCategory />} />
       <Route path="/search" element={<SearchResults />} />
       <Route path="/track-order" element={<TrackOrderForm />} />
+      <Route path="/terms" element={<CustomersTermsAndConditions />} />
+      <Route
+        path="/terms/:slug"
+        element={<CustomerSingleTermsAndConditions />}
+      />
+      <Route path="/seller-register" element={<SellerCreateAccount />} />
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/my-cart" element={<CartCheckout />} />
@@ -78,7 +91,7 @@ const AppRouter = () => {
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route path="/admin" element={<DashboardLayout />}>
           <Route path="" element={<h1>Hello, this is the admin</h1>} />
-          <Route path="sellers" element={<SellersList />} />
+          <Route path="users" element={<UsersList />} />
           <Route path="shop-details" element={<ShopDetails />} />
           <Route path="products" element={<AdminViewProducts />} />
           <Route path="categories" element={<AdminViewCategories />} />
@@ -88,6 +101,13 @@ const AppRouter = () => {
           <Route path="orders" element={<Orders />} />
           <Route path="order/:id" element={<SingleOrderDetails />} />
           <Route path="featured-shops" element={<SellerAds />} />
+          <Route path="terms" element={<TermsAndConditions />} />
+          <Route path="terms/new" element={<NewTermsAndConditions />} />
+          <Route
+            path="terms/update/:slug"
+            element={<UpdateTermsAndConditions />}
+          />
+          <Route path="shops-list" element={<AdminViewShopsList />} />
           <Route path="*" element={<AdminNotFound />} />
         </Route>
       </Route>

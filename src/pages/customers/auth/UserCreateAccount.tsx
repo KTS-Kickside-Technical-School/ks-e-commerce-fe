@@ -9,6 +9,7 @@ import Footer from '../../../components/customers/Footer';
 import Header from '../../../components/customers/Header';
 import Bg from '/create-account-bg.jpg';
 import authRequests from '../../../requests/authRequests.ts';
+import SEO from '../../../middlewares/SEO.tsx';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -64,6 +65,10 @@ const UserCreateAccount = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO
+        title="Create Account on Kickside Store - Kickside"
+        description="Create an account on Kickside Store to access exclusive deals and discounts on your favorite sneakers, electronic devices, computers and many much qualities and varieties."
+      />
       <Toaster richColors />
       <Header />
       <div className="flex flex-1 bg-gray-100 py-10 px-6 md:px-20 items-center justify-center">
@@ -82,21 +87,6 @@ const UserCreateAccount = () => {
               <span>Create Your Account</span>
             </h2>
             <form onSubmit={formik.handleSubmit} className="space-y-5">
-              <div className="relative">
-                <select
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                  {...formik.getFieldProps('role')}
-                >
-                  <option value="customer">👤 Customer</option>
-                  <option value="seller">🛍️ Seller</option>
-                </select>
-                {formik.touched.role && formik.errors.role && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formik.errors.role}
-                  </p>
-                )}
-              </div>
-
               <div className="relative">
                 <input
                   type="email"
@@ -129,6 +119,24 @@ const UserCreateAccount = () => {
                     {formik.errors.password}
                   </p>
                 )}
+              </div>
+
+              <div className="flex items-start gap-2 mt-4">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  className="mt-1 accent-blue-600 w-5 h-5"
+                  required
+                />
+                <label htmlFor="agree" className="text-sm text-gray-700 p-1">
+                  I agree to the{' '}
+                  <Link
+                    to="/terms"
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    Terms and Conditions
+                  </Link>
+                </label>
               </div>
 
               <button

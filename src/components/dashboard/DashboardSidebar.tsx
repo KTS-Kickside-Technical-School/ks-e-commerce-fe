@@ -8,9 +8,10 @@ import {
   FaStore,
   FaShippingFast,
   FaTruck,
+  FaFileContract,
 } from 'react-icons/fa';
 import { toast, Toaster } from 'sonner';
-import {  MdOutlineSystemSecurityUpdate } from 'react-icons/md';
+import { MdOutlineSystemSecurityUpdate } from 'react-icons/md';
 
 interface DashboardSidebarProps {
   isSidebarOpen: boolean;
@@ -34,9 +35,14 @@ const DashboardSidebar = ({
 
   const adminLinks = [
     { name: 'Dashboard', icon: <FaHome />, path: '/admin/' },
-    { name: 'Sellers', icon: <FaStore />, path: '/admin/sellers' },
+    { name: 'Users', icon: <FaStore />, path: '/admin/users' },
     { name: 'Products', icon: <FaBox />, path: '/admin/products' },
     { name: 'Orders', icon: <FaTruck />, path: '/admin/orders' },
+    {
+      name: 'Terms & Conditions',
+      icon: <FaFileContract />,
+      path: '/admin/terms',
+    },
     {
       name: 'System information',
       icon: <MdOutlineSystemSecurityUpdate />,
@@ -50,7 +56,7 @@ const DashboardSidebar = ({
     { name: 'Orders', icon: <FaShippingFast />, path: '/seller/orders' },
   ];
 
-  let visibleLinks = [{}];
+  let visibleLinks: { name: string; icon: JSX.Element; path: string }[] = [];
   if (userRole === 'admin') visibleLinks = [...adminLinks];
   else if (userRole === 'seller') visibleLinks = [...sellerLinks];
 
@@ -74,7 +80,7 @@ const DashboardSidebar = ({
         <nav className="p-4 space-y-2">
           {visibleLinks.map((link: any) => (
             <Link
-              key={link.name}
+              key={link.path}
               to={link.path}
               onClick={() => setActiveLink(link.name)}
               className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
