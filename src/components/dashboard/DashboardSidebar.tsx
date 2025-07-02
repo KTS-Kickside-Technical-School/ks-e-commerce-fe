@@ -35,7 +35,7 @@ const DashboardSidebar = ({
 
   const adminLinks = [
     { name: 'Dashboard', icon: <FaHome />, path: '/admin/' },
-    { name: 'Sellers', icon: <FaStore />, path: '/admin/sellers' },
+    { name: 'Users', icon: <FaStore />, path: '/admin/users' },
     { name: 'Products', icon: <FaBox />, path: '/admin/products' },
     { name: 'Orders', icon: <FaTruck />, path: '/admin/orders' },
     {

@@ -21,9 +21,9 @@ export const sellerCreateShop = async (data: any) => {
     }
 }
 
-export const adminViewSellers = async () => {
+export const adminViewUsers = async () => {
     try {
-        const response = await axiosInstance.get("/api/shop/admin-view-sellers");
+        const response = await axiosInstance.get("/api/shop/admin-view-users");
         return response.data;
     } catch (error) {
         return handleError(error);
