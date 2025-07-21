@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { adminCustomerOrders } from '../../requests/ordersRequests';
 import { IOrder } from '../../types/store';
 import { toast } from 'sonner';
@@ -419,12 +419,12 @@ const Orders = () => {
                 : "You haven't placed any orders yet. Start shopping to see your orders here!"}
             </p>
             {!searchTerm && !statusFilter && (
-              <button
+              <Link
                 className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                onClick={() => navigate('/category/All')}
+                to={'/admin/products'}
               >
                 Browse Products
-              </button>
+              </Link>
             )}
           </div>
         ) : (

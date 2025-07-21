@@ -6,6 +6,7 @@ import Product from '../../../components/customers/products/Product';
 import { getProductsByCategory } from '../../../requests/productsRequests';
 import { iProduct, IProductCategory } from '../../../types/store';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import SEO from '../../../middlewares/SEO';
 
 const ProductsByCategory = () => {
   const { name } = useParams();
@@ -56,7 +57,7 @@ const ProductsByCategory = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-
+      <SEO title={`${displayName || 'View our products'} : Kickside Store`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">

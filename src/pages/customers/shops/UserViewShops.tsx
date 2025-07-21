@@ -32,6 +32,8 @@ const ShopExplorer = () => {
       try {
         setIsLoading(true);
         const response = await userViewAllShops();
+
+        console.log(response);
         if (response.status === 200) {
           setShops(response.data.shops);
           setFilteredShops(response.data.shops);

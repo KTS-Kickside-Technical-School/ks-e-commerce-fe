@@ -15,6 +15,7 @@ import {
 import uploadToCloudinary from '../../../helpers/cloudinary';
 import { submitSellerOnboarding } from '../../../requests/shopRequest';
 import OnboardingSubnavbar from './OnboardingSubnavbar';
+import { toast, Toaster } from 'sonner';
 
 interface ISellerOnboardingProps {
   shop: any;
@@ -173,10 +174,12 @@ const SellerOnboarding = ({ shop }: ISellerOnboardingProps) => {
         }
 
         setSuccess(true);
+        toast.success('Seller onboarding information submitted successfully');
         setTimeout(() => {
           navigate('/seller/');
         }, 3000);
       } catch (error) {
+        toast.error('Seller on boarding submission error!');
         console.error('Submission error:', error);
         setErrors({
           submit:
@@ -219,7 +222,7 @@ const SellerOnboarding = ({ shop }: ISellerOnboardingProps) => {
   return (
     <div className="fixed inset-0 bg-black min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col bg-opacity-50 z-[300] overflow-y-auto">
       <SEO title="Shop Onboarding - Kickside Marketplace" />
-
+      <Toaster richColors position="top-center" />
       <div className="w-full bg-white h-2">
         <div
           className="bg-blue-600 h-full transition-all duration-500"

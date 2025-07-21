@@ -10,13 +10,13 @@ import Header from '../../../components/customers/Header';
 import Bg from '/login-bg.jpg';
 import authRequests from '../../../requests/authRequests.ts';
 import { handleAddProductToCartHelper } from '../../../helpers/cartHelpers.ts';
+import SEO from '../../../middlewares/SEO.tsx';
 
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email format')
     .required('Email is required'),
-  password: Yup.string()
-    .required('Password is required'),
+  password: Yup.string().required('Password is required'),
 });
 
 const UserLogin = () => {
@@ -79,6 +79,7 @@ const UserLogin = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Toaster richColors position="top-center" />
+      <SEO title="Login to your account : Kickside Store" />
       <Header />
       <div className="flex flex-1 bg-gray-100 py-10 px-6 md:px-20 items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full flex transition-transform duration-300 hover:scale-[1.02]">

@@ -5,7 +5,7 @@ import Logo from '/logo.png';
 const DashboardHeader = ({ sideBarToggle }: { sideBarToggle: () => void }) => {
   const profile = JSON.parse(sessionStorage.getItem('profile') || '{}');
   return (
-    <header className="bg-primary text-white shadow-lg px-4 py-3 sm:p-4 flex items-center justify-between z-10">
+    <header className="bg-primary text-white shadow-lg px-4 py-3 sm:p-4 flex items-center justify-between z-4">
       <div className="flex items-center gap-2 sm:gap-4">
         <button
           onClick={sideBarToggle}
