@@ -6,10 +6,8 @@ import {
   FaMapMarkerAlt,
   FaCreditCard,
   FaUser,
-  FaFilePdf,
   FaInfoCircle,
   FaRegClock,
-  FaIdCard,
 } from 'react-icons/fa';
 import SEO from '../../middlewares/SEO';
 import {
