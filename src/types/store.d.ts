@@ -53,6 +53,7 @@ export interface iProduct {
   }
   createdAt?: Date;
   updatedAt?: Date;
+  productId?: string;
 }
 
 export interface Address {

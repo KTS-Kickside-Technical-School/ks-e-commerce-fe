@@ -8,16 +8,15 @@ import { toast } from 'sonner';
 import SellerEditProductModal from '../../../components/seller/products/SellerEditProductModal';
 import { formatTimeDate } from '../../../helpers/formatTime';
 import SEO from '../../../middlewares/SEO';
-// import SellerProductsNavBar from '../../../components/seller/products/SellerProductsNavBar';
 
 const SellerProductsList = () => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<iProduct[]>([]);
+  const [data, setData] = useState<any>([]);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [error, setError] = useState('');
   const [imageIndex, setImageIndex] = useState<{ [key: string]: number }>({});
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState<iProduct | null>(null);
+  const [productToEdit, setProductToEdit] = useState<any | null>(null);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -31,6 +30,7 @@ const SellerProductsList = () => {
         setError(response.message);
         return;
       }
+      console.log(response.data.products);
       setData(response.data.products);
     } catch (error: any) {
       toast.error('An error occurred while fetching products');
@@ -95,7 +95,7 @@ const SellerProductsList = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((product, index) => (
+                {data.map((product: any, index: number) => (
                   <tr
                     key={product._id}
                     className="border-b hover:bg-gray-100 transition duration-200"

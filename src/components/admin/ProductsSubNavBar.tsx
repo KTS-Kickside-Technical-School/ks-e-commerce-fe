@@ -14,7 +14,7 @@ const ProductsSubNavBar = () => {
           <FaPlus /> New Product
         </Link>
         <Link
-          to=""
+          to="/admin/products"
           className="bg-primary-500 hover:bg-primary-500-dark text-white px-4 py-2 rounded flex items-center gap-2 transition"
         >
           <FaList /> Products List
