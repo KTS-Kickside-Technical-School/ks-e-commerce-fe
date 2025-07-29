@@ -63,3 +63,12 @@ export const getProductsByCategory = async (name: string) => {
 
     }
 }
+
+export const adminViewProducts = async () => {
+    try {
+        const response = await axiosInstance.get("/api/product/admin-get-products");
+        return response.data
+    } catch (error) {
+        return handleError(error);
+    }
+}

@@ -15,6 +15,7 @@ class SellerEditProductModal extends React.Component<Props, any> {
     super(props);
     this.state = {
       formData: {
+        productId: props.product._id,
         productName: props.product.productName,
         description: props.product.description,
         price: props.product.price,
@@ -24,9 +25,9 @@ class SellerEditProductModal extends React.Component<Props, any> {
         status: props.product.status || 'inactive',
         categories: [],
         shippingOptions: {
-          fee: props.product.shippingOptions.fee || 0,
-          note: props.product.shippingOptions.note || 'no note',
-          duration: props.product.shippingOptions.duration,
+          fee: props.product?.shippingOptions?.fee || 0,
+          note: props.product?.shippingOptions?.note || 'no note',
+          duration: props.product?.shippingOptions?.duration,
         },
       },
       images: props.product.images,
@@ -128,12 +129,16 @@ class SellerEditProductModal extends React.Component<Props, any> {
 
     this.setState({ loading: true });
     try {
+      const id = this.state.formData.productId;
+
       delete this.state.formData.categories;
-      const response = await editProduct(this.props.product._id, {
+      delete this.state.formData.productId;
+      const response = await editProduct(id, {
         ...this.state.formData,
         images: this.state.images,
         category: this.state.formData.category,
       });
+
       if (response.status !== 200) {
         toast.error(response.message);
         return;

@@ -8,7 +8,7 @@ import SellerDashboard from './components/seller/SellerDashboard';
 import ProtectedRoute from './middlewares/ProtectedRoute';
 import NewShopForm from './components/seller/NewShop';
 import ShopDetails from './components/admin/ShopDetails';
-import AdminViewProducts from './components/admin/AdminViewProducts';
+import AdminViewProducts from './pages/admin/AdminViewProducts';
 import AdminViewCategories from './components/admin/AdminViewCategories';
 import AdminNotFound from './components/admin/AdminNotFound';
 import SellerProductsList from './pages/seller/products/SellerProductsList';
