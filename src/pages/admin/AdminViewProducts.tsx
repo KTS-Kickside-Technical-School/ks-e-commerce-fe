@@ -3,7 +3,7 @@ import ProductsSubNavBar from '../../components/admin/ProductsSubNavBar';
 import { adminViewProducts } from '../../requests/productsRequests';
 import { toast } from 'sonner';
 import { iProduct } from '../../types/store';
-import { FaChevronLeft, FaChevronRight, FaEdit, FaPlus } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import SkeletonTable from '../../components/SkeletonTable';
 import { formatTimeDate } from '../../helpers/formatTime';
 import SellerEditProductModal from '../../components/seller/products/SellerEditProductModal';

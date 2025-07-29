@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import SkeletonTable from '../../../components/SkeletonTable';
 import { FaPlus, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
-import { iProduct } from '../../../types/store';
 import SellerNewProductModal from '../../../components/seller/products/SellerNewProductModal';
 import { sellerViewProducts } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
