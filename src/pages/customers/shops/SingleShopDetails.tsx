@@ -18,7 +18,7 @@ import SEO from '../../../middlewares/SEO';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const PRODUCTS_PER_PAGE = 15;
+const PRODUCTS_PER_PAGE = 30;
 
 const SingleShopDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -196,7 +196,7 @@ const SingleShopDetails = () => {
               </div>
             )}
 
-            <div className="absolute bottom-10 left-6 z-100 flex items-center gap-4">
+            <div className="absolute bottom-10 left-10 flex items-center gap-4 z-[100] ml-10">
               <img
                 src={shop?.logo}
                 alt={`${shop?.name} logo`}
@@ -207,7 +207,7 @@ const SingleShopDetails = () => {
                 }}
               />
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 drop-shadow-sm">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">
                   {shop?.name}
                 </h1>
                 <div className="flex items-center gap-2 mt-1">

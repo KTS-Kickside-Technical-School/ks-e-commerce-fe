@@ -25,6 +25,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
           note: 'Free shipping',
           duration: '2 days',
         },
+        stock: '',
       },
       images: [],
       loading: false,
@@ -109,6 +110,9 @@ class SellerNewProductModal extends React.Component<Props, any> {
     }
     if (!formData.category.trim()) {
       errors.category = 'Category is required';
+    }
+    if (!formData.stock.trim()) {
+      errors.stock = 'Stock is required';
     }
     if (
       formData.shippingOptions.fee === '' ||
@@ -223,34 +227,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       </p>
                     )}
                   </div>
-
-                  <div>
-                    <label
-                      htmlFor="productName"
-                      className="block text-sm font-medium text-gray-700 mb-1 mt-2"
-                    >
-                      Product Price(FRW)
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="productPrice"
-                      name="price"
-                      value={formData.price}
-                      onChange={this.handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter product price"
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-6">
-                  <div>
+                  <div className="block text-sm font-medium text-gray-700 mb-1 pt-5">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Images
                       <span className="text-red-500">*</span>
@@ -307,6 +284,32 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       </p>
                     )}
                   </div>
+                </div>
+
+                <div className="flex-1 space-y-6">
+                  <div className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="productPrice"
+                      className="block text-sm font-medium text-gray-700 mb-1 "
+                    >
+                      Product Price(FRW)
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="productPrice"
+                      name="price"
+                      value={formData.price}
+                      onChange={this.handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter product price"
+                    />
+                    {errors.price && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.price}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label
                       htmlFor="productName"
@@ -334,6 +337,29 @@ class SellerNewProductModal extends React.Component<Props, any> {
                     {errors.category && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.category}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="productStock"
+                      className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                    >
+                      Product Stock
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="productStock"
+                      name="stock"
+                      value={formData.stock}
+                      onChange={this.handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter product stock"
+                    />
+                    {errors.stock && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.stock}
                       </p>
                     )}
                   </div>
