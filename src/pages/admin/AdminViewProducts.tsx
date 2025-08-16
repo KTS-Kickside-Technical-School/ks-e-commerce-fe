@@ -83,13 +83,13 @@ const AdminViewProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((data: any) =>
-                data.products.map((product: iProduct, index: number) => (
+              {data.map((data: any, index = 1) =>
+                data.products.map((product: iProduct) => (
                   <tr
                     key={product._id}
                     className="border-b hover:bg-gray-100 transition duration-200"
                   >
-                    <td className="p-3">{index + 1}</td>
+                    <td className="p-3">{index++}</td>
                     <td className="p-3 flex items-center justify-center gap-2">
                       {Array.isArray(product.images) &&
                       product.images.length > 0 ? (
