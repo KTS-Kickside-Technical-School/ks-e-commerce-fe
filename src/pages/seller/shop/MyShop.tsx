@@ -146,7 +146,6 @@ const MyShop = () => {
         newImages.map(uploadToCloudinary)
       );
 
-      const { _id, createdAt, updatedAt, __v, seller, ...rest } = shopData;
 
       const updatedData = {
         name: shopData.name.trim(),
@@ -162,7 +161,6 @@ const MyShop = () => {
           state: shopData.address.state.trim(),
         },
       };
-      console.log('Updated Data:', updatedData);
       const response = await sellerUpdateShop(updatedData);
       if (response.status === 200) {
         setShopData(response.data.shop);

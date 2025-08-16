@@ -189,7 +189,6 @@ const CustomerProfile = () => {
   const handleProfileSave = async () => {
     try {
       const updated = await updateProfile(tempProfile);
-
       const { password, ...userWithoutPassword } = updated.data.updatedUser;
       sessionStorage.setItem('profile', JSON.stringify(userWithoutPassword));
 
