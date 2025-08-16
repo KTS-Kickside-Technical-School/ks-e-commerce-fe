@@ -218,3 +218,18 @@ interface IOrder {
   orderTrackingHistory: IOrderTrackingEntry[];
   createdAt: Date;
 }
+
+
+export interface IUpdateShop {
+  _id: string,
+  name: string,
+  description: string,
+  logo: string,
+  images: String[],
+  phone: string,
+  createdAt: Date,
+  updatedAt: Date,
+  address: any;
+  __v: string,
+  seller: string,
+}

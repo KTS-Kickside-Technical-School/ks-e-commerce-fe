@@ -218,12 +218,11 @@ export default function ProductDetails() {
       <Toaster richColors position="top-center" />
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="px-4 lg:px-0">
+        <div className="px-4 lg:px-0 pt-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             {product.productName}
           </h1>
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>SKU: {product._id.slice(-6)}</span>
             <span className="text-gray-300">•</span>
             <span>{product.category}</span>
           </div>
