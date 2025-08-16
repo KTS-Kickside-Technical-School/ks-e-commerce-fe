@@ -155,8 +155,8 @@ const CustomersTermsAndConditions = () => {
   return (
     <>
       <SEO
-        title="Terms and Conditions of Use - Kickside Store"
-        description="Kickside Store Terms and Conditions of Use, including the Privacy Policy and Refund Policy."
+        title="Terms and Conditions of Use - Kickside Shop"
+        description="Kickside Shop Terms and Conditions of Use, including the Privacy Policy and Refund Policy."
       />
       <Header />
 

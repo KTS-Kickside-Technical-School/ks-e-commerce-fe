@@ -57,11 +57,11 @@ const ProductsByCategory = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <SEO title={`${displayName || 'View our products'} : Kickside Store`} />
+      <SEO title={`${displayName || 'View our products'} : Kickside Shop`} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2 capitalize">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2 text-primary-500 ">
               {displayName || 'View our products'}
             </h1>
             <p className="text-gray-600">

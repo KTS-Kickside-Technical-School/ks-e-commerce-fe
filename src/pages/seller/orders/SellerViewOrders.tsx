@@ -238,7 +238,7 @@ const SellerViewOrders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <SEO
-        title="View Shop Orders - Kickside Store: Seller"
+        title="View Shop Orders - Kickside Shop: Seller"
         description="View and manage your shop orders, track their status and update them as they progress."
       />
       <div className="max-w-7xl mx-auto p-4 md:p-6  mx-auto px-4 py-8">

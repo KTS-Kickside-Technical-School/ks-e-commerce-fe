@@ -17,13 +17,14 @@ import Logo from '/logo.png';
 import uploadToCloudinary from '../../../helpers/cloudinary';
 import { toast } from 'sonner';
 import { getAllLocations } from '../../../requests/locationRequests';
+import { IUpdateShop } from '../../../types/store';
 
 const isImage = (file: File) => file.type.startsWith('image/');
 
 const MyShop = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [shopData, setShopData] = useState<any>({
+  const [shopData, setShopData] = useState<IUpdateShop>({
     _id: '',
     name: '',
     description: '',
@@ -116,7 +117,7 @@ const MyShop = () => {
       'state',
     ];
     requiredAddressFields.forEach((field: any) => {
-      if (!shopData.address?.[field]?.trim()) {
+      if (!shopData?.address?.[field]?.trim()) {
         newErrors[`address.${field}`] = `${
           field[0].toUpperCase() + field.slice(1)
         } is required`;
@@ -145,10 +146,11 @@ const MyShop = () => {
         newImages.map(uploadToCloudinary)
       );
 
-      const { _id, createdAt, updatedAt, __v, seller, ...rest } = shopData;
 
       const updatedData = {
-        ...rest,
+        name: shopData.name.trim(),
+        description: shopData.description.trim(),
+        phone: shopData.phone.trim(),
         logo: logoUrl,
         images: [...shopData.images, ...uploadedImages],
         address: {
@@ -159,7 +161,6 @@ const MyShop = () => {
           state: shopData.address.state.trim(),
         },
       };
-
       const response = await sellerUpdateShop(updatedData);
       if (response.status === 200) {
         setShopData(response.data.shop);
@@ -167,6 +168,9 @@ const MyShop = () => {
         setNewLogo(null);
         setImagePreviews([]);
         toast.success('Shop updated successfully!');
+      } else {
+        toast.error('Failed to update shop, please try again later.');
+        console.error('Update failed:', response);
       }
     } catch (error) {
       console.error('Update failed:', error);
@@ -270,7 +274,7 @@ const MyShop = () => {
               <input
                 type="text"
                 name="name"
-                value={shopData.name}
+                value={shopData?.name || ''}
                 onChange={handleInputChange}
                 className={`border-b-2 border-primary-500 focus:outline-none w-full ${
                   errors.name ? 'border-red-500' : ''

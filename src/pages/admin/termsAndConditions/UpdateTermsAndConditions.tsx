@@ -138,7 +138,7 @@ const UpdateTermsAndConditions = () => {
     <div className="min-h-screen bg-gray-50">
       <Toaster richColors position="top-center" />
       <SEO
-        title="Update Terms and Conditions: Admin - Kickside Store"
+        title="Update Terms and Conditions: Admin - Kickside Shop"
         description="Edit existing terms and conditions."
       />
       <TermsSubNavbar />

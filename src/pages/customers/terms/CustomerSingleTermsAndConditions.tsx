@@ -100,10 +100,10 @@ const CustomerSingleTermsAndConditions = () => {
       <SEO
         title={
           term
-            ? `${term.title} - Kickside Store`
-            : 'Terms & Conditions - Kickside Store'
+            ? `${term.title} - Kickside Shop`
+            : 'Terms & Conditions - Kickside Shop'
         }
-        description={term?.summary || 'Kickside Store Terms and Conditions'}
+        description={term?.summary || 'Kickside Shop Terms and Conditions'}
       />
       <Toaster richColors position="top-center" />
       <Header />

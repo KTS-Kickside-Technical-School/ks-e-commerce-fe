@@ -2,7 +2,7 @@ import SEO from '../../../middlewares/SEO';
 
 const OnboardingLoadingSkeleton = () => (
   <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
-    <SEO title="Loading - Kickside Store" />
+    <SEO title="Loading - Kickside Shop" />
 
     <div className="w-full bg-white h-2">
       <div className="bg-blue-600 h-full w-1/3" />

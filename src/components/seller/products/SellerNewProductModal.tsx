@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaSave, FaTimes, FaUpload } from 'react-icons/fa';
+import { FaPlus, FaSave, FaTimes, FaUpload } from 'react-icons/fa';
 import RichTextEditor from '../../RichTextEditor';
 import { createProduct } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
@@ -25,7 +25,10 @@ class SellerNewProductModal extends React.Component<Props, any> {
           note: 'Free shipping',
           duration: '2 days',
         },
+        stock: '',
+        keywords: [],
       },
+      keyword: '',
       images: [],
       loading: false,
       errors: {},
@@ -45,6 +48,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
       },
     }));
   };
+
   handleShippingInputChange = (e: any) => {
     const { name, value } = e.target;
     this.setState((prevState: any) => ({
@@ -91,6 +95,29 @@ class SellerNewProductModal extends React.Component<Props, any> {
     }));
   };
 
+  handleAddKeyword = () => {
+    this.setState((prevState: any) => {
+      const newKeyword = prevState.keyword.trim();
+      if (newKeyword && !prevState.formData.keywords.includes(newKeyword)) {
+        return {
+          formData: {
+            ...prevState.formData,
+            keywords: [...prevState.formData.keywords, newKeyword],
+          },
+          keyword: '',
+          errors: { ...prevState.errors, keyword: '' },
+        };
+      } else {
+        return {
+          errors: {
+            ...prevState.errors,
+            keyword: 'Keyword cannot be empty or duplicate',
+          },
+        };
+      }
+    });
+  };
+
   validateForm = () => {
     const errors: any = {};
     const { formData }: any = this.state;
@@ -109,6 +136,9 @@ class SellerNewProductModal extends React.Component<Props, any> {
     }
     if (!formData.category.trim()) {
       errors.category = 'Category is required';
+    }
+    if (!formData.stock.trim()) {
+      errors.stock = 'Stock is required';
     }
     if (
       formData.shippingOptions.fee === '' ||
@@ -129,18 +159,24 @@ class SellerNewProductModal extends React.Component<Props, any> {
 
     this.setState({ loading: true });
     try {
+      console.log({
+        ...this.state.formData,
+        images: this.state.images,
+        category: this.state.formData.category,
+      });
       delete this.state.formData.categories;
       const response = await createProduct({
         ...this.state.formData,
         images: this.state.images,
         category: this.state.formData.category,
       });
+
       if (response.status !== 201) {
         toast.error(response.message);
         return;
       }
       toast.success('Product created successfully');
-      await this.props.onClose();
+      this.props.onClose();
     } catch (error: any) {
       toast.error('Unknown error occured', error.message);
     } finally {
@@ -152,7 +188,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
     try {
       const response = await adminViewCategories();
       if (response.status === 200) {
-        this.setState({ categories: response.data.categories }); // ✅ Use setState
+        this.setState({ categories: response.data.categories });
       }
     } catch (error) {
       toast.error('Failed to fetch categories');
@@ -167,7 +203,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
 
     return (
       <>
-        <SEO title="New Product - Kickside Store" />
+        <SEO title="New Product - Kickside Shop" />
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[200]">
           <div className="bg-white h-[95%] overflow-auto p-8 rounded-lg shadow-2xl w-full max-w-4xl">
             <h2 className="text-2xl font-bold mb-6 text-gray-800">
@@ -223,34 +259,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       </p>
                     )}
                   </div>
-
-                  <div>
-                    <label
-                      htmlFor="productName"
-                      className="block text-sm font-medium text-gray-700 mb-1 mt-2"
-                    >
-                      Product Price(FRW)
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="productPrice"
-                      name="price"
-                      value={formData.price}
-                      onChange={this.handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter product price"
-                    />
-                    {errors.price && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-6">
-                  <div>
+                  <div className="block text-sm font-medium text-gray-700 mb-1 pt-5">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Images
                       <span className="text-red-500">*</span>
@@ -307,6 +316,32 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       </p>
                     )}
                   </div>
+                </div>
+
+                <div className="flex-1 space-y-6">
+                  <div className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="productPrice"
+                      className="block text-sm font-medium text-gray-700 mb-1 "
+                    >
+                      Product Price(FRW)
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="productPrice"
+                      name="price"
+                      value={formData.price}
+                      onChange={this.handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter product price"
+                    />
+                    {errors.price && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.price}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label
                       htmlFor="productName"
@@ -337,6 +372,29 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       </p>
                     )}
                   </div>
+                  <div>
+                    <label
+                      htmlFor="productStock"
+                      className="block text-sm font-medium text-gray-700 mb-1 mt-2"
+                    >
+                      Product Stock
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="productStock"
+                      name="stock"
+                      value={formData.stock}
+                      onChange={this.handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter product stock"
+                    />
+                    {errors.stock && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.stock}
+                      </p>
+                    )}
+                  </div>
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Shipping Options
@@ -347,7 +405,7 @@ class SellerNewProductModal extends React.Component<Props, any> {
                       default ones will be saved.
                     </p>
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
                       <div>
                         <label
                           htmlFor="shippingFee"
@@ -410,6 +468,48 @@ class SellerNewProductModal extends React.Component<Props, any> {
                         {errors.shippingOptions}
                       </p>
                     )}
+                  </div>
+                  <div>
+                    <label htmlFor="productKeywords">
+                      <span className="text-sm font-medium text-gray-700">
+                        Product Keywords
+                      </span>
+                      <span className="text-gray-500 text-xs ml-2">
+                        (Optional)
+                      </span>
+                    </label>
+
+                    <div className="flex items-center gap-2 mt-1">
+                      <input
+                        id="productKeywords"
+                        type="text"
+                        value={this.state.keyword}
+                        onChange={(e) =>
+                          this.setState({ keyword: e.target.value })
+                        }
+                        className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={this.handleAddKeyword}
+                        className="bg-blue-500 text-white px-4 py-4 rounded"
+                      >
+                        <FaPlus />
+                      </button>
+                    </div>
+
+                    <ul className="mt-2">
+                      {formData.keywords.map(
+                        (keyword: string, index: number) => (
+                          <li key={index} className="inline-block mr-2">
+                            <span className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                              {keyword}
+                            </span>
+                          </li>
+                        )
+                      )}
+                    </ul>
                   </div>
                 </div>
               </form>

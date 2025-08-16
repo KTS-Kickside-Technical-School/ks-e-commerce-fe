@@ -8,7 +8,7 @@ const NotFound = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <SEO
-        title="Page Not Found 404 - Kickside Store"
+        title="Page Not Found 404 - Kickside Shop"
         description="The page you are looking for does not exist."
         ogImage={NotFoundImage}
         ogUrl={window.location.href}

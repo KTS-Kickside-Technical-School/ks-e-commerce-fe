@@ -24,7 +24,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-6">
-      <SEO title="Seller Dashboard - Kickside Store" />
+      <SEO title="Seller Dashboard - Kickside Shop" />
       <div className="max-w-4xl mx-auto">
         {isLoading ? (
           <div className="animate-pulse">

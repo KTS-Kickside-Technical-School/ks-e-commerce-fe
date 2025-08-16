@@ -52,7 +52,6 @@ const AdminViewProducts = () => {
     });
   };
 
-
   return (
     <div>
       <ProductsSubNavBar />
@@ -75,6 +74,7 @@ const AdminViewProducts = () => {
                 <th className="p-3 text-left">Price</th>
                 <th className="p-3 text-left">Stock</th>
                 <th className="p-3 text-left">Discount</th>
+                <th className="p-3 text-left">Keywords</th>
                 <th className="p-3 text-left">Seller names</th>
                 <th className="p-3 text-left">Shop Names</th>
                 <th className="p-3 text-left">Time added</th>
@@ -83,13 +83,13 @@ const AdminViewProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((data: any) =>
-                data.products.map((product: any, index: number) => (
+              {data.map((data: any, index = 1) =>
+                data.products.map((product: iProduct) => (
                   <tr
                     key={product._id}
                     className="border-b hover:bg-gray-100 transition duration-200"
                   >
-                    <td className="p-3">{index + 1}</td>
+                    <td className="p-3">{index++}</td>
                     <td className="p-3 flex items-center justify-center gap-2">
                       {Array.isArray(product.images) &&
                       product.images.length > 0 ? (
@@ -153,6 +153,16 @@ const AdminViewProducts = () => {
                       >
                         {Number(product.discount || 0)}%
                       </span>
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      {product.keywords?.map((keyword) => (
+                        <span
+                          key={keyword}
+                          className="inline-block bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs mr-1 mb-1"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
                     </td>
                     <td className="p-3 font-medium">{data.sellerName}</td>
                     <td className="p-3 font-medium">{data.shopName}</td>

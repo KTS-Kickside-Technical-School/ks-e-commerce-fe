@@ -66,8 +66,8 @@ const UserCreateAccount = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <SEO
-        title="Create Account on Kickside Store - Kickside"
-        description="Create an account on Kickside Store to access exclusive deals and discounts on your favorite sneakers, electronic devices, computers and many much qualities and varieties."
+        title="Create Account on Kickside Shop - Kickside"
+        description="Create an account on Kickside Shop to access exclusive deals and discounts on your favorite sneakers, electronic devices, computers and many much qualities and varieties."
       />
       <Toaster richColors />
       <Header />

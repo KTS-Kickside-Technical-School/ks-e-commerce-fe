@@ -34,7 +34,7 @@ const TermsAndConditions = () => {
     <div>
       <TermsSubNavbar />
       <SEO
-        title="Terms and Conditions: Admin - Kickside Store"
+        title="Terms and Conditions: Admin - Kickside Shop"
         description="A page dedicated to managing terms and conditions for the app."
       />
       <Toaster richColors position="top-center" />

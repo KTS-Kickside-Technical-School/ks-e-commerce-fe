@@ -95,7 +95,7 @@ const NewTermsAndConditions = () => {
     <div className="min-h-screen bg-gray-50">
       <Toaster richColors position="top-center" />
       <SEO
-        title="New Terms and Conditions: Admin - Kickside Store"
+        title="New Terms and Conditions: Admin - Kickside Shop"
         description="A page dedicated to creating new terms and conditions that our app runs through."
       />
 

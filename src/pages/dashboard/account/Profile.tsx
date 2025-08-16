@@ -30,7 +30,9 @@ const Profile = () => {
 
   const handleProfileSave = async () => {
     try {
+      console.log('Saving profile:', tempProfile);
       const updated = await updateProfile(tempProfile);
+      console.log(updated.message);
 
       const { password, ...userWithoutPassword } = updated.data.updatedUser;
       sessionStorage.setItem('profile', JSON.stringify(userWithoutPassword));

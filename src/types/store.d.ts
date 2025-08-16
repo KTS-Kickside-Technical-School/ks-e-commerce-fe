@@ -51,6 +51,7 @@ export interface iProduct {
     note: string;
     duration: string;
   }
+  keywords?: string[];
   createdAt?: Date;
   updatedAt?: Date;
   productId?: string;
@@ -217,4 +218,19 @@ interface IOrder {
   trackingCode: string;
   orderTrackingHistory: IOrderTrackingEntry[];
   createdAt: Date;
+}
+
+
+export interface IUpdateShop {
+  _id: string,
+  name: string,
+  description: string,
+  logo: string,
+  images: String[],
+  phone: string,
+  createdAt: Date,
+  updatedAt: Date,
+  address: any;
+  __v: string,
+  seller: string,
 }

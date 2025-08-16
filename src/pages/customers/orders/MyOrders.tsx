@@ -240,8 +240,8 @@ const MyOrders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <SEO
-        title="My Orders - Kickside Store"
-        description="Track my Orders easily with Kickside Store"
+        title="My Orders - Kickside Shop"
+        description="Track my Orders easily with Kickside Shop"
       />
       <Header />
 

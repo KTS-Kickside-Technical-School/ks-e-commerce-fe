@@ -7,7 +7,7 @@ const OnboardingWaitingForApproval = () => {
     <div className="fixed inset-0 bg-black min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col bg-opacity-50 z-[300] overflow-y-auto">
       <OnboardingSubnavbar />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-6">
-        <SEO title="Shop Pending Approval - Kickside Store" />
+        <SEO title="Shop Pending Approval - Kickside Shop" />
         <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 text-center">
           <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
             <FaClock className="text-yellow-600 text-3xl" />

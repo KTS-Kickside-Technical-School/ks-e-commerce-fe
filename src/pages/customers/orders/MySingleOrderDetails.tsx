@@ -156,7 +156,7 @@ const MySingleOrderDetails = () => {
 
   return (
     <>
-      <SEO title={`My Order Details ${order?.trackingCode}: Kickside Store`} />
+      <SEO title={`My Order Details ${order?.trackingCode}: Kickside Shop`} />
       <Toaster position="top-center" richColors />
       <Header />
       {loading ? (

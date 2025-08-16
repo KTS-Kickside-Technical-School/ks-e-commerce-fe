@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaSave, FaTimes, FaUpload } from 'react-icons/fa';
+import { FaPlus, FaSave, FaTimes, FaUpload } from 'react-icons/fa';
 import RichTextEditor from '../../RichTextEditor';
 import { editProduct } from '../../../requests/productsRequests';
 import { toast } from 'sonner';
@@ -29,7 +29,9 @@ class SellerEditProductModal extends React.Component<Props, any> {
           note: props.product?.shippingOptions?.note || 'no note',
           duration: props.product?.shippingOptions?.duration,
         },
+        keywords: props.product.keywords || [],
       },
+      keyword: '',
       images: props.product.images,
       loading: false,
       errors: {},
@@ -93,6 +95,29 @@ class SellerEditProductModal extends React.Component<Props, any> {
     this.setState((prevState: any) => ({
       images: prevState.images.filter((_: any, i: any) => i !== index),
     }));
+  };
+
+  handleAddKeyword = () => {
+    this.setState((prevState: any) => {
+      const newKeyword = prevState.keyword.trim();
+      if (newKeyword && !prevState.formData.keywords.includes(newKeyword)) {
+        return {
+          formData: {
+            ...prevState.formData,
+            keywords: [...prevState.formData.keywords, newKeyword],
+          },
+          keyword: '',
+          errors: { ...prevState.errors, keyword: '' },
+        };
+      } else {
+        return {
+          errors: {
+            ...prevState.errors,
+            keyword: 'Keyword cannot be empty or duplicate',
+          },
+        };
+      }
+    });
   };
 
   validateForm = () => {
@@ -222,7 +247,63 @@ class SellerEditProductModal extends React.Component<Props, any> {
                     </p>
                   )}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Product Images
+                  </label>
+                  <div
+                    className="mt-1 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      this.handleImageUpload(e.dataTransfer.files);
+                    }}
+                  >
+                    <div className="text-center">
+                      <FaUpload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                      <input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        multiple
+                        onChange={(e: any) => {
+                          this.handleImageUpload(e.target.files);
+                          e.target.value = null;
+                        }}
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer text-primary-600 hover:text-primary-500"
+                      >
+                        Upload images
+                      </label>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {images.map((image: any, index: number) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={image}
+                          className="w-20 h-20 object-cover rounded-lg"
+                          alt="Upload preview"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => this.handleImageDelete(index)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                        >
+                          <FaTimes className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.images && (
+                    <p className="text-red-500 text-sm mt-1">{errors.images}</p>
+                  )}
+                </div>
+              </div>
 
+              <div className="flex-1 space-y-6">
                 <div>
                   <label
                     htmlFor="productName"
@@ -288,63 +369,7 @@ class SellerEditProductModal extends React.Component<Props, any> {
                     </span>
                   </label>
                 </div>
-              </div>
 
-              <div className="flex-1 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Product Images
-                  </label>
-                  <div
-                    className="mt-1 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-100"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      this.handleImageUpload(e.dataTransfer.files);
-                    }}
-                  >
-                    <div className="text-center">
-                      <FaUpload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                      <input
-                        id="file-upload"
-                        type="file"
-                        className="hidden"
-                        multiple
-                        onChange={(e: any) => {
-                          this.handleImageUpload(e.target.files);
-                          e.target.value = null;
-                        }}
-                      />
-                      <label
-                        htmlFor="file-upload"
-                        className="cursor-pointer text-primary-600 hover:text-primary-500"
-                      >
-                        Upload images
-                      </label>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {images.map((image: any, index: number) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={image}
-                          className="w-20 h-20 object-cover rounded-lg"
-                          alt="Upload preview"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => this.handleImageDelete(index)}
-                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                        >
-                          <FaTimes className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.images && (
-                    <p className="text-red-500 text-sm mt-1">{errors.images}</p>
-                  )}
-                </div>
                 <div>
                   <label
                     htmlFor="discount"
@@ -468,6 +493,46 @@ class SellerEditProductModal extends React.Component<Props, any> {
                       {errors.shippingOptions}
                     </p>
                   )}
+                </div>
+                <div>
+                  <label htmlFor="productKeywords">
+                    <span className="text-sm font-medium text-gray-700">
+                      Product Keywords
+                    </span>
+                    <span className="text-gray-500 text-xs ml-2">
+                      (Optional)
+                    </span>
+                  </label>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <input
+                      id="productKeywords"
+                      type="text"
+                      value={this.state.keyword}
+                      onChange={(e) =>
+                        this.setState({ keyword: e.target.value })
+                      }
+                      className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={this.handleAddKeyword}
+                      className="bg-blue-500 text-white px-4 py-4 rounded"
+                    >
+                      <FaPlus />
+                    </button>
+                  </div>
+
+                  <ul className="mt-2">
+                    {formData.keywords.map((keyword: string, index: number) => (
+                      <li key={index} className="inline-block mr-2">
+                        <span className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                          {keyword}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </form>
