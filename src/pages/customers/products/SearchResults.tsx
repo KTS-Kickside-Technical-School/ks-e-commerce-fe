@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Footer from '../../../components/customers/Footer';
 import Header from '../../../components/customers/Header';
 import { iProduct, IProductCategory } from '../../../types/store';
