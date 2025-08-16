@@ -44,6 +44,8 @@ import CustomerSingleTermsAndConditions from './pages/customers/terms/CustomerSi
 import SellerCreateAccount from './pages/customers/auth/SellerCreateAccount';
 import AdminViewShopsList from './pages/admin/AdminViewShopsList';
 import UsersList from './pages/admin/UsersList';
+import ViewCustomOrders from './pages/customers/orders/ViewCustomOrders';
+import NewCustomOrders from './pages/customers/orders/NewCustomOrders';
 
 const AppRouter = () => {
   return (
@@ -74,6 +76,8 @@ const AppRouter = () => {
         <Route path="my-account" element={<CustomerProfile />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/my-order/:id" element={<MySingleOrderDetails />} />
+        <Route path="/custom-orders" element={<ViewCustomOrders />} />
+        <Route path="/new-custom-order" element={<NewCustomOrders />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['seller']} />}>
         <Route path="/seller" element={<DashboardLayout />}>

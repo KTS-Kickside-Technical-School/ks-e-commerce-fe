@@ -5,6 +5,7 @@ import {
   FaSearch,
   FaTimes,
   FaTruck,
+  FaTruckMoving,
   FaUser,
 } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Logo from '/logo.png';
 import { adminViewCategories } from '../../requests/categoriesRequest';
 import { IProductCategory } from '../../types/store';
+import { FaFirstOrder, FaTruckDroplet } from 'react-icons/fa6';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -159,13 +161,22 @@ const Header = () => {
             )}
           </div>
           {token ? (
-            <Link
-              to="/my-orders"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
-            >
-              <FaTruck className="text-blue-600 text-lg" />
-              <span>My Orders</span>
-            </Link>
+            <>
+              <Link
+                to="/custom-orders"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+              >
+                <FaTruckMoving className="text-blue-600 text-lg" />
+                <span>Custom orders</span>
+              </Link>
+              <Link
+                to="/my-orders"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+              >
+                <FaTruck className="text-blue-600 text-lg" />
+                <span>My Orders</span>
+              </Link>
+            </>
           ) : (
             <Link
               to="/track-order"
@@ -258,13 +269,22 @@ const Header = () => {
             </li>
 
             {token ? (
-              <Link
-                to="/my-orders"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
-              >
-                <FaTruck className="text-blue-600 text-lg" />
-                <span>My Orders</span>
-              </Link>
+              <>
+                <Link
+                  to="/my-orders"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+                >
+                  <FaTruck className="text-blue-600 text-lg" />
+                  <span>My Orders</span>
+                </Link>
+                <Link
+                  to="/custom-orders"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium shadow-sm"
+                >
+                  <FaTruck className="text-blue-600 text-lg" />
+                  <span>Custom orders</span>
+                </Link>
+              </>
             ) : (
               <Link
                 to="/track-order"
