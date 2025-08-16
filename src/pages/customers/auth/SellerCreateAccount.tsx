@@ -66,7 +66,7 @@ const SellerCreateAccount = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Toaster richColors />
-      <SEO title="Seller create account : Kickside Store" />
+      <SEO title="Seller create account : Kickside Shop" />
       <Header />
       <div className="flex flex-1 bg-gray-100 py-10 px-6 md:px-20 items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full flex transition-transform duration-300 hover:scale-[1.02]">

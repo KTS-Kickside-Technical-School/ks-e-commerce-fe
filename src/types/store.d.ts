@@ -51,6 +51,7 @@ export interface iProduct {
     note: string;
     duration: string;
   }
+  keywords?: string[];
   createdAt?: Date;
   updatedAt?: Date;
   productId?: string;

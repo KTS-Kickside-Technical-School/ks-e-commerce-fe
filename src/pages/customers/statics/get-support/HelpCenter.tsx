@@ -55,9 +55,9 @@ export default function HelpCenter() {
   return (
     <>
       <SEO
-        title="Help Center - Kickside Store"
-        description="Get answers to common questions, find help, report abuse, or chat live with our support team at Kickside Store. We’re here to assist you with orders, payments, returns, and more."
-        keywords="Help Center, Kickside Store Support, FAQs, Live Chat, Report Abuse, Ask Questions, Shopping Help, Customer Service"
+        title="Help Center - Kickside Shop"
+        description="Get answers to common questions, find help, report abuse, or chat live with our support team at Kickside Shop. We’re here to assist you with orders, payments, returns, and more."
+        keywords="Help Center, Kickside Shop Support, FAQs, Live Chat, Report Abuse, Ask Questions, Shopping Help, Customer Service"
       />
 
       <Header />

@@ -50,7 +50,7 @@ const ForgotPassword = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <SEO title="Forgot your password? : Kickside Store" />
+      <SEO title="Forgot your password? : Kickside Shop" />
       <div className="flex flex-1 bg-gray-100 py-10 px-6 md:px-20 items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-xl max-w-4xl w-full flex transition-transform duration-300 hover:scale-[1.02]">
           <div className="hidden md:block w-1/2">

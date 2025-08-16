@@ -102,7 +102,7 @@ const UsersList = () => {
 
   return (
     <>
-      <SEO title="View Users List: Admin - Kickside Store" description="Admin can view and manage users." />
+      <SEO title="View Users List: Admin - Kickside Shop" description="Admin can view and manage users." />
       <Toaster richColors position="top-center" />
       <div className="container mx-auto p-6">
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">Users Management</h2>

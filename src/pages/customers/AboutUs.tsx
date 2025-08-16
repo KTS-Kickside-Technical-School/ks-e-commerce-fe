@@ -41,7 +41,7 @@ const About = () => {
   return (
     <>
       <SEO
-        title="About us - Kickside Store"
+        title="About us - Kickside Shop"
         description="Kickside is a Rwandan-built digital marketplace that connects sellers and buyers, simplifies transactions, and strengthens local commerce. Join us and start selling today!"
         keywords="Kickside, Rwandan marketplace, e-commerce, online shopping, local commerce"
         ogUrl={window.location.href}

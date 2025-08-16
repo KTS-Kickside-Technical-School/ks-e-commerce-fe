@@ -90,8 +90,8 @@ const TrackOrderForm = () => {
   return (
     <>
       <SEO
-        title="Track your order - Kickside Store"
-        description="Track your order easily on Kickside Store"
+        title="Track your order - Kickside Shop"
+        description="Track your order easily on Kickside Shop"
       />
       <Header />
 

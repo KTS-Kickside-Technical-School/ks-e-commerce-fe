@@ -14,7 +14,7 @@ const OnboardingRejected = ({
     <div className="fixed inset-0 bg-black min-h-screen bg-gradient-to-br from-gray-50 to-red-50 flex flex-col bg-opacity-50 z-[300] overflow-y-auto">
       <OnboardingSubnavbar />
       <div className="min-h-screen flex items-center justify-center p-6">
-        <SEO title="Shop Rejected - Kickside Store" />
+        <SEO title="Shop Rejected - Kickside Shop" />
         <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 text-center">
           <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
             <FaExclamationTriangle className="text-red-600 text-3xl" />

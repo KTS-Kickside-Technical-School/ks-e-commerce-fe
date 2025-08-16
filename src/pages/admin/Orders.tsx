@@ -238,8 +238,8 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <SEO
-        title="Track Orders - Kickside Store"
-        description="Track my Orders easily with Kickside Store"
+        title="Track Orders - Kickside Shop"
+        description="Track my Orders easily with Kickside Shop"
       />
 
       <div className="max-w-7xl mx-auto p-4 md:p-6  mx-auto px-4 py-8">

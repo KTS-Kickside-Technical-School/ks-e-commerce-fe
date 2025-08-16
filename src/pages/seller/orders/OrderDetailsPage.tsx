@@ -107,7 +107,7 @@ const OrderDetailsPage = () => {
       <SEO
         title={`Order Details ${
           order?.trackingCode || ''
-        }: Seller - Kickside Store`}
+        }: Seller - Kickside Shop`}
       />
       <Toaster position="top-center" richColors />
       {loading ? (
